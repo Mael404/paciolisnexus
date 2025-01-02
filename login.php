@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (isset($_SESSION['SESSION_EMAIL'])) {
-    header("Location: welcome.php");
+    header("Location: student_dashboard.php");
     die();
 }
 
@@ -36,7 +36,7 @@ if (isset($_POST['submit'])) {
             // Set session for logged-in user
             $_SESSION['SESSION_EMAIL'] = $email;
             $_SESSION['user_id'] = $row['user_id'];  // Store user ID in session for future queries
-            $_SESSION['name'] = $row['name'];  // Store user ID in session for future queries
+            $_SESSION['name'] = $row['name'];  // Store user name in session for future queries
 
             // Check if the user is an admin
             if ($row['role'] === 'admin') {
@@ -44,14 +44,9 @@ if (isset($_POST['submit'])) {
                 die();
             }
 
-            // Check if user has completed study plan profile
-            if (!empty($row['academic_level']) && !empty($row['learning_goals']) && !empty($row['areas_of_difficulty'])) {
-                // User has completed profile, redirect to welcome/dashboard page
-                header("Location: welcome.php");
-            } else {
-                // User hasn't completed profile, redirect to study plan form
-                header("Location: study_plan_form.php");
-            }
+            // Redirect to welcome page
+            header("Location: student_dashboard.php");
+            die();
         } else {
             $msg = "<div class='alert alert-info'>First verify your account and try again.</div>";
         }
@@ -60,7 +55,6 @@ if (isset($_POST['submit'])) {
     }
 }
 ?>
-
 
 
 
@@ -139,6 +133,8 @@ if (isset($_POST['submit'])) {
                         </form>
                         <div class="social-icons">
                             <p>Create Account! <a href="register.php">Register</a>.</p>
+                            <br>
+                            <br>
                             <a href="index.html">Back to Home</a>
 
                         </div>

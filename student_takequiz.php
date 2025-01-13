@@ -1,6 +1,35 @@
 <?php
 session_start();
+include('config.php');
+
+// Get the current logged-in user's user_id
+$current_user_id = $_SESSION['user_id']; // Ensure 'user_id' is stored in the session during login
+
+// Query to check if the user_id exists in the gamified table
+$query = "SELECT student_id FROM gamified WHERE student_id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $current_user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Modal content
+$modalTitle = '';
+$modalMessage = '';
+
+if ($result->num_rows > 0) {
+  // user_id exists in the gamified table
+  $modalTitle = "You currently have an active pay per transaction subscribtion";
+  $modalMessage = "User ID found in the gamified table.";
+} else {
+  // user_id does not exist in the gamified table
+  $modalTitle = "Opps!, You havent subcribe to our subcription pckages yet";
+  $modalMessage = "User ID not found in the gamified table.";
+}
+
+$stmt->close();
+$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,7 +60,163 @@ session_start();
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
+  <style>
+    /* Global Colors - The following color variables are used throughout the website. Updating them here will change the color scheme of the entire website */
+    :root {
+      --background-color: #ffffff;
+      /* Background color for the entire website, including individual sections */
+      --default-color: #444444;
+      /* Default color used for the majority of the text content across the entire website */
+      --heading-color: #222222;
+      /* Color for headings, subheadings and title throughout the website */
+      --accent-color: #106eea;
+      /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
+      --surface-color: #ffffff;
+      /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
+      --contrast-color: #ffffff;
+      /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
+    }
 
+    /* Nav Menu Colors - The following color variables are used specifically for the navigation menu. They are separate from the global colors to allow for more customization options */
+    :root {
+      --nav-color: #222222;
+      /* The default color of the main navmenu links */
+      --nav-hover-color: #106eea;
+      /* Applied to main navmenu links when they are hovered over or active */
+      --nav-mobile-background-color: #ffffff;
+      /* Used as the background color for mobile navigation menu */
+      --nav-dropdown-background-color: #ffffff;
+      /* Used as the background color for dropdown items that appear when hovering over primary navigation items */
+      --nav-dropdown-color: #222222;
+      /* Used for navigation links of the dropdown items in the navigation menu. */
+      --nav-dropdown-hover-color: #106eea;
+      /* Similar to --nav-hover-color, this color is applied to dropdown navigation links when they are hovered over. */
+    }
+
+    .pricing .pricing-item {
+      background-color: var(--surface-color);
+      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+      border-radius: 5px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      /* Ensure all cards have the same height */
+    }
+
+    .pricing .pricing-item h3 {
+      font-weight: 400;
+      margin: -20px -20px 20px -20px;
+      padding: 20px 15px;
+      font-size: 16px;
+      font-weight: 600;
+      color: color-mix(in srgb, var(--default-color), transparent 20%);
+      background: color-mix(in srgb, var(--default-color), transparent 95%);
+    }
+
+    .pricing .pricing-item h4 {
+      font-size: 36px;
+      font-weight: 600;
+      font-family: var(--heading-font);
+    }
+
+    .pricing .pricing-item h4 sup {
+      font-size: 20px;
+      top: -15px;
+      left: -3px;
+    }
+
+    .pricing .pricing-item h4 span {
+      color: color-mix(in srgb, var(--default-color), transparent 40%);
+      font-size: 16px;
+      font-weight: 300;
+    }
+
+    .pricing .pricing-item ul {
+      padding: 15px 0;
+      list-style: none;
+      text-align: center;
+      line-height: 20px;
+      font-size: 14px;
+      flex-grow: 1;
+      /* Ensure the list items take up available space */
+    }
+
+    .pricing .pricing-item ul li {
+      padding-bottom: 16px;
+    }
+
+    .pricing .pricing-item ul i {
+      color: var(--accent-color);
+      font-size: 18px;
+      padding-right: 4px;
+    }
+
+    .pricing .pricing-item ul .na {
+      color: color-mix(in srgb, var(--default-color), transparent 40%);
+      text-decoration: line-through;
+    }
+
+    .pricing .btn-wrap {
+      background: color-mix(in srgb, var(--default-color), transparent 95%);
+      margin: 0 -20px -20px -20px;
+      padding: 20px 15px;
+      text-align: center;
+    }
+
+    .pricing .btn-buy {
+      background: var(--accent-color);
+      color: var(--contrast-color);
+      display: inline-block;
+      padding: 8px 35px 10px 35px;
+      border-radius: 4px;
+      transition: none;
+      font-size: 14px;
+      font-weight: 400;
+      font-family: var(--heading-font);
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .pricing .btn-buy:hover {
+      background: color-mix(in srgb, var(--accent-color), transparent 20%);
+    }
+
+    .pricing .featured h3 {
+      background: var(--accent-color);
+      color: var(--contrast-color);
+    }
+
+    .pricing .advanced {
+      background: var(--accent-color);
+      color: var(--contrast-color);
+      width: 200px;
+      position: absolute;
+      top: 18px;
+      right: -68px;
+      transform: rotate(45deg);
+      z-index: 1;
+      font-size: 14px;
+      padding: 1px 0 3px 0;
+    }
+
+    /* Ensure equal card height */
+    .pricing .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .pricing .col-xl-3,
+    .pricing .col-lg-6 {
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+  </style>
 </head>
 
 <body>
@@ -65,7 +250,7 @@ session_start();
 
         <li class="nav-item dropdown">
 
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+          <a class="nav-link nav-icon" href="#" id="notificationIcon">
             <i class="bi bi-bell"></i>
             <span class="badge bg-primary badge-number">4</span>
           </a><!-- End Notification Icon -->
@@ -218,7 +403,7 @@ session_start();
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6>  <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?></h6>
+              <h6> <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?></h6>
               <span>STUDENT</span>
             </li>
             <li>
@@ -352,28 +537,7 @@ session_start();
         </ul>
       </li><!-- End Homework Help Nav -->
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#sessions-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-calendar"></i><span>Sessions</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="sessions-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="upcoming-sessions.html">
-              <i class="bi bi-circle"></i><span>Upcoming</span>
-            </a>
-          </li>
-          <li>
-            <a href="register-session.html">
-              <i class="bi bi-circle"></i><span>Register</span>
-            </a>
-          </li>
-          <li>
-            <a href="archive-sessions.html">
-              <i class="bi bi-circle"></i><span>Archive</span>
-            </a>
-          </li>
-        </ul>
-      </li><!-- End Sessions Nav -->
+
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#career-hub-nav" data-bs-toggle="collapse" href="#">
@@ -421,7 +585,7 @@ session_start();
         </ul>
       </li><!-- End Support Nav -->
 
-    
+
 
     </ul>
 
@@ -439,115 +603,339 @@ session_start();
         </ol>
       </nav>
     </div><!-- End Page Title -->
-<style>
-.subject-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
+    <style>
+      .subject-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
 
-.subject-card .card-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between; /* Distributes the content evenly */
-}
+      .subject-card .card-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        /* Distributes the content evenly */
+      }
 
-.card-title {
-  margin-bottom: 0px;
-}
+      .card-title {
+        margin-bottom: 0px;
+      }
 
-.btn {
-  margin-top: auto; /* Ensures the button stays at the bottom */
-}
+      .btn {
+        margin-top: auto;
+        /* Ensures the button stays at the bottom */
+      }
+    </style>
 
-
-</style>
+    <!-- Section with Subject Cards -->
     <section class="section dashboard">
-  <div class="row">
-   
-<!-- Subject 1: Financial Accounting and Reporting -->
-<div class="col-lg-4 col-md-6 mb-3">
-  <div class="card info-card subject-card">
-    <div class="card-body text-center">
-      <h5 class="card-title">Financial Accounting and Reporting</h5>
-      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f6f6; width: 70px; height: 70px;">
-        <i class="bi bi-clipboard-check" style="color: #4154f1; font-size: 30px;"></i>
+      <div class="row">
+        <!-- Subject 1: Financial Accounting and Reporting -->
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="card info-card subject-card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Financial Accounting and Reporting</h5>
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f6f6; width: 70px; height: 70px;">
+                <i class="bi bi-clipboard-check" style="color: #4154f1; font-size: 30px;"></i>
+              </div>
+              <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalFinancialAccounting">Take Quiz</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subject 2: Advanced Financial Accounting and Reporting -->
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="card info-card subject-card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Advanced Financial Accounting and Reporting</h5>
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #e6f4ea; width: 70px; height: 70px;">
+                <i class="bi bi-calculator" style="color: #2eca6a; font-size: 30px;"></i>
+              </div>
+              <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#modalAdvancedAccounting">Take Quiz</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subject 3: Taxation -->
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="card info-card subject-card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Taxation</h5>
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f1eb; width: 70px; height: 70px;">
+                <i class="bi bi-wallet2" style="color: #ff771d; font-size: 30px;"></i>
+              </div>
+              <button class="btn btn-warning mt-3" data-bs-toggle="modal" data-bs-target="#modalTaxation">Take Quiz</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subject 4: Auditing -->
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="card info-card subject-card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Auditing</h5>
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eef6ff; width: 70px; height: 70px;">
+                <i class="bi bi-graph-up" style="color: #0d6efd; font-size: 30px;"></i>
+              </div>
+              <button class="btn btn-info mt-3" data-bs-toggle="modal" data-bs-target="#modalAuditing">Take Quiz</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subject 5: Regulatory Framework for Business Transactions -->
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="card info-card subject-card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Regulatory Framework for Business Transactions</h5>
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #fff6e6; width: 70px; height: 70px;">
+                <i class="bi bi-briefcase" style="color: #f39c12; font-size: 30px;"></i>
+              </div>
+              <button class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#modalRegulatoryFramework">Take Quiz</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subject 6: Management Advisory Services -->
+        <div class="col-lg-4 col-md-6 mb-3">
+          <div class="card info-card subject-card">
+            <div class="card-body text-center">
+              <h5 class="card-title">Management Advisory Services</h5>
+              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eaf2ff; width: 70px; height: 70px;">
+                <i class="bi bi-bar-chart" style="color: #5e60ce; font-size: 30px;"></i>
+              </div>
+              <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalManagementAdvisory">Take Quiz</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <a href="#financial-accounting-reporting-quiz" class="btn btn-primary mt-3">Take Quiz</a>
-    </div>
-  </div>
-</div>
+    </section>
 
-<!-- Subject 2: Advanced Financial Accounting and Reporting -->
-<div class="col-lg-4 col-md-6 mb-3">
-  <div class="card info-card subject-card">
-    <div class="card-body text-center">
-      <h5 class="card-title">Advanced Financial Accounting and Reporting</h5>
-      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #e6f4ea; width: 70px; height: 70px;">
-        <i class="bi bi-calculator" style="color: #2eca6a; font-size: 30px;"></i>
+
+
+
+
+    <!-- Modals -->
+    <div>
+      <!-- Modal 1: Financial Accounting and Reporting -->
+      <div class="modal fade" id="modalFinancialAccounting" tabindex="-1" aria-labelledby="modalFinancialAccountingLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color: #4154f1; color: white;">
+              <h5 class="modal-title" id="modalFinancialAccountingLabel">Financial Accounting Quiz</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+              <!-- Price Section -->
+              <div style="margin-top: 10px;">
+                <h2 style="font-size: 4rem; font-weight: bold; font-family: 'Roboto Mono', monospace; color: #4154f1;">₱1,210</h2>
+              </div>
+              <!-- Description Section -->
+              <p style="font-size: 1rem; color: #555; margin-top: 20px;">Master the fundamentals of financial accounting with this comprehensive quiz.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-primary btn-lg" style="width: 100%;" onclick="window.location.href='quiz_FAR.php'">Proceed</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <a href="#advanced-financial-accounting-quiz" class="btn btn-success mt-3">Take Quiz</a>
-    </div>
-  </div>
-</div>
 
-<!-- Subject 3: Taxation -->
-<div class="col-lg-4 col-md-6 mb-3">
-  <div class="card info-card subject-card">
-    <div class="card-body text-center">
-      <h5 class="card-title">Taxation</h5>
-      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f1eb; width: 70px; height: 70px;">
-        <i class="bi bi-wallet2" style="color: #ff771d; font-size: 30px;"></i>
+      <!-- Modal 2: Advanced Financial Accounting and Reporting -->
+      <div class="modal fade" id="modalAdvancedAccounting" tabindex="-1" aria-labelledby="modalAdvancedAccountingLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color: #2eca6a; color: white;">
+              <h5 class="modal-title" id="modalAdvancedAccountingLabel">Advanced Accounting Quiz</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+              <!-- Price Section -->
+              <div style="margin-top: 10px;">
+                <h2 style="font-size: 4rem; font-weight: bold; font-family: 'Roboto Mono', monospace; color: #2eca6a;">₱2,112</h2>
+              </div>
+              <!-- Description Section -->
+              <p style="font-size: 1rem; color: #555; margin-top: 20px;">Dive deeper into advanced financial accounting concepts with this challenging quiz.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-success btn-lg" style="width: 100%;">Proceed</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <a href="#taxation-quiz" class="btn btn-warning mt-3">Take Quiz</a>
-    </div>
-  </div>
-</div>
 
-<!-- Subject 4: Auditing -->
-<div class="col-lg-4 col-md-6 mb-3">
-  <div class="card info-card subject-card">
-    <div class="card-body text-center">
-      <h5 class="card-title">Auditing</h5>
-      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eef6ff; width: 70px; height: 70px;">
-        <i class="bi bi-graph-up" style="color: #0d6efd; font-size: 30px;"></i>
+      <!-- Modal 3: Taxation -->
+      <div class="modal fade" id="modalTaxation" tabindex="-1" aria-labelledby="modalTaxationLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color: #ff771d; color: white;">
+              <h5 class="modal-title" id="modalTaxationLabel">Taxation Quiz</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+              <!-- Price Section -->
+              <div style="margin-top: 10px;">
+                <h2 style="font-size: 4rem; font-weight: bold; font-family: 'Roboto Mono', monospace; color: #ff771d;">₱1,214</h2>
+              </div>
+              <!-- Description Section -->
+              <p style="font-size: 1rem; color: #555; margin-top: 20px;">Enhance your taxation knowledge with this practical and insightful quiz.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-warning btn-lg" style="width: 100%;">Proceed</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <a href="#auditing-quiz" class="btn btn-info mt-3">Take Quiz</a>
-    </div>
-  </div>
-</div>
 
-<!-- Subject 5: Regulatory Framework for Business Transactions -->
-<div class="col-lg-4 col-md-6 mb-3">
-  <div class="card info-card subject-card">
-    <div class="card-body text-center">
-      <h5 class="card-title">Regulatory Framework for Business Transactions</h5>
-      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #fff6e6; width: 70px; height: 70px;">
-        <i class="bi bi-briefcase" style="color: #f39c12; font-size: 30px;"></i>
+      <!-- Modal 4: Auditing -->
+      <div class="modal fade" id="modalAuditing" tabindex="-1" aria-labelledby="modalAuditingLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color: #0d6efd; color: white;">
+              <h5 class="modal-title" id="modalAuditingLabel">Auditing Quiz</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+              <!-- Price Section -->
+              <div style="margin-top: 10px;">
+                <h2 style="font-size: 4rem; font-weight: bold; font-family: 'Roboto Mono', monospace; color: #0d6efd;">₱2,015</h2>
+              </div>
+              <!-- Description Section -->
+              <p style="font-size: 1rem; color: #555; margin-top: 20px;">Refine your auditing expertise with this quiz covering critical principles and best practices.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-info btn-lg" style="width: 100%;">Proceed</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <a href="#regulatory-framework-quiz" class="btn btn-dark mt-3">Take Quiz</a>
-    </div>
-  </div>
-</div>
 
-<!-- Subject 6: Management Advisory Services -->
-<div class="col-lg-4 col-md-6 mb-3">
-  <div class="card info-card subject-card">
-    <div class="card-body text-center">
-      <h5 class="card-title">Management Advisory Services</h5>
-      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eaf2ff; width: 70px; height: 70px;">
-        <i class="bi bi-bar-chart" style="color: #5e60ce; font-size: 30px;"></i>
+      <!-- Modal 5: Regulatory Framework for Business Transactions -->
+      <div class="modal fade" id="modalRegulatoryFramework" tabindex="-1" aria-labelledby="modalRegulatoryFrameworkLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color: #f39c12; color: white;">
+              <h5 class="modal-title" id="modalRegulatoryFrameworkLabel">Regulatory Framework Quiz</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+              <!-- Price Section -->
+              <div style="margin-top: 10px;">
+                <h2 style="font-size: 4rem; font-weight: bold; font-family: 'Roboto Mono', monospace; color: #f39c12;">₱1,880</h2>
+              </div>
+              <!-- Description Section -->
+              <p style="font-size: 1rem; color: #555; margin-top: 20px;">Challenge yourself on the legal and regulatory aspects of business transactions in this engaging quiz.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-dark btn-lg" style="width: 100%;">Proceed</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <a href="#management-advisory-services-quiz" class="btn btn-primary mt-3">Take Quiz</a>
+
+      <!-- Modal 6: Management Advisory Services -->
+      <div class="modal fade" id="modalManagementAdvisory" tabindex="-1" aria-labelledby="modalManagementAdvisoryLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header" style="background-color: #5e60ce; color: white;">
+              <h5 class="modal-title" id="modalManagementAdvisoryLabel">Management Advisory Quiz</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+              <!-- Price Section -->
+              <div style="margin-top: 10px;">
+                <h2 style="font-size: 4rem; font-weight: bold; font-family: 'Roboto Mono', monospace; color: #5e60ce;">₱2,000</h2>
+              </div>
+              <!-- Description Section -->
+              <p style="font-size: 1rem; color: #555; margin-top: 20px;">Test your advisory skills with this quiz tailored for future management consultants and advisors.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+              <button type="button" class="btn btn-primary btn-lg" style="width: 100%;">Proceed</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Modals for "Auditing", "Regulatory Framework", "Management Advisory Services" can follow the same structure -->
     </div>
-  </div>
-</div>
 
+    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
 
-  </div>
-</section>
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="resultModalLabel"><?php echo $modalTitle; ?></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Pricing Section -->
+            <section id="pricing" class="pricing section">
+              <!-- Section Title -->
+              <div class="container section-title" data-aos="fade-up">
+                <p><span>Check our</span> <span class="description-title">Pricing</span></p>
+              </div>
+              <!-- End Section Title -->
 
+              <div class="container">
+                <div class="row gy-3">
+                  <div class="col-xl-4 col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="pricing-item">
+                      <h3>Basic Package</h3>
+                      <h4><sup>₱</sup>1,250<span></span></h4>
+                      <ul>
+                        <li>Access to 5 Quiz Bundle: Gamified Learning Module</li>
+                        <li>2 Q&A (Basic)</li>
+                        <li>1 Group Review and Recall Session</li>
+                        <li>Access to 1 Subject Personalized Study Plan</li>
+                        <li>1 Group Career Guidance Hub Session</li>
+                      </ul>
+                      <div class="btn-wrap">
+                        <a href="#" class="btn-buy">Get Started</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-4 col-lg-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="pricing-item featured">
+                      <h3>Standard Package</h3>
+                      <h4><sup>₱</sup>2,250<span></span></h4>
+                      <ul>
+                        <li>Access to 10 Quiz Bundle: Gamified Learning Module</li>
+                        <li>5 Q&A (Mix of Basic and Moderate)</li>
+                        <li>2 Group Review and Recall Sessions</li>
+                        <li>Access to 2 Subject Personalized Study Plans</li>
+                        <li>1 Group Career Guidance Hub Session</li>
+                      </ul>
+                      <div class="btn-wrap">
+                        <a href="#" class="btn-buy">Buy Now</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xl-4 col-lg-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="pricing-item">
+                      <h3>Premium Package</h3>
+                      <h4><sup>₱</sup>4,250<span></span></h4>
+                      <ul>
+                        <li>Unlimited Quiz Access: Gamified Learning Module</li>
+                        <li>10 Q&A (Any mode of Complexity)</li>
+                        <li>3 Group Review and Recall Sessions</li>
+                        <li>Access to 4 Subject Personalized Study Plans</li>
+                        <li>1 Group Career Guidance Hub Session</li>
+                      </ul>
+                      <div class="btn-wrap">
+                        <a href="#" class="btn-buy">Buy Now</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
 
@@ -578,6 +966,27 @@ session_start();
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var modalTitle = document.getElementById('resultModalLabel').textContent;
+
+      // Show the modal on page load if the title is not "Success"
+      if (modalTitle !== "You currently have an active pay per transaction subscribtion") {
+        var resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
+        resultModal.show();
+      }
+
+      // Trigger the modal when the notification icon is clicked
+      var notificationIcon = document.getElementById('notificationIcon');
+      notificationIcon.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent default link behavior
+        var resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
+        resultModal.show();
+      });
+    });
+  </script>
+
 
 </body>
 

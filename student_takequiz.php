@@ -29,6 +29,53 @@ if ($result->num_rows > 0) {
 $stmt->close();
 $conn->close();
 ?>
+<?php
+
+include('config.php');
+
+$user_id = $_SESSION['user_id']; // Ensure user_id is set in the session
+
+$counts = [
+  'afr' => 0,
+  'afar' => 0,
+  'taxation' => 0,
+  'auditing' => 0,
+  'rfbt' => 0,
+  'mds' => 0,
+];
+
+if (isset($user_id)) {
+  $query = "
+        SELECT 
+            SUM(CASE WHEN afr IS NOT NULL THEN 1 ELSE 0 END) AS afr_count,
+            SUM(CASE WHEN afar IS NOT NULL THEN 1 ELSE 0 END) AS afar_count,
+            SUM(CASE WHEN taxation IS NOT NULL THEN 1 ELSE 0 END) AS taxation_count,
+            SUM(CASE WHEN auditing IS NOT NULL THEN 1 ELSE 0 END) AS auditing_count,
+            SUM(CASE WHEN rfbt IS NOT NULL THEN 1 ELSE 0 END) AS rfbt_count,
+            SUM(CASE WHEN mds IS NOT NULL THEN 1 ELSE 0 END) AS mds_count
+        FROM gamified 
+        WHERE student_id = ?
+    ";
+
+  $stmt = $conn->prepare($query);
+  $stmt->bind_param("i", $user_id);
+  $stmt->execute();
+  $result = $stmt->get_result();
+
+  if ($row = $result->fetch_assoc()) {
+    $counts['afr'] = $row['afr_count'];
+    $counts['afar'] = $row['afar_count'];
+    $counts['taxation'] = $row['taxation_count'];
+    $counts['auditing'] = $row['auditing_count'];
+    $counts['rfbt'] = $row['rfbt_count'];
+    $counts['mds'] = $row['mds_count'];
+  }
+  $stmt->close();
+}
+
+$conn->close();
+?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -632,82 +679,141 @@ $conn->close();
     <section class="section dashboard">
       <div class="row">
         <!-- Subject 1: Financial Accounting and Reporting -->
-        <div class="col-lg-4 col-md-6 mb-3">
-          <div class="card info-card subject-card">
-            <div class="card-body text-center">
-              <h5 class="card-title">Financial Accounting and Reporting</h5>
-              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f6f6; width: 70px; height: 70px;">
-                <i class="bi bi-clipboard-check" style="color: #4154f1; font-size: 30px;"></i>
-              </div>
-              <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalFinancialAccounting">Take Quiz</button>
-            </div>
-          </div>
-        </div>
 
-        <!-- Subject 2: Advanced Financial Accounting and Reporting -->
         <div class="col-lg-4 col-md-6 mb-3">
-          <div class="card info-card subject-card">
-            <div class="card-body text-center">
-              <h5 class="card-title">Advanced Financial Accounting and Reporting</h5>
-              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #e6f4ea; width: 70px; height: 70px;">
-                <i class="bi bi-calculator" style="color: #2eca6a; font-size: 30px;"></i>
-              </div>
-              <button class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#modalAdvancedAccounting">Take Quiz</button>
-            </div>
-          </div>
-        </div>
+  <div class="card info-card subject-card">
+    <div class="card-body text-center">
+      <h5 class="card-title">Financial Accounting and Reporting</h5>
+      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f6f6; width: 70px; height: 70px;">
+        <i class="bi bi-clipboard-check" style="color: #4154f1; font-size: 30px;"></i>
+      </div>
+      <button id="quizButton" class="btn btn-primary mt-3 position-relative"
+        data-bs-toggle="modal"
+        data-bs-target="#modalFinancialAccounting"
+        data-afr-count="<?php echo $counts['afr']; ?>">
+        Take Quiz
+        <?php if ($counts['afr'] > 0): ?>
+          <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+            <?php echo $counts['afr']; ?>
+          </span>
+        <?php endif; ?>
+      </button>
+    </div>
+  </div>
+</div>
 
-        <!-- Subject 3: Taxation -->
-        <div class="col-lg-4 col-md-6 mb-3">
-          <div class="card info-card subject-card">
-            <div class="card-body text-center">
-              <h5 class="card-title">Taxation</h5>
-              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f1eb; width: 70px; height: 70px;">
-                <i class="bi bi-wallet2" style="color: #ff771d; font-size: 30px;"></i>
-              </div>
-              <button class="btn btn-warning mt-3" data-bs-toggle="modal" data-bs-target="#modalTaxation">Take Quiz</button>
-            </div>
-          </div>
-        </div>
+<!-- Repeat similar structure for other subjects -->
+<div class="col-lg-4 col-md-6 mb-3">
+  <div class="card info-card subject-card">
+    <div class="card-body text-center">
+      <h5 class="card-title">Advanced Financial Accounting and Reporting</h5>
+      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #e6f4ea; width: 70px; height: 70px;">
+        <i class="bi bi-calculator" style="color: #2eca6a; font-size: 30px;"></i>
+      </div>
+      <button class="btn btn-success mt-3 position-relative"
+        data-bs-toggle="modal"
+        data-bs-target="#modalAdvancedAccounting"
+        data-afar-count="<?php echo $counts['afar']; ?>">
+        Take Quiz
+        <?php if ($counts['afar'] > 0): ?>
+          <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+            <?php echo $counts['afar']; ?>
+          </span>
+        <?php endif; ?>
+      </button>
+    </div>
+  </div>
+</div>
 
-        <!-- Subject 4: Auditing -->
-        <div class="col-lg-4 col-md-6 mb-3">
-          <div class="card info-card subject-card">
-            <div class="card-body text-center">
-              <h5 class="card-title">Auditing</h5>
-              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eef6ff; width: 70px; height: 70px;">
-                <i class="bi bi-graph-up" style="color: #0d6efd; font-size: 30px;"></i>
-              </div>
-              <button class="btn btn-info mt-3" data-bs-toggle="modal" data-bs-target="#modalAuditing">Take Quiz</button>
-            </div>
-          </div>
-        </div>
+<div class="col-lg-4 col-md-6 mb-3">
+  <div class="card info-card subject-card">
+    <div class="card-body text-center">
+      <h5 class="card-title">Taxation</h5>
+      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f1eb; width: 70px; height: 70px;">
+        <i class="bi bi-wallet2" style="color: #ff771d; font-size: 30px;"></i>
+      </div>
+      <button class="btn btn-warning mt-3 position-relative"
+        data-bs-toggle="modal"
+        data-bs-target="#modalTaxation"
+        data-taxation-count="<?php echo $counts['taxation']; ?>">
+        Take Quiz
+        <?php if ($counts['taxation'] > 0): ?>
+          <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+            <?php echo $counts['taxation']; ?>
+          </span>
+        <?php endif; ?>
+      </button>
+    </div>
+  </div>
+</div>
 
-        <!-- Subject 5: Regulatory Framework for Business Transactions -->
-        <div class="col-lg-4 col-md-6 mb-3">
-          <div class="card info-card subject-card">
-            <div class="card-body text-center">
-              <h5 class="card-title">Regulatory Framework for Business Transactions</h5>
-              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #fff6e6; width: 70px; height: 70px;">
-                <i class="bi bi-briefcase" style="color: #f39c12; font-size: 30px;"></i>
-              </div>
-              <button class="btn btn-dark mt-3" data-bs-toggle="modal" data-bs-target="#modalRegulatoryFramework">Take Quiz</button>
-            </div>
-          </div>
-        </div>
+<div class="col-lg-4 col-md-6 mb-3">
+  <div class="card info-card subject-card">
+    <div class="card-body text-center">
+      <h5 class="card-title">Auditing</h5>
+      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eef6ff; width: 70px; height: 70px;">
+        <i class="bi bi-graph-up" style="color: #0d6efd; font-size: 30px;"></i>
+      </div>
+      <button class="btn btn-info mt-3 position-relative"
+        data-bs-toggle="modal"
+        data-bs-target="#modalAuditing"
+        data-auditing-count="<?php echo $counts['auditing']; ?>">
+        Take Quiz
+        <?php if ($counts['auditing'] > 0): ?>
+          <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+            <?php echo $counts['auditing']; ?>
+          </span>
+        <?php endif; ?>
+      </button>
+    </div>
+  </div>
+</div>
 
-        <!-- Subject 6: Management Advisory Services -->
-        <div class="col-lg-4 col-md-6 mb-3">
-          <div class="card info-card subject-card">
-            <div class="card-body text-center">
-              <h5 class="card-title">Management Advisory Services</h5>
-              <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eaf2ff; width: 70px; height: 70px;">
-                <i class="bi bi-bar-chart" style="color: #5e60ce; font-size: 30px;"></i>
-              </div>
-              <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalManagementAdvisory">Take Quiz</button>
-            </div>
-          </div>
-        </div>
+<div class="col-lg-4 col-md-6 mb-3">
+  <div class="card info-card subject-card">
+    <div class="card-body text-center">
+      <h5 class="card-title">Regulatory Framework for Business Transactions</h5>
+      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #fff6e6; width: 70px; height: 70px;">
+        <i class="bi bi-briefcase" style="color: #f39c12; font-size: 30px;"></i>
+      </div>
+      <button class="btn btn-dark mt-3 position-relative"
+        data-bs-toggle="modal"
+        data-bs-target="#modalRegulatoryFramework"
+        data-rfbt-count="<?php echo $counts['rfbt']; ?>">
+        Take Quiz
+        <?php if ($counts['rfbt'] > 0): ?>
+          <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+            <?php echo $counts['rfbt']; ?>
+          </span>
+        <?php endif; ?>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="col-lg-4 col-md-6 mb-3">
+  <div class="card info-card subject-card">
+    <div class="card-body text-center">
+      <h5 class="card-title">Management Advisory Services</h5>
+      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eaf2ff; width: 70px; height: 70px;">
+        <i class="bi bi-bar-chart" style="color: #5e60ce; font-size: 30px;"></i>
+      </div>
+      <button class="btn btn-primary mt-3 position-relative"
+        data-bs-toggle="modal"
+        data-bs-target="#modalManagementAdvisory"
+        data-mds-count="<?php echo $counts['mds']; ?>">
+        Take Quiz
+        <?php if ($counts['mds'] > 0): ?>
+          <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
+            <?php echo $counts['mds']; ?>
+          </span>
+        <?php endif; ?>
+      </button>
+    </div>
+  </div>
+</div>
+
+
       </div>
     </section>
 
@@ -734,7 +840,7 @@ $conn->close();
               <p style="font-size: 1rem; color: #555; margin-top: 20px;">Master the fundamentals of financial accounting with this comprehensive quiz.</p>
             </div>
             <div class="modal-footer justify-content-center">
-            <button type="button" class="btn btn-primary btn-lg" style="width: 100%;" onclick="window.location.href='quiz_FAR.php'">Proceed</button>
+              <button type="button" class="btn btn-primary btn-lg" style="width: 100%;" onclick="window.location.href='quiz_FAR.php'">Proceed</button>
             </div>
           </div>
         </div>
@@ -757,7 +863,7 @@ $conn->close();
               <p style="font-size: 1rem; color: #555; margin-top: 20px;">Dive deeper into advanced financial accounting concepts with this challenging quiz.</p>
             </div>
             <div class="modal-footer justify-content-center">
-              <button type="button" class="btn btn-success btn-lg" style="width: 100%;">Proceed</button>
+              <button type="button" class="btn btn-success btn-lg" style="width: 100%;" onclick="window.location.href='quiz_AFAR.php'">Proceed</button>
             </div>
           </div>
         </div>
@@ -780,7 +886,7 @@ $conn->close();
               <p style="font-size: 1rem; color: #555; margin-top: 20px;">Enhance your taxation knowledge with this practical and insightful quiz.</p>
             </div>
             <div class="modal-footer justify-content-center">
-              <button type="button" class="btn btn-warning btn-lg" style="width: 100%;">Proceed</button>
+              <button type="button" class="btn btn-warning btn-lg" style="width: 100%;" onclick="window.location.href='quiz_taxation.php'">Proceed</button>
             </div>
           </div>
         </div>
@@ -803,7 +909,7 @@ $conn->close();
               <p style="font-size: 1rem; color: #555; margin-top: 20px;">Refine your auditing expertise with this quiz covering critical principles and best practices.</p>
             </div>
             <div class="modal-footer justify-content-center">
-              <button type="button" class="btn btn-info btn-lg" style="width: 100%;">Proceed</button>
+              <button type="button" class="btn btn-info btn-lg" style="width: 100%;" onclick="window.location.href='quiz_auditing.php'">Proceed</button>
             </div>
           </div>
         </div>
@@ -826,7 +932,7 @@ $conn->close();
               <p style="font-size: 1rem; color: #555; margin-top: 20px;">Challenge yourself on the legal and regulatory aspects of business transactions in this engaging quiz.</p>
             </div>
             <div class="modal-footer justify-content-center">
-              <button type="button" class="btn btn-dark btn-lg" style="width: 100%;">Proceed</button>
+              <button type="button" class="btn btn-dark btn-lg" style="width: 100%;" onclick="window.location.href='quiz_rfbt.php'">Proceed</button>
             </div>
           </div>
         </div>
@@ -849,7 +955,7 @@ $conn->close();
               <p style="font-size: 1rem; color: #555; margin-top: 20px;">Test your advisory skills with this quiz tailored for future management consultants and advisors.</p>
             </div>
             <div class="modal-footer justify-content-center">
-              <button type="button" class="btn btn-primary btn-lg" style="width: 100%;">Proceed</button>
+              <button type="button" class="btn btn-primary btn-lg" style="width: 100%;" onclick="window.location.href='quiz_mds.php'">Proceed</button>
             </div>
           </div>
         </div>
@@ -986,6 +1092,95 @@ $conn->close();
       });
     });
   </script>
+
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Financial Accounting button
+    const afrButton = document.querySelector("#quizButton");
+    if (afrButton) {
+      afrButton.addEventListener("click", function(event) {
+        const afrCount = <?php echo $counts['afr']; ?>;
+        if (afrCount > 0) {
+          window.location.href = 'far.php';  // Redirect if count > 0
+        } else {
+          // Open modal if count is 0
+          $('#modalFinancialAccounting').modal('show');
+        }
+      });
+    }
+
+    // Advanced Financial Accounting button
+    const afarButton = document.querySelector(".btn-success[data-bs-target='#modalAdvancedAccounting']");
+    if (afarButton) {
+      afarButton.addEventListener("click", function(event) {
+        const afarCount = <?php echo $counts['afar']; ?>;
+        if (afarCount > 0) {
+          window.location.href = 'afar.php';  // Redirect if count > 0
+        } else {
+          // Open modal if count is 0
+          $('#modalAdvancedAccounting').modal('show');
+        }
+      });
+    }
+
+    // Taxation button
+    const taxationButton = document.querySelector(".btn-warning[data-bs-target='#modalTaxation']");
+    if (taxationButton) {
+      taxationButton.addEventListener("click", function(event) {
+        const taxationCount = <?php echo $counts['taxation']; ?>;
+        if (taxationCount > 0) {
+          window.location.href = 'taxation.php';  // Redirect if count > 0
+        } else {
+          // Open modal if count is 0
+          $('#modalTaxation').modal('show');
+        }
+      });
+    }
+
+    // Auditing button
+    const auditingButton = document.querySelector(".btn-info[data-bs-target='#modalAuditing']");
+    if (auditingButton) {
+      auditingButton.addEventListener("click", function(event) {
+        const auditingCount = <?php echo $counts['auditing']; ?>;
+        if (auditingCount > 0) {
+          window.location.href = 'auditing.php';  // Redirect if count > 0
+        } else {
+          // Open modal if count is 0
+          $('#modalAuditing').modal('show');
+        }
+      });
+    }
+
+    // Regulatory Framework button
+    const rfbtButton = document.querySelector(".btn-dark[data-bs-target='#modalRegulatoryFramework']");
+    if (rfbtButton) {
+      rfbtButton.addEventListener("click", function(event) {
+        const rfbtCount = <?php echo $counts['rfbt']; ?>;
+        if (rfbtCount > 0) {
+          window.location.href = 'rfbt.php';  // Redirect if count > 0
+        } else {
+          // Open modal if count is 0
+          $('#modalRegulatoryFramework').modal('show');
+        }
+      });
+    }
+
+    // Management Advisory button
+    const masButton = document.querySelector(".btn-primary[data-bs-target='#modalManagementAdvisory']");
+    if (masButton) {
+      masButton.addEventListener("click", function(event) {
+        const mdsCount = <?php echo $counts['mds']; ?>;
+        if (mdsCount > 0) {
+          window.location.href = 'mas.php';  // Redirect if count > 0
+        } else {
+          // Open modal if count is 0
+          $('#modalManagementAdvisory').modal('show');
+        }
+      });
+    }
+  });
+</script>
 
 
 </body>

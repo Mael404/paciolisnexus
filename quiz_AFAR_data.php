@@ -25,6 +25,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $gcash_number = mysqli_real_escape_string($conn, $_POST['gcash_number']);
     $afar = 1;
 
+    // Generate unique gamified_id
+    $gamified_id = '01000' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+
+    // Ensure gamified_id is unique in the database
+    $check_query = "SELECT COUNT(*) AS count FROM gamified WHERE gamefied_id = '$gamified_id'";
+    $result = mysqli_query($conn, $check_query);
+    $row = mysqli_fetch_assoc($result);
+
+    while ($row['count'] > 0) {
+        $gamified_id = '01000' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        $result = mysqli_query($conn, $check_query);
+        $row = mysqli_fetch_assoc($result);
+    }
+
     // Handle the file upload
     if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
         $file_tmp = $_FILES['payment_proof']['tmp_name'];
@@ -42,15 +56,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Insert the data into the database, including student_id
-    $query = "INSERT INTO gamified (student_id, full_name, birthdate, address, quiz_title, gcash_name, gcash_number, payment_proof, afar) 
-              VALUES ('$student_id', '$full_name', '$birthdate', '$address', '$quiz_title', '$gcash_name', '$gcash_number', '$file_path', '$afar')";
+    // Insert the data into the database, including gamified_id
+    $query = "INSERT INTO gamified (gamefied_id, student_id, full_name, birthdate, address, quiz_title, gcash_name, gcash_number, payment_proof, afar) 
+              VALUES ('$gamified_id', '$student_id', '$full_name', '$birthdate', '$address', '$quiz_title', '$gcash_name', '$gcash_number', '$file_path', '$afar')";
 
     if (mysqli_query($conn, $query)) {
-        // Redirect to student_takequiz.php on success
+        // Redirect to success.html on success
         header("Location: success.html");
-
-
         exit;
     } else {
         echo "Error: " . mysqli_error($conn);

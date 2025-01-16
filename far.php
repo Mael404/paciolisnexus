@@ -80,6 +80,20 @@ mysqli_close($conn);
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
     <style>
+        
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: green;
+        }
+
         h2,
         h3 {
             text-align: center;
@@ -185,6 +199,27 @@ mysqli_close($conn);
                 padding: 8px 16px;
                 font-size: 14px;
             }
+        }
+
+        .question-container {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .highlight {
+            background-color: lightgreen;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        #next-btn {
+            display: none;
         }
     </style>
 </head>
@@ -560,8 +595,7 @@ mysqli_close($conn);
         </ul>
 
     </aside><!-- End Sidebar -->
-
-
+  
     <main id="main" class="main">
 
         <div class="pagetitle">
@@ -578,252 +612,38 @@ mysqli_close($conn);
         <section class="section dashboard">
             <div class="row">
                 <div class="col-md-12">
-                    <form id="quizForm">
+                    <h3>Quiz</h3>
+                    <div id="quiz-container"></div>
 
-
-                        <h3>True or False (10 Questions)</h3>
-
-                        <div class="form-group">
-                            <label for="q1">1. Shareholders' equity represents the residual interest in the assets of a company after deducting liabilities. </label><br>
-                            <input type="radio" name="q1" value="true"> TRUE
-                            <input type="radio" name="q1" value="false"> FALSE
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q2">2. A company can issue both ordinary shares and preference shares. </label><br>
-                            <input type="radio" name="q2" value="true"> TRUE
-                            <input type="radio" name="q2" value="false"> FALSE
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q3">3. The par value of a share is the market value at which it is traded. </label><br>
-                            <input type="radio" name="q3" value="true"> TRUE
-                            <input type="radio" name="q3" value="false"> FALSE
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q4">4. Share premium arises when shares are issued at a price above their par value. </label><br>
-                            <input type="radio" name="q4" value="true"> TRUE
-                            <input type="radio" name="q4" value="false"> FALSE
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q5">5. Accumulated profits and losses are not included in the shareholders' equity section of the balance sheet. </label><br>
-                            <input type="radio" name="q5" value="true"> TRUE
-                            <input type="radio" name="q5" value="false"> FALSE
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q6">6. The exercise of share options does not affect the total shareholders' equity. </label><br>
-                            <input type="radio" name="q6" value="true"> TRUE
-                            <input type="radio" name="q6" value="false"> FALSE
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q7">7. A company can repurchase its own shares, which is known as treasury stock. </label><br>
-                            <input type="radio" name="q7" value="true"> TRUE
-                            <input type="radio" name="q7" value="false"> FALSE
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q8">8. The vesting period for share options is the time during which employees must remain with the company to earn their options. </label><br>
-                            <input type="radio" name="q8" value="true"> TRUE
-                            <input type="radio" name="q8" value="false"> FALSE
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q9">9. Shareholders have a claim on the company's assets only after all liabilities have been settled. </label><br>
-                            <input type="radio" name="q9" value="true"> TRUE
-                            <input type="radio" name="q9" value="false"> FALSE
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q10">10. The market value of a share is always higher than its par value. </label><br>
-                            <input type="radio" name="q10" value="true"> TRUE
-                            <input type="radio" name="q10" value="false"> FALSE
-                        </div>
-
-                        <h3>Multiple Choice (15 Questions)</h3>
-
-                        <div class="form-group">
-                            <label for="q11">11. What is the primary purpose of issuing preference shares?</label><br>
-                            <input type="radio" name="q11" value="a"> a) To raise debt capital<br>
-                            <input type="radio" name="q11" value="b"> b) To provide dividends at a fixed rate<br>
-                            <input type="radio" name="q11" value="c"> c) To dilute ownership<br>
-                            <input type="radio" name="q11" value="d"> d) To increase voting power<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q12">12. Which of the following is NOT a component of shareholders' equity?</label><br>
-                            <input type="radio" name="q12" value="a"> a) Ordinary shares<br>
-                            <input type="radio" name="q12" value="b"> b) Retained earnings<br>
-                            <input type="radio" name="q12" value="c"> c) Long-term debt<br>
-                            <input type="radio" name="q12" value="d"> d) Share premium<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q13">13. When a company issues shares at a price higher than par value, the excess amount is credited to:</label><br>
-                            <input type="radio" name="q13" value="a"> a) Retained earnings<br>
-                            <input type="radio" name="q13" value="b"> b) Share premium<br>
-                            <input type="radio" name="q13" value="c"> c) Treasury stock<br>
-                            <input type="radio" name="q13" value="d"> d) Accumulated losses<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q14">14. The vesting condition for share options typically requires:</label><br>
-                            <input type="radio" name="q14" value="a"> a) The company to achieve a certain revenue target<br>
-                            <input type="radio" name="q14" value="b"> b) Employees to remain with the company<br>
-                            <input type="radio" name="q14" value="c"> c) Both a and b<br>
-                            <input type="radio" name="q14" value="d"> d) None of the above<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q15">15. If a company has 100,000 shares outstanding with a par value of P10 and a market price of P50, what is the total par value of the shares?</label><br>
-                            <input type="radio" name="q15" value="a"> a) P1,000,000<br>
-                            <input type="radio" name="q15" value="b"> b) P500,000<br>
-                            <input type="radio" name="q15" value="c"> c) P10,000,000<br>
-                            <input type="radio" name="q15" value="d"> d) P50,000,000<br>
-                        </div>
-                        <div class="form-group">
-                            <label for="q16">16. Which of the following statements about share options is true?</label><br>
-                            <input type="radio" name="q16" value="a"> a) They are always exercised by employees<br>
-                            <input type="radio" name="q16" value="b"> b) They provide employees with the right to purchase shares at a fixed price<br>
-                            <input type="radio" name="q16" value="c"> c) They do not have a vesting period<br>
-                            <input type="radio" name="q16" value="d"> d) They are considered a liability on the balance sheet<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q17">17. What happens to the share premium account when shares are repurchased?</label><br>
-                            <input type="radio" name="q17" value="a"> a) It increases<br>
-                            <input type="radio" name="q17" value="b"> b) It decreases<br>
-                            <input type="radio" name="q17" value="c"> c) It remains unchanged<br>
-                            <input type="radio" name="q17" value="d"> d) It is eliminated<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q18">18. Which of the following is a characteristic of ordinary shares?</label><br>
-                            <input type="radio" name="q18" value="a"> a) Fixed dividend payments<br>
-                            <input type="radio" name="q18" value="b"> b) Priority over preference shares in liquidation<br>
-                            <input type="radio" name="q18" value="c"> c) Voting rights<br>
-                            <input type="radio" name="q18" value="d"> d) Guaranteed return on investment<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q19">19. The accumulated profits and losses account reflects:</label><br>
-                            <input type="radio" name="q19" value="a"> a) The total amount of dividends paid<br>
-                            <input type="radio" name="q19" value="b"> b) The net income retained in the business<br>
-                            <input type="radio" name="q19" value="c"> c) The total capital raised from shareholders<br>
-                            <input type="radio" name="q19" value="d"> d) The market value of shares<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q20">20. In the context of share-based payments, the term "vesting" refers to:</label><br>
-                            <input type="radio" name="q20" value="a"> a) The period when shares are sold<br>
-                            <input type="radio" name="q20" value="b"> b) The period when options can be exercised<br>
-                            <input type="radio" name="q20" value="c"> c) The period when employees earn the right to options<br>
-                            <input type="radio" name="q20" value="d"> d) The period when dividends are declared<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q21">21. Which of the following is true regarding the exercise of share options?</label><br>
-                            <input type="radio" name="q21" value="a"> a) It always results in a cash outflow for the company<br>
-                            <input type="radio" name="q21" value="b"> b) It increases the number of shares outstanding<br>
-                            <input type="radio" name="q21" value="c"> c) It decreases shareholders' equity<br>
-                            <input type="radio" name="q21" value="d"> d) It has no impact on the share premium account<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q22">22. The primary risk associated with issuing shares is:</label><br>
-                            <input type="radio" name="q22" value="a"> a) Dilution of ownership<br>
-                            <input type="radio" name="q22" value="b"> b) Increased debt<br>
-                            <input type="radio" name="q22" value="c"> c) Decreased market value<br>
-                            <input type="radio" name="q22" value="d"> d) Loss of control<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q23">23. Which of the following is NOT a reason for a company to repurchase its own shares?</label><br>
-                            <input type="radio" name="q23" value="a"> a) To increase earnings per share<br>
-                            <input type="radio" name="q23" value="b"> b) To provide shares for employee stock options<br>
-                            <input type="radio" name="q23" value="c"> c) To reduce the number of shareholders<br>
-                            <input type="radio" name="q23" value="d"> d) To raise capital<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q24">24. The term "treasury stock" refers to:</label><br>
-                            <input type="radio" name="q24" value="a"> a) Shares that are held by the company itself<br>
-                            <input type="radio" name="q24" value="b"> b) Shares that are sold to the public<br>
-                            <input type="radio" name="q24" value="c"> c) Shares that are issued but not outstanding<br>
-                            <input type="radio" name="q24" value="d"> d) Shares that are in the process of being issued<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q25">25. Which of the following is a common method for valuing share options?</label><br>
-                            <input type="radio" name="q25" value="a"> a) Book value method<br>
-                            <input type="radio" name="q25" value="b"> b) Market value method<br>
-                            <input type="radio" name="q25" value="c"> c) Black-Scholes model<br>
-                            <input type="radio" name="q25" value="d"> d) Cost method<br>
-                        </div>
-
-                        <h3>Simple Problems (5 Questions)</h3>
-
-                        <div class="form-group">
-                            <label for="q26">26. A company has issued 10,000 shares with a par value of P5 and a market price of P20. What is the total par value of the shares?</label><br>
-                            <input type="radio" name="q26" value="a"> a) P50,000<br>
-                            <input type="radio" name="q26" value="b"> b) P100,000<br>
-                            <input type="radio" name="q26" value="c"> c) P200,000<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q27">27. If a company has a share premium of P200,000 and issues additional shares at a premium of P10, what will be the new share premium if 5,000 shares are issued?</label><br>
-                            <input type="radio" name="q27" value="a"> a) P250,000<br>
-                            <input type="radio" name="q27" value="b"> b) P300,000<br>
-                            <input type="radio" name="q27" value="c"> c) P200,000<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q28">28. A company has 1,000 preference shares with a par value of P10 and a dividend rate of 5%. What is the total annual dividend obligation?</label><br>
-                            <input type="radio" name="q28" value="a"> a) P500<br>
-                            <input type="radio" name="q28" value="b"> b) P1,000<br>
-                            <input type="radio" name="q28" value="c"> c) P5,000<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q29">29. If a company repurchases 1,000 shares at P15 each, what is the total cost of the repurchase?</label><br>
-                            <input type="radio" name="q29" value="a"> a) P15,000<br>
-                            <input type="radio" name="q29" value="b"> b) P10,000<br>
-                            <input type="radio" name="q29" value="c"> c) P5,000<br>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="q30">30. A company has retained earnings of P300,000 and decides to declare a dividend of P50,000. What will be the retained earnings after the dividend declaration?</label><br>
-                            <input type="radio" name="q30" value="a"> a) P250,000<br>
-                            <input type="radio" name="q30" value="b"> b) P300,000<br>
-                            <input type="radio" name="q30" value="c"> c) P350,000<br>
-                        </div>
-
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Submit Quiz</button>
-                        </div>
-                    </form>
+                    <div class="buttons">
+                        <button id="submit-btn" disabled style="background-color:gray; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; opacity: 0.6;">Submit</button>
+                        <button id="next-btn" style="background-color: #0056b3; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.3s;">
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
+
+
         </section>
 
-
+        <!-- Modal -->
         <div class="modal fade" id="scoreModal" tabindex="-1" aria-labelledby="scoreModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="scoreModalLabel">Quiz Result</h5>
+                        <h5 class="modal-title" id="scoreModalLabel">Quiz Completed</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" id="scoreModalBody">
-                        <!-- Score will be displayed here -->
+                    <div class="modal-body">
+                        <p id="score-message"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
-
 
 
 
@@ -855,52 +675,231 @@ mysqli_close($conn);
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
     <script>
-    document.getElementById('quizForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent form submission
+        // Questions and answers
 
-        // Correct answers for True or False questions (q1 to q10)
-        const correctAnswersTF = ['true', 'true', 'false', 'true', 'false', 'false', 'true', 'true', 'true', 'false'];
+        const questions = [
+            "Shareholders' equity represents the residual interest in the assets of a company after deducting liabilities.",
+            "A company can issue both ordinary shares and preference shares.",
+            "The par value of a share is the market value at which it is traded.",
+            "Share premium arises when shares are issued at a price above their par value.",
+            "Accumulated profits and losses are not included in the shareholders' equity section of the balance sheet.",
+            "The exercise of share options does not affect the total shareholders' equity.",
+            "A company can repurchase its own shares, which is known as treasury stock.",
+            "The vesting period for share options is the time during which employees must remain with the company to earn their options.",
+            "Shareholders have a claim on the company's assets only after all liabilities have been settled.",
+            "The market value of a share is always higher than its par value.",
+            "What is the primary purpose of issuing preference shares?",
+            "Which of the following is NOT a component of shareholders' equity?",
+            "When a company issues shares at a price higher than par value, the excess amount is credited to:",
+            "The vesting condition for share options typically requires:",
+            "If a company has 100,000 shares outstanding with a par value of P10 and a market price of P50, what is the total par value of the shares?",
+            "Which of the following statements about share options is true?",
+            "What happens to the share premium account when shares are repurchased?",
+            "Which of the following is a characteristic of ordinary shares?",
+            "The accumulated profits and losses account reflects:",
+            "In the context of share-based payments, the term \"vesting\" refers to:",
+            "Which of the following is true regarding the exercise of share options?",
+            "The primary risk associated with issuing shares is:",
+            "Which of the following is NOT a reason for a company to repurchase its own shares?",
+            "The term \"treasury stock\" refers to:",
+            "Which of the following is a common method for valuing share options?",
+            "A company has issued 10,000 shares with a par value of P5 and a market price of P20. What is the total par value of the shares?",
+            "If a company has a share premium of P200,000 and issues additional shares at a premium of P10, what will be the new share premium if 5,000 shares are issued?",
+            "A company has 1,000 preference shares with a par value of P10 and a dividend rate of 5%. What is the total annual dividend obligation?",
+            "If a company repurchases 1,000 shares at P15 each, what is the total cost of the repurchase?",
+            "A company has retained earnings of P300,000 and decides to declare a dividend of P50,000. What will be the retained earnings after the dividend declaration?"
+        ];
 
-        // Correct answers for Multiple Choice questions (q11 to q25)
-        const correctAnswersMC = ['b', 'c', 'b', 'c', 'a', 'b', 'b', 'c', 'b', 'c', 'b', 'a', 'd', 'a', 'c'];
+        const correctAnswers = [
+            'true', 'true', 'false', 'true', 'false', 'false', 'true', 'true', 'true', 'false',
+            'b', 'c', 'b', 'c', 'a', 'b', 'b', 'c', 'b', 'c', 'b', 'a', 'd', 'a', 'c',
+            'a', 'a', 'a', 'a', 'a'
+        ];
 
-        // Correct answers for Simple Problems (q26 to q30)
-        const correctAnswersSP = ['a', 'a', 'a', 'a', 'a'];
+        const multipleChoiceQuestionsStartIndex = 10;
 
+        const multipleChoiceOptions = [
+            ['a) To raise debt capital', 'b) To provide dividends at a fixed rate', 'c) To dilute ownership', 'd) To increase voting power'],
+            ['a) Ordinary shares', 'b) Retained earnings', 'c) Long-term debt', 'd) Share premium'],
+            ['a) Retained earnings', 'b) Share premium', 'c) Treasury stock', 'd) Accumulated losses'],
+            ['a) The company to achieve a certain revenue target', 'b) Employees to remain with the company', 'c) Both a and b', 'd) None of the above'],
+            ['a) P1,000,000', 'b) P500,000', 'c) P10,000,000', 'd) P50,000,000'],
+            ['a) They are always exercised by employees.', 'b) They provide employees with the right to purchase shares at a fixed price.', 'c) They do not have a vesting period.', 'd) They are considered a liability on the balance sheet.'],
+            ['a) It increases', 'b) It decreases', 'c) It remains unchanged', 'd) It is eliminated'],
+            ['a) Fixed dividend payments', 'b) Priority over preference shares in liquidation', 'c) Voting rights', 'd) Guaranteed return on investment'],
+            ['a) The total amount of dividends paid', 'b) The net income retained in the business', 'c) The total capital raised from shareholders', 'd) The market value of shares'],
+            ['a) The period when shares are sold', 'b) The period when options can be exercised', 'c) The period when employees earn the right to options', 'd) The period when dividends are declared'],
+            ['a) It always results in a cash outflow for the company.', 'b) It increases the number of shares outstanding.', 'c) It decreases shareholders\' equity.', 'd) It has no impact on the share premium account.'],
+            ['a) Dilution of ownership', 'b) Increased debt', 'c) Decreased market value', 'd) Loss of control'],
+            ['a) To increase earnings per share', 'b) To provide shares for employee stock options', 'c) To reduce the number of shareholders', 'd) To raise capital'],
+            ['a) Shares that are held by the company itself', 'b) Shares that are sold to the public', 'c) Shares that are issued but not outstanding', 'd) Shares that are in the process of being issued'],
+            ['a) Book value method', 'b) Market value method', 'c) Black-Scholes model', 'd) Cost method'],
+            ['a) P50,000', 'b) P100,000', 'c) P200,000'],
+            ['a) P250,000', 'b) P300,000', 'c) P200,000'],
+            ['a) P500', 'b) P1,000', 'c) P5,000'],
+            ['a) P15,000', 'b) P10,000', 'c) P5,000'],
+            ['a) P250,000', 'b) P300,000', 'c) P350,000']
+        ];
+
+
+
+        let currentQuestionIndex = 0;
         let score = 0;
 
-        // Check True or False answers
-        for (let i = 1; i <= 10; i++) {
-            const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
-            if (selectedAnswer && selectedAnswer.value === correctAnswersTF[i - 1]) {
-                score++;
+        // Render questions dynamically
+        function renderQuestions() {
+            const quizContainer = document.getElementById('quiz-container');
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question-container');
+                if (index === 0) questionDiv.classList.add('active');
+
+                if (index < multipleChoiceQuestionsStartIndex) {
+                    questionDiv.innerHTML = `
+                <p>${index + 1}. ${question}</p>
+                <label>
+                    <input type="radio" name="q${index}" value="true"> TRUE
+                </label>
+                <label>
+                    <input type="radio" name="q${index}" value="false"> FALSE
+                </label>
+            `;
+                } else {
+                    const options = multipleChoiceOptions[index - multipleChoiceQuestionsStartIndex];
+                    questionDiv.innerHTML = `
+                <p>${index + 1}. ${question}</p>
+                ${options.map((option, i) => `
+                    <label>
+                        <input type="radio" name="q${index}" value="${String.fromCharCode(97 + i)}"> ${option}
+                    </label><br>
+                `).join('')}
+            `;
+                }
+
+                quizContainer.appendChild(questionDiv);
+            });
+        }
+        const explanations = [
+            "This is a fundamental accounting principle that defines equity as what remains for shareholders after all debts are paid.",
+            "This allows companies to raise capital through different types of equity instruments, each with distinct rights and privileges.",
+            "Par value is a nominal value assigned to shares, while market value is determined by supply and demand in the stock market.",
+            "This excess amount is recorded in the share premium account, reflecting the additional capital received from shareholders.",
+            "They are part of retained earnings, which represent the cumulative profits retained in the business.",
+            "When options are exercised, new shares are issued, increasing the equity base and potentially affecting share premium.",
+            "This practice allows companies to manage their capital structure and can affect the share price and earnings per share.",
+            "This period incentivizes employees to stay with the company.",
+            "This means that creditors are paid first before any distribution to shareholders.",
+            "Market value can fluctuate based on various factors and can be lower than the par value, especially in cases of poor company performance or market conditions.",
+            "b) To provide dividends at a fixed rate- The primary purpose of issuing preference shares is to provide investors with fixed dividends, making them attractive for income-seeking investors.",
+            "c) Long-term debt- Long-term debt is not a component of shareholders' equity; it is a liability. Shareholders' equity includes ordinary shares, retained earnings, and share premium.",
+            "b) Share premium- When shares are issued at a price higher than par value, the excess amount is credited to the share premium account, reflecting the additional capital received.",
+            "c) Both a and b- The vesting condition for share options typically requires employees to remain with the company and may also include performance targets, making both options correct.",
+            "a) P1,000,000- The total par value of the shares is calculated as the number of shares (100,000) multiplied by the par value (P10), resulting in P1,000,000.",
+            "b) They provide employees with the right to purchase shares at a fixed price.- This statement is true as share options grant employees the right to buy shares at a predetermined price, which can be beneficial if the market price rises.",
+            "b) It decreases- When shares are repurchased, the share premium account decreases as the company uses its equity to buy back shares, reducing the overall equity.",
+            "c) Voting rights- Ordinary shares typically come with voting rights, allowing shareholders to influence company decisions, unlike preference shares which usually do not have such rights.",
+            "b) The net income retained in the business- The accumulated profits and losses.",
+            "c) The period when employees earn the right to options- In share-based payments, 'vesting' refers to the period during which employees must meet certain conditions to earn their options.",
+            "b) It increases the number of shares outstanding.- Exercising share options increases the number of shares outstanding as new shares are issued to employees.",
+            "a) Dilution of ownership- The primary risk associated with issuing shares is dilution of ownership, as existing shareholders' percentage of ownership decreases when new shares are issued.",
+            "d) To raise capital- Companies typically do not repurchase their own shares to raise capital; rather, they do so for reasons like increasing earnings per share or providing shares for employee options.",
+            "a) Shares that are held by the company itself- Treasury stock refers to shares that are repurchased and held by the company, not available for public trading.",
+            "c) Black-Scholes model- The Black-Scholes model is a common method for valuing share options, providing a theoretical estimate of the price of options based on various factors.",
+            // New items added
+            "a) P50,000* Total Par Value = Number of Shares × Par Value per Share. Total Par Value = 10,000 shares × P 5 = P 50,000.",
+            "a) P250,000* New Share Premium = Existing Share Premium + (Number of New Shares × Premium per New Share). New Share Premium = P 200,000 + (5,000 shares × P 10) = P 200,000 + P 50,000 = P 250,000.",
+            "a) P500* Total Annual Dividend = Number of Preference Shares × Par Value per Share × Dividend Rate. Total Annual Dividend = 1,000 shares × P 10 × 5% = 1,000 × 10 × 0.05 = P 500.",
+            "a) P15,000* Total Cost = Number of Shares Repurchased × Price per Share. Total Cost = 1,000 shares × P 15 = P 15,000.",
+            "a) P250,000* Retained Earnings After Dividend = Initial Retained Earnings - Dividend Declared. Retained Earnings After Dividend = P 300,000 - P 50,000 = P 250,000."
+        ];
+
+
+
+        function showConfirmation(selectedAnswer, correctAnswer) {
+            const userConfirmed = confirm("Are you sure about your answer?");
+            if (userConfirmed) {
+                if (selectedAnswer === correctAnswer) {
+                    score++;
+                }
+                highlightCorrectAnswer(correctAnswer);
+                document.getElementById('submit-btn').disabled = true;
+                document.getElementById('next-btn').style.display = 'inline-block';
             }
         }
 
-        // Check Multiple Choice answers
-        for (let i = 11; i <= 25; i++) {
-            const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
-            if (selectedAnswer && selectedAnswer.value === correctAnswersMC[i - 11]) {
-                score++;
+        function highlightCorrectAnswer(correctAnswer) {
+            const currentQuestion = document.querySelector('.question-container.active');
+            const inputs = currentQuestion.querySelectorAll('input');
+            const explanationContainer = document.createElement('div');
+            explanationContainer.classList.add('explanation');
+
+            inputs.forEach(input => {
+                if (input.value === correctAnswer) {
+                    input.parentElement.classList.add('highlight');
+                }
+                input.disabled = true;
+            });
+
+            // Add the explanation for the correct answer
+            explanationContainer.innerHTML = `<p><strong>Explanation:</strong> ${explanations[currentQuestionIndex]}</p>`;
+            currentQuestion.appendChild(explanationContainer);
+        }
+
+
+        function moveToNextQuestion() {
+            const currentQuestion = document.querySelector('.question-container.active');
+            currentQuestion.classList.remove('active');
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                const nextQuestion = document.querySelectorAll('.question-container')[currentQuestionIndex];
+                nextQuestion.classList.add('active');
+                document.getElementById('submit-btn').disabled = true;
+                document.getElementById('next-btn').style.display = 'none';
+            } else {
+                showScore();
             }
         }
 
-        // Check Simple Problem answers
-        for (let i = 26; i <= 30; i++) {
-            const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
-            if (selectedAnswer && selectedAnswer.value === correctAnswersSP[i - 26]) {
-                score++;
-            }
+        function showScore() {
+            const scoreMessage = `You scored ${score} out of ${questions.length}!`;
+            document.getElementById('score-message').innerText = scoreMessage;
+
+            // Show the modal
+            const scoreModal = new bootstrap.Modal(document.getElementById('scoreModal'));
+            scoreModal.show();
         }
 
-        // Update modal content and show it
-        const modalBody = document.getElementById('scoreModalBody');
-        modalBody.textContent = 'Your final score is: ' + score;
 
-        const scoreModal = new bootstrap.Modal(document.getElementById('scoreModal'));
-        scoreModal.show();
-    });
-</script>
+        // Event listeners
+        document.getElementById('submit-btn').addEventListener('click', () => {
+            const currentQuestion = document.querySelector('.question-container.active');
+            const selectedInput = currentQuestion.querySelector('input:checked');
+
+            if (!selectedInput) {
+                alert('Please select an answer.');
+                return;
+            }
+
+            const selectedAnswer = selectedInput.value;
+            const correctAnswer = correctAnswers[currentQuestionIndex];
+            showConfirmation(selectedAnswer, correctAnswer);
+        });
+
+
+
+        document.getElementById('next-btn').addEventListener('click', moveToNextQuestion);
+
+        // Enable Submit button when an option is selected
+        document.addEventListener('change', (e) => {
+            if (e.target.name === `q${currentQuestionIndex}`) {
+                document.getElementById('submit-btn').disabled = false;
+            }
+        });
+
+        // Initialize quiz
+        renderQuestions();
+    </script>
 
 </body>
 

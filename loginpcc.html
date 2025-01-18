@@ -1,0 +1,105 @@
+
+
+
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <title>PCC Student Portal</title>
+    <!-- Meta tag Keywords -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="keywords"
+        content="Login Form" />
+    <!-- //Meta tag Keywords -->
+
+    <link href="//fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <!--/Style-CSS -->
+    <link rel="stylesheet" href="css/login.css" type="text/css" media="all" />
+    <!--//Style-CSS -->
+
+    <script src="https://kit.fontawesome.com/af562a2a63.js" crossorigin="anonymous"></script>
+    <style>
+        /* Define the animation */
+        @keyframes upDown {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                /* Start and end at the same position */
+            }
+
+            50% {
+                transform: translateY(-20px);
+                /* Move up by 20px */
+            }
+        }
+
+        /* Apply animation to the image */
+        .animate-up-down {
+            display: inline-block;
+            /* Ensure the image behaves as an inline-block for proper animation */
+            animation: upDown 2s ease-in-out infinite;
+            /* Infinite loop, smooth transition */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- form section start -->
+    <section class="w3l-mockup-form">
+        <div class="container">
+            <!-- /form -->
+            <div class="workinghny-form-grid">
+                <div class="main-mockup">
+                    <div class="alert-close">
+                        <span class="fa fa-close"></span>
+                    </div>
+                    <div class="w3l_form align-self">
+                        <div class="left_grid_info">
+                            <img src="pcc.png" alt="" class="animate-up-down">
+                          
+
+                        </div>
+                    </div>
+                    <div class="content-wthree">
+                        <h2>Login Now</h2>
+                        <p>Welcome Student!</p>
+                       
+                        <form action="" method="post">
+                            <input type="email" class="email" name="email" placeholder="Enter Your Email" required>
+                            <input type="password" class="password" name="password" placeholder="Enter Your Password" style="margin-bottom: 2px;" required>
+                            <p><a href="forgot-password.php" style="margin-bottom: 15px; display: block; text-align: right;">Forgot Password?</a></p>
+                            <button name="submit" name="submit" class="btn" type="submit">Login</button>
+                        </form>
+                        <div class="social-icons">
+                           
+                            <br>
+                            <a href="index.html">Back to Home</a>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- //form -->
+        </div>
+    </section>
+    <!-- //form section start -->
+
+    <script src="js/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(c) {
+            $('.alert-close').on('click', function(c) {
+                $('.main-mockup').fadeOut('slow', function(c) {
+                    $('.main-mockup').remove();
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

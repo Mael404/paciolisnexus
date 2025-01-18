@@ -5,9 +5,7 @@ session_start();
 // Include the database configuration
 include('config.php');
 
-// Initialize gamified_id as empty
-$gamified_id = '';
-
+// Check if the user_id is stored in the session
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id']; // Get the user_id from session
 
@@ -30,9 +28,9 @@ if (isset($_SESSION['user_id'])) {
             // Bind the result to a variable
             mysqli_stmt_bind_result($stmt, $gamified_id);
 
-            // Fetch and store the gamified_id
+            // Fetch and echo the gamified_id
             while (mysqli_stmt_fetch($stmt)) {
-                // This will output the gamified_id value
+                echo $gamified_id;
             }
         } else {
             echo "No matching data found.";
@@ -50,7 +48,6 @@ if (isset($_SESSION['user_id'])) {
 // Close the database connection
 mysqli_close($conn);
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -83,6 +80,7 @@ mysqli_close($conn);
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
     <style>
+        
         .explanation {
             margin-top: 10px;
             padding: 10px;
@@ -597,7 +595,7 @@ mysqli_close($conn);
         </ul>
 
     </aside><!-- End Sidebar -->
-
+  
     <main id="main" class="main">
 
         <div class="pagetitle">
@@ -612,102 +610,44 @@ mysqli_close($conn);
         </div><!-- End Page Title -->
 
         <section class="section dashboard">
-        <div class="row">
-    <div class="col-md-12">
-        <h3>Quiz</h3>
-        <!-- Timer -->
-        <div id="timer" style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: red; float: right;">
-            Time Remaining: 30:00
-        </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Quiz</h3>
+                    <div id="quiz-container"></div>
 
-        <!-- Clearfix to fix float -->
-        <div style="clear: both;"></div>
-        
-        <!-- Quiz Container -->
-        <div id="quiz-container"></div>
-
-        <!-- Buttons -->
-        <div class="buttons">
-            <button id="submit-btn" disabled style="background-color:gray; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; opacity: 0.6;">Submit</button>
-            <button id="next-btn" style="background-color: #0056b3; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.3s;">
-                Next
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Bootstrap Modal -->
-<div class="modal fade" id="timeoutModal" tabindex="-1" aria-labelledby="timeoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="timeoutModalLabel">Time's Up</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                The timer has expired, and the quiz will be submitted automatically.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="modalSubmitButton">Submit Quiz</button>
-            </div>
-        </div>
-    </div>
-</div>
-</section>
-
-<script>
-    // Timer setup
-    let timerDuration = 1 * 0; // 30 minutes in seconds
-    const timerElement = document.getElementById('timer');
-
-    function updateTimer() {
-        const minutes = Math.floor(timerDuration / 60);
-        const seconds = timerDuration % 60;
-        timerElement.textContent = `Time Remaining: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-
-        if (timerDuration === 0) {
-            clearInterval(timerInterval);
-            const timeoutModal = new bootstrap.Modal(document.getElementById('timeoutModal'));
-            timeoutModal.show();
-        }
-        timerDuration--;
-    }
-
-    const timerInterval = setInterval(updateTimer, 1000); // Update every second
-    updateTimer(); // Initialize the timer immediately
-
-    // Modal submit button handler
-    document.getElementById('modalSubmitButton').addEventListener('click', () => {
-        // Handle quiz submission logic here
-        document.getElementById('submit-btn').disabled = false; // Example action
-        alert("Quiz submitted successfully."); // Replace with actual submission logic
-    });
-</script>
-
-
-        <!-- Modal -->
-        <div class="modal fade" id="scoreModal" tabindex="-1" aria-labelledby="scoreModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form id="scoreForm">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="scoreModalLabel">Quiz Completed</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p id="score-message"></p>
-                            <!-- Hidden input for gamified_id -->
-                            <input type="hidden" id="gamified_id" name="gamified_id" value="<?php echo $gamified_id; ?>">
-                            <input type="hidden" id="score" name="score" value="">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="submitScore">Submit</button>
-                        </div>
-                    </form>
+                    <div class="buttons">
+                        <button id="submit-btn" disabled style="background-color:gray; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; opacity: 0.6;">Submit</button>
+                        <button id="next-btn" style="background-color: #0056b3; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.3s;">
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
 
+
+        </section>
+
+        <!-- Modal -->
+<!-- Modal -->
+<div class="modal fade" id="scoreModal" tabindex="-1" aria-labelledby="scoreModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="scoreForm">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scoreModalLabel">Quiz Completed</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="score-message"></p>
+                    <input type="hidden" id="score" name="score" value="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="submitScore">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 
@@ -775,7 +715,7 @@ mysqli_close($conn);
             "A company has retained earnings of P300,000 and decides to declare a dividend of P50,000. What will be the retained earnings after the dividend declaration"
 
 
-
+          
         ];
 
         const correctAnswers = [
@@ -848,16 +788,16 @@ mysqli_close($conn);
             });
         }
         const explanations = [
-            "TRUE - This is a fundamental accounting principle that defines equity as what remains for shareholders after all debts are paid.",
-            "TRUE - This allows companies to raise capital through different types of equity instruments, each with distinct rights and privileges.",
-            "FALSE - Par value is a nominal value assigned to shares, while market value is determined by supply and demand in the stock market.",
-            "TRUE - This excess amount is recorded in the share premium account, reflecting the additional capital received from shareholders.",
-            "FALSE - They are part of retained earnings, which represent the cumulative profits retained in the business.",
-            "FALSE - When options are exercised, new shares are issued, increasing the equity base and potentially affecting share premium.",
-            "TRUE - This practice allows companies to manage their capital structure and can affect the share price and earnings per share.",
-            "TRUE - This period incentivizes employees to stay with the company.",
-            "TRUE - This means that creditors are paid first before any distribution to shareholders.",
-            "FALSE - Market value can fluctuate based on various factors and can be lower than the par value, especially in cases of poor company performance or market conditions.",
+            "This is a fundamental accounting principle that defines equity as what remains for shareholders after all debts are paid.",
+            "This allows companies to raise capital through different types of equity instruments, each with distinct rights and privileges.",
+            "Par value is a nominal value assigned to shares, while market value is determined by supply and demand in the stock market.",
+            "This excess amount is recorded in the share premium account, reflecting the additional capital received from shareholders.",
+            "They are part of retained earnings, which represent the cumulative profits retained in the business.",
+            "When options are exercised, new shares are issued, increasing the equity base and potentially affecting share premium.",
+            "This practice allows companies to manage their capital structure and can affect the share price and earnings per share.",
+            "This period incentivizes employees to stay with the company.",
+            "This means that creditors are paid first before any distribution to shareholders.",
+            "Market value can fluctuate based on various factors and can be lower than the par value, especially in cases of poor company performance or market conditions.",
             "b) To provide dividends at a fixed rate- The primary purpose of issuing preference shares is to provide investors with fixed dividends, making them attractive for income-seeking investors.",
             "c) Long-term debt- Long-term debt is not a component of shareholders' equity; it is a liability. Shareholders' equity includes ordinary shares, retained earnings, and share premium.",
             "b) Share premium- When shares are issued at a price higher than par value, the excess amount is credited to the share premium account, reflecting the additional capital received.",
@@ -930,34 +870,34 @@ mysqli_close($conn);
         }
 
         function showScore() {
+  
+    const scoreMessage = `You scored ${score} out of ${questions.length}!`;
+    document.getElementById('score-message').innerText = scoreMessage;
+    document.getElementById('score').value = score;
 
-            const scoreMessage = `You scored ${score} out of ${questions.length}!`;
-            document.getElementById('score-message').innerText = scoreMessage;
-            document.getElementById('score').value = score;
+    // Show the modal
+    const scoreModal = new bootstrap.Modal(document.getElementById('scoreModal'));
+    scoreModal.show();
 
-            // Show the modal
-            const scoreModal = new bootstrap.Modal(document.getElementById('scoreModal'));
-            scoreModal.show();
+    // Handle form submission
+    document.getElementById('submitScore').addEventListener('click', function() {
+        const formData = new FormData(document.getElementById('scoreForm'));
 
-            // Handle form submission
-            document.getElementById('submitScore').addEventListener('click', function() {
-                const formData = new FormData(document.getElementById('scoreForm'));
-
-                fetch('far_insert_score.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.text())
-                    .then(data => {
-                        console.log(data); // Handle the response from the server
-                        // Optionally, close the modal
-                        scoreModal.hide();
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            });
-        }
+        fetch('far_insert_score.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data); // Handle the response from the server
+            // Optionally, close the modal
+            scoreModal.hide();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+}
 
 
 

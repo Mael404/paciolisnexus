@@ -963,6 +963,30 @@ $conn->close();
 
       <!-- Additional Modals for "Auditing", "Regulatory Framework", "Management Advisory Services" can follow the same structure -->
     </div>
+<!-- Timer Choice Modal -->
+<div class="modal fade" id="timerChoiceModal" tabindex="-1" aria-labelledby="timerChoiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="timerChoiceModalLabel">Choose Timer Option</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Do you want to continue with a timer?</p>
+        <p><strong>With Timer:</strong> If you choose this option, your exam will be recorded and added to the leaderboards.</p>
+        <p><strong>Without Timer:</strong> If you choose this option, your exam will not be recorded, but your attempt will increase. You only have three attempts available.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Without Timer</button>
+        <button type="button" class="btn btn-primary" id="withTimerBtn">With Timer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 
     <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-xl">
@@ -1096,19 +1120,38 @@ $conn->close();
 
   <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // Financial Accounting button
-    const afrButton = document.querySelector("#quizButton");
-    if (afrButton) {
-      afrButton.addEventListener("click", function(event) {
-        const afrCount = <?php echo $counts['afr']; ?>;
-        if (afrCount > 0) {
-          window.location.href = 'far.php';  // Redirect if count > 0
-        } else {
-          // Open modal if count is 0
-          $('#modalFinancialAccounting').modal('show');
-        }
+// Financial Accounting button
+const afrButton = document.querySelector("#quizButton");
+if (afrButton) {
+  afrButton.addEventListener("click", function(event) {
+    const afrCount = <?php echo $counts['afr']; ?>;
+    if (afrCount > 0) {
+      // Disable modalFinancialAccounting by hiding it
+      const modalFinancialAccounting = new bootstrap.Modal(document.getElementById('modalFinancialAccounting'));
+      modalFinancialAccounting.hide();  // Hide the modal
+
+      // Show the timerChoiceModal
+      const timerChoiceModal = new bootstrap.Modal(document.getElementById('timerChoiceModal'));
+      timerChoiceModal.show();
+
+      // Handle "With Timer" choice
+      document.getElementById("withTimerBtn").addEventListener("click", function() {
+        window.location.href = 'far.php';  // Redirect to far.php with timer
       });
+
+      // Handle "Without Timer" choice (closing the modal will redirect)
+      document.querySelector(".btn-secondary").addEventListener("click", function() {
+        window.location.href = 'farnotimer.php';  // Redirect to farnotimer.php without timer
+      });
+
+    } else {
+      // Open modal if count is 0
+      $('#modalFinancialAccounting').modal('show');
     }
+  });
+}
+
+
 
     // Advanced Financial Accounting button
     const afarButton = document.querySelector(".btn-success[data-bs-target='#modalAdvancedAccounting']");

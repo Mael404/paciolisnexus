@@ -13,7 +13,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("ii", $score, $gamified_id); // Bind both score and gamified_id as integers
 
         if ($stmt->execute()) {
-            header("Location: student_takequiz.php"); // Redirect if the insertion is successful
+            // Check if the gamified_id exists in the gamified table
+            $check_stmt = $conn->prepare("SELECT timer, attempt FROM gamified WHERE gamefied_id = ?");
+            $check_stmt->bind_param("i", $gamified_id);
+            $check_stmt->execute();
+            $result = $check_stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                // Update the timer column to 'enabled' and increment the attempt column
+                $update_stmt = $conn->prepare("UPDATE gamified SET timer = 'enabled', attempt = attempt + 1 WHERE gamefied_id = ?");
+                $update_stmt->bind_param("i", $gamified_id);
+
+                if ($update_stmt->execute()) {
+                    echo "Gamified data updated successfully.";
+                } else {
+                    echo "Error updating gamified data: " . $update_stmt->error;
+                }
+
+                $update_stmt->close();
+            } else {
+                echo "No matching gamified_id found in the gamified table.";
+            }
+
+            $check_stmt->close();
         } else {
             echo "Error: " . $stmt->error; // Display error if insertion fails
         }

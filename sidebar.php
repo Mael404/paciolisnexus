@@ -62,7 +62,7 @@
     </a>
     <ul id="homework-help-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
       <li>
-        <a href="submit-question.html">
+        <a href="submit-question.php">
           <i class="bi bi-circle"></i><span>Submit Question</span>
         </a>
       </li>

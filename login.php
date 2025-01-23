@@ -40,7 +40,7 @@ if (isset($_POST['submit'])) {
 
             // Check if the user is an admin
             if ($row['role'] === 'admin') {
-                header("Location: cpa_dashboard.php");
+                header("Location: admin_dashboard.php");
                 die();
             }
 

@@ -223,6 +223,8 @@ mysqli_close($conn);
         #next-btn {
             display: none;
         }
+
+        
     </style>
 </head>
 
@@ -526,7 +528,7 @@ include 'sidebar.php'; // Use the correct path
 
 <script>
     // Timer setup
-    let timerDuration = 1 * 60; // 30 minutes in seconds
+    let timerDuration = 30 * 60; // 30 minutes in seconds
     const timerElement = document.getElementById('timer');
 
     function updateTimer() {
@@ -694,12 +696,12 @@ include 'sidebar.php'; // Use the correct path
                 if (index < multipleChoiceQuestionsStartIndex) {
                     questionDiv.innerHTML = `
                 <p>${index + 1}. ${question}</p>
-                <label>
-                    <input type="radio" name="q${index}" value="true"> TRUE
-                </label>
-                <label>
-                    <input type="radio" name="q${index}" value="false"> FALSE
-                </label>
+               <label class="custom-radio">
+    <input type="radio" name="q${index}" value="true"> TRUE
+</label>
+<label class="custom-radio">
+    <input type="radio" name="q${index}" value="false"> FALSE
+</label>
             `;
                 } else {
                     const options = multipleChoiceOptions[index - multipleChoiceQuestionsStartIndex];

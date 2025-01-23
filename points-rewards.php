@@ -511,11 +511,11 @@ include 'sidebar.php'; // Use the correct path
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Leaderboards</h1>
+            <h1>My Points</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active">Leaderoards</li>
+                    <li class="breadcrumb-item active">My Points</li>
              
                 </ol>
             </nav>

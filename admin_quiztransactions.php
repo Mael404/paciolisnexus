@@ -1,6 +1,34 @@
 <?php
 session_start();
+include('config.php');
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    echo "Please log in to continue.";
+    exit;
+}
+
+// Get the current user's user_id from the session
+$current_user_id = $_SESSION['user_id'];
+
+// Query to check if the user_id exists in the homeworkhelp table
+$query = "SELECT COUNT(*) AS count FROM homeworkhelp WHERE user_id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $current_user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+// If user_id does not exist, set a flag to show the modal
+$show_modal = $row['count'] == 0;
 ?>
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,10 +56,40 @@ session_start();
     <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
     <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
     <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- DataTables CSS (only need this once) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <!-- DataTables Black and White theme CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bbnw.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
-
+    <style>
+        .btn-action {
+            width: 40px;
+            /* Set a fixed width */
+            height: 40px;
+            /* Set a fixed height */
+            display: flex;
+            /* Use flexbox to center the icon */
+            justify-content: center;
+            /* Center horizontally */
+            align-items: center;
+            /* Center vertically */
+            padding: 0;
+            /* Remove default padding */
+            font-size: 18px;
+            /* Icon size */
+        }
+    </style>
 </head>
 
 <body>
@@ -65,7 +123,7 @@ session_start();
 
                 <li class="nav-item dropdown">
 
-                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                    <a class="nav-link nav-icon" href="#" id="notificationIcon">
                         <i class="bi bi-bell"></i>
                         <span class="badge bg-primary badge-number">4</span>
                     </a><!-- End Notification Icon -->
@@ -209,7 +267,7 @@ session_start();
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-person-fill rounded-circle" style="font-size: 1.5rem;"></i>
                         <span class="d-none d-md-block dropdown-toggle ps-2">
-                            <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?>
+                            ADMIN
                         </span>
                     </a>
                     <!-- End Profile Icon -->
@@ -219,7 +277,7 @@ session_start();
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6> <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?></h6>
-                            <span>STUDENT</span>
+                            <span>ADMIN</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -264,239 +322,108 @@ session_start();
                         </li>
 
                     </ul><!-- End Profile Dropdown Items -->
-                </li>
+                </li><!-- End Profile Nav -->
 
             </ul>
-        </nav>
+        </nav><!-- End Icons Navigation -->
 
     </header><!-- End Header -->
 
-    <!-- ======= Sidebar ======= -->
-    <aside id="sidebar" class="sidebar">
-
-        <ul class="sidebar-nav" id="sidebar-nav">
-
-            <li class="nav-item">
-                <a class="nav-link " href="student_dashboard.php">
-                    <i class="bi bi-house"></i>
-                    <span>Home</span>
-                </a>
-            </li><!-- End Home Nav -->
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#study-plans-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-book"></i><span>Study Plans</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="study-plans-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="view-plan.html">
-                            <i class="bi bi-circle"></i><span>View Plan</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="update-profile.html">
-                            <i class="bi bi-circle"></i><span>Update Profile</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="progress-tracker.html">
-                            <i class="bi bi-circle"></i><span>Progress Tracker</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Study Plans Nav -->
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#quizzes-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-question-square"></i><span>Quizzes</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="quizzes-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="student_takequiz.php">
-                            <i class="bi bi-circle"></i><span>Take a Quiz</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="leaderboard.html">
-                            <i class="bi bi-circle"></i><span>Leaderboard</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="points-rewards.html">
-                            <i class="bi bi-circle"></i><span>Points & Rewards</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Quizzes Nav -->
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#homework-help-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-question-circle"></i><span>Homework Help</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="homework-help-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="submit-question.html">
-                            <i class="bi bi-circle"></i><span>Submit Question</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="my-questions.html">
-                            <i class="bi bi-circle"></i><span>My Questions</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="pricing.html">
-                            <i class="bi bi-circle"></i><span>Pricing</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Homework Help Nav -->
-
-
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#career-hub-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-briefcase"></i><span>Career Hub</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="career-hub-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="career-articles.html">
-                            <i class="bi bi-circle"></i><span>Articles</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="expert-talks.html">
-                            <i class="bi bi-circle"></i><span>Expert Talks</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="career-paths.html">
-                            <i class="bi bi-circle"></i><span>Career Paths</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Career Hub Nav -->
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#support-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-life-preserver"></i><span>Support</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="support-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="faq.html">
-                            <i class="bi bi-circle"></i><span>FAQ</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="contact.html">
-                            <i class="bi bi-circle"></i><span>Contact</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="feedback.html">
-                            <i class="bi bi-circle"></i><span>Feedback</span>
-                        </a>
-                    </li>
-                </ul>
-            </li><!-- End Support Nav -->
-
-
-
-        </ul>
-
-    </aside><!-- End Sidebar -->
+    <?php
+    include 'admin_sidebar.php';
+    ?>
 
 
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>FAR quiz</h1>
+            <h1>Quiz Transactions</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item">Take a quiz</li>
-                    <li class="breadcrumb-item active">FAR Form</li>
+                    <li class="breadcrumb-item active">Quiz Transactions</li>
                 </ol>
             </nav>
-        </div>
+        </div><!-- End Page Title -->
 
         <section class="section dashboard">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body">
+    <div class="row">
+        <div class="col-12">
+            <table id="gamifiedTable" class="display bbnw">
+                <thead>
+                    <tr>
+                        <th>Gamefied ID</th>
+                        <th>Full Name</th>
+                        <th>Birthdate</th>
+                        <th>Address</th>
+                        <th>Quiz Title</th>
+                        <th>GCash Name</th>
+                        <th>GCash Number</th>
+                        <th>Payment Proof</th>
+                        <th>Created At</th>
+                        <th>Quiz Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data rows will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
 
-                        <form action="quiz_FAR_data.php" method="POST" enctype="multipart/form-data">
-
-                                <!-- Personal Details -->
-                                <div style="border-bottom: 2px solid #ddd; margin-bottom: 20px; padding-bottom: 10px; margin-top:2%;">
-                                    <h3 style="color: #4154f1; font-weight: bold; margin-bottom: 15px;">Personal Details</h3>
-                                    <div class="mb-3">
-                                        <label for="fullName" style="font-weight: bold;">Full Name:</label>
-                                        <input type="text" id="fullName" name="full_name" class="form-control" placeholder="Enter your full name" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="birthdate" style="font-weight: bold;">Birthdate:</label>
-                                        <input type="date" id="birthdate" name="birthdate" class="form-control" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="address" style="font-weight: bold;">Address:</label>
-                                        <input type="text" id="address" name="address" class="form-control" placeholder="Enter your address" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="quizTitle" style="font-weight: bold;">Quiz Title:</label>
-                                        <input type="text" id="quizTitle" name="quiz_title" class="form-control" value="Financial Accounting and Reporting" readonly>
-                                    </div>
-                                </div>
-                                <div style="text-align: center; margin-top: 30px;">
-                                    <button type="button" class="btn btn-secondary" style="padding: 10px 20px; font-size: 16px;" onclick="showQRCode()">Show QR Code</button>
-                                    <!-- QR Code Section -->
-                                    <div id="qrCodeContainer" style="text-align: center; margin-top: 20px; display: none;">
-                                        <h3 style="color: #4154f1;">Scan the QR Code to Pay</h3>
-                                        <img src="https://businessmaker-academy.com/cms/wp-content/uploads/2022/04/Gcash-BMA-QRcode.jpg" alt="QR Code" style="max-width: 200px; border: 2px solid #ddd; border-radius: 10px;">
-                                    </div>
-                                </div>
-                                <!-- Payment Details -->
-                                <div style="margin-top: 20px;">
-                                    <h3 style="color: #2eca6a; font-weight: bold; margin-bottom: 15px;">Payment Details</h3>
-                                    <div class="mb-3">
-                                        <label for="gcashName" style="font-weight: bold;">Gcash Account Name:</label>
-                                        <input type="text" id="gcashName" name="gcash_name" class="form-control" placeholder="Enter Gcash account name" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="gcashNumber" style="font-weight: bold;">Gcash Account Number:</label>
-                                        <input type="text" id="gcashNumber" name="gcash_number" class="form-control" placeholder="Enter Gcash account number" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="paymentProof" style="font-weight: bold;">Upload Proof of Payment:</label>
-                                        <input type="file" id="paymentProof" name="payment_proof" class="form-control" accept="image/*" required>
-                                    </div>
-                                </div>
-
-                                <!-- Buttons -->
-                                <div style="text-align: center; margin-top: 30px;">
-                                    <button type="submit" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px;">Submit</button>
-
-                                </div>
-                            </form>
-
-
-
-                            <script>
-                                function showQRCode() {
-                                    document.getElementById("qrCodeContainer").style.display = "block";
-                                    window.scrollTo(0, document.body.scrollHeight); // Scroll to the QR code
-                                }
-                            </script>
-
-                        </div>
-                    </div>
-                </div>
+<!-- Bootstrap Modal for Image Preview -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Payment Proof</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </section>
+            <div class="modal-body">
+                <img id="modalImage" src="" alt="Payment Proof" class="img-fluid" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+        <style>
+            #gamifiedTable tbody {
+                font-size: 0.875rem;
+                /* Smaller font size */
+            }
+
+            #gamifiedTable .btn {
+                margin-right: 5px;
+            }
+        </style>
 
 
-    </main><!-- End #main -->
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Are you sure?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to confirm this action?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </main>
 
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
@@ -523,6 +450,95 @@ session_start();
 
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
+
+
+    <script>
+    $(document).ready(function() {
+    $('#gamifiedTable').DataTable({
+        "ajax": "admin_fetchdata.php",
+        "columns": [
+            { "data": "gamefied_id" },
+            { "data": "full_name" },
+            { "data": "birthdate" },
+            { "data": "address" },
+            { "data": "quiz_title" },
+            { "data": "gcash_name" },
+            { "data": "gcash_number" },
+            {
+                "data": "payment_proof",
+                "render": function(data, type, row) {
+                    if (data !== 'No proof provided') {
+                        return `<img src="${data}" alt="Payment Proof" style="cursor: pointer; max-width: 100px;" class="payment-proof" data-bs-toggle="modal" data-bs-target="#imageModal" />`;
+                    } else {
+                        return data; // Return the text if no proof is provided
+                    }
+                }
+            },
+            { "data": "created_at" },
+            { "data": "status" },
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return `
+                        <div class="btn-group">
+                            <button class="btn btn-success btn-action" data-action="approve" data-id="${row.gamefied_id}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn btn-danger btn-action" data-action="deny" data-id="${row.gamefied_id}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        ],
+        "columnDefs": [
+            { "targets": 7, "orderable": false, "searchable": false },
+            { "targets": 10, "orderable": false, "searchable": false }
+        ]
+    });
+
+    // Show image in modal when payment proof image is clicked
+    $('#gamifiedTable').on('click', '.payment-proof', function() {
+        var imageUrl = $(this).attr('src');
+        $('#modalImage').attr('src', imageUrl);
+    });
+
+    // Show confirmation modal
+    $('#gamifiedTable').on('click', '.btn-action', function() {
+        var action = $(this).data('action');
+        var gamefiedId = $(this).data('id');
+
+        // Show the confirmation modal
+        $('#confirmationModal').modal('show');
+        
+        // Handle confirmation
+        $('#confirmButton').off('click').on('click', function() {
+            // Proceed with the action based on the button clicked
+            $.ajax({
+                url: 'update_status.php',
+                method: 'POST',
+                data: {
+                    action: action,
+                    gamefied_id: gamefiedId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Optionally, refresh the table or provide feedback
+                        $('#gamifiedTable').DataTable().ajax.reload();
+                        alert(response.message);
+                    } else {
+                        $('#gamifiedTable').DataTable().ajax.reload();
+                    }
+                }
+            });
+
+            // Close the confirmation modal
+            $('#confirmationModal').modal('hide');
+        });
+    });
+});
+</script>
 
 </body>
 

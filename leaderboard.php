@@ -83,6 +83,34 @@ mysqli_close($conn);
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
     <style>
+         .table {
+        width: 100%;
+        margin: 0 auto;
+        border-collapse: collapse;
+        background-color: #fff;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    .table th, .table td {
+        padding: 15px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+    }
+    .table th {
+        background-color: #0056b3;
+        color: #fff;
+    }
+    .table tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+    .table td[colspan="4"] {
+        text-align: center;
+        font-style: italic;
+        color: #999;
+    }
         .explanation {
             margin-top: 10px;
             padding: 10px;

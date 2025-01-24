@@ -1,6 +1,39 @@
 <?php
 session_start();
+
+// Check if the user is logged in
+if (!isset($_SESSION['SESSION_EMAIL'])) {
+    header("Location: login.php");
+    die();
+}
+
+include 'config.php';
+
+// Get the user_id from session
+$user_id = $_SESSION['user_id'];
+
+// Fetch the user details from the database
+$sql = "SELECT * FROM users WHERE user_id='{$user_id}'";
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) === 1) {
+    $row = mysqli_fetch_assoc($result);
+
+    // Check if the user's account is verified
+    if ($row['verify'] !== '1') {  // Assuming 'verify' column has value '1' for verified users
+        // If not verified, redirect to cpa_form.php
+        header("Location: cpa_form.php");
+        die();
+    }
+} else {
+    // If user not found in the database, redirect to login
+    header("Location: login.php");
+    die();
+}
+
+// Continue with the rest of your cpa_dashboard.php content
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 

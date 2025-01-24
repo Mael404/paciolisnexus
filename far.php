@@ -1,55 +1,46 @@
 <?php
-// Start the session
 session_start();
-
-// Include the database configuration
 include('config.php');
-
-// Initialize gamified_id as empty
 $gamified_id = '';
+$timer_enabled = false;
 
 if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id']; // Get the user_id from session
+    $user_id = $_SESSION['user_id'];
 
-    // Prepare the query to check for the student_id and active status, and afr = 1
-    $query = "SELECT gamefied_id FROM gamified WHERE student_id = ? AND status = 'active' AND afr = 1";
+    $query = "SELECT gamefied_id, timer FROM gamified WHERE student_id = ? AND status = 'active' AND afr = 1";
 
-    // Prepare the statement
     if ($stmt = mysqli_prepare($conn, $query)) {
-        // Bind the parameter (user_id) to the query
         mysqli_stmt_bind_param($stmt, "i", $user_id);
-
-        // Execute the query
         mysqli_stmt_execute($stmt);
-
-        // Store the result
         mysqli_stmt_store_result($stmt);
 
-        // Check if any row exists with the conditions
         if (mysqli_stmt_num_rows($stmt) > 0) {
-            // Bind the result to a variable
-            mysqli_stmt_bind_result($stmt, $gamified_id);
-
-            // Fetch and store the gamified_id
+            mysqli_stmt_bind_result($stmt, $gamified_id, $timer);
             while (mysqli_stmt_fetch($stmt)) {
-                // This will output the gamified_id value
+                if ($timer === 'enabled') {
+                    $timer_enabled = true;
+                }
             }
         } else {
             echo "No matching data found.";
         }
 
-        // Close the statement
         mysqli_stmt_close($stmt);
     } else {
         echo "Error in preparing the query.";
+    }
+
+    if ($timer_enabled) {
+        header("Location: timer_enabled.html");
+        exit();
     }
 } else {
     echo "User not logged in.";
 }
 
-// Close the database connection
 mysqli_close($conn);
 ?>
+
 
 
 <!DOCTYPE html>

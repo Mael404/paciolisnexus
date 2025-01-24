@@ -46,16 +46,17 @@ $counts = [
 
 if (isset($user_id)) {
   $query = "
-        SELECT 
-            SUM(CASE WHEN afr IS NOT NULL THEN 1 ELSE 0 END) AS afr_count,
-            SUM(CASE WHEN afar IS NOT NULL THEN 1 ELSE 0 END) AS afar_count,
-            SUM(CASE WHEN taxation IS NOT NULL THEN 1 ELSE 0 END) AS taxation_count,
-            SUM(CASE WHEN auditing IS NOT NULL THEN 1 ELSE 0 END) AS auditing_count,
-            SUM(CASE WHEN rfbt IS NOT NULL THEN 1 ELSE 0 END) AS rfbt_count,
-            SUM(CASE WHEN mds IS NOT NULL THEN 1 ELSE 0 END) AS mds_count
-        FROM gamified 
-        WHERE student_id = ? AND status = 'active'
-    ";
+  SELECT 
+      SUM(CASE WHEN afr IS NOT NULL THEN 1 ELSE 0 END) AS afr_count,
+      SUM(CASE WHEN afar IS NOT NULL THEN 1 ELSE 0 END) AS afar_count,
+      SUM(CASE WHEN taxation IS NOT NULL THEN 1 ELSE 0 END) AS taxation_count,
+      SUM(CASE WHEN auditing IS NOT NULL THEN 1 ELSE 0 END) AS auditing_count,
+      SUM(CASE WHEN rfbt IS NOT NULL THEN 1 ELSE 0 END) AS rfbt_count,
+      SUM(CASE WHEN mds IS NOT NULL THEN 1 ELSE 0 END) AS mds_count
+  FROM gamified 
+  WHERE student_id = ? AND status = 'active' AND attempt <> 3
+";
+
 
   $stmt = $conn->prepare($query);
   $stmt->bind_param("i", $user_id);

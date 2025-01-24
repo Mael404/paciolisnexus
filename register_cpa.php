@@ -1,8 +1,5 @@
-
-
 <?php
 //Import PHPMailer classes into the global namespace
-//These must be at the top of your script, not inside a function
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -25,12 +22,15 @@ if (isset($_POST['submit'])) {
     $password = mysqli_real_escape_string($conn, md5($_POST['password']));
     $confirm_password = mysqli_real_escape_string($conn, md5($_POST['confirm-password']));
     $code = mysqli_real_escape_string($conn, md5(rand()));
+    $user_role = mysqli_real_escape_string($conn, $_POST['user_role']); // Capture the user role
 
+    // Check if the email already exists
     if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM users WHERE email='{$email}'")) > 0) {
         $msg = "<div class='alert alert-danger'>{$email} - This email address has been already exists.</div>";
     } else {
         if ($password === $confirm_password) {
-            $sql = "INSERT INTO users (name, email, password, code) VALUES ('{$name}', '{$email}', '{$password}', '{$code}')";
+            // Insert the user with role into the database
+            $sql = "INSERT INTO users (name, email, password, code, role) VALUES ('{$name}', '{$email}', '{$password}', '{$code}', '{$user_role}')";
             $result = mysqli_query($conn, $sql);
 
             if ($result) {
@@ -58,23 +58,23 @@ if (isset($_POST['submit'])) {
                     $mail->Subject = 'no reply';
                     $mail->Body = 'Here is the verification link <b><a href="http://localhost/paciolisnexus/login.php?verification=' . $code . '">http://localhost/paciolisnexus/login.php?verification=' . $code . '</a></b>';
 
-
                     $mail->send();
                     echo 'Message has been sent';
                 } catch (Exception $e) {
                     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
                 }
                 echo "</div>";
-                $msg = "<div class='alert alert-info'>We've send a verification link on your email address.</div>";
+                $msg = "<div class='alert alert-info'>We've sent a verification link to your email address.</div>";
             } else {
-                $msg = "<div class='alert alert-danger'>Something wrong went.</div>";
+                $msg = "<div class='alert alert-danger'>Something went wrong.</div>";
             }
         } else {
-            $msg = "<div class='alert alert-danger'>Password and Confirm Password do not match</div>";
+            $msg = "<div class='alert alert-danger'>Password and Confirm Password do not match.</div>";
         }
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="zxx">
@@ -144,16 +144,17 @@ if (isset($_POST['submit'])) {
          
                         <?php echo $msg; ?>
                         <form action="" method="post">
-                            <input type="text" class="name" name="name" placeholder="Enter Your Name" value="<?php if (isset($_POST['submit'])) {
-                                                                                                                    echo $name;
-                                                                                                                } ?>" required>
-                            <input type="email" class="email" name="email" placeholder="Enter Your Email" value="<?php if (isset($_POST['submit'])) {
-                                                                                                                        echo $email;
-                                                                                                                    } ?>" required>
-                            <input type="password" class="password" name="password" placeholder="Enter Your Password" required>
-                            <input type="password" class="confirm-password" name="confirm-password" placeholder="Enter Your Confirm Password" required>
-                            <button name="submit" class="btn" type="submit">Register</button>
-                        </form>
+    <input type="text" class="name" name="name" placeholder="Enter Your Name" value="<?php if (isset($_POST['submit'])) { echo $name; } ?>" required>
+    <input type="email" class="email" name="email" placeholder="Enter Your Email" value="<?php if (isset($_POST['submit'])) { echo $email; } ?>" required>
+    <input type="password" class="password" name="password" placeholder="Enter Your Password" required>
+    <input type="password" class="confirm-password" name="confirm-password" placeholder="Enter Your Confirm Password" required>
+    
+    <!-- Hidden input for user role -->
+    <input type="hidden" name="user_role" value="CPA">
+
+    <button name="submit" class="btn" type="submit">Register</button>
+</form>
+
                         <div class="social-icons">
                             <p>Have an account! <a href="login.php">Login</a>.</p>
                         </div>

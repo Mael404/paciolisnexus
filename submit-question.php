@@ -522,7 +522,7 @@ $show_modal = $row['count'] == 0;
                     <div id="urgencyOptions" class="mb-3" style="display: none;">
                       <label for="urgencyTime" style="font-weight: bold;">Select Urgency:</label>
                       <select id="urgencyTime" name="urgency" class="form-control">
-                        <option value="">--------</option>
+                        <option value="Not Urgent">--------</option>
                         <option value="1 hour">1 Hour</option>
                         <option value="2 hours">2 Hours</option>
                         <option value="3 hours">3 Hours</option>

@@ -27,23 +27,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $afar = 1;
     $status = "Pending"; // Default status for new records
     $created_at = date("Y-m-d H:i:s"); // Timestamp for record creation
-    // Collect form data
-$urgency = isset($_POST['urgency']) ? mysqli_real_escape_string($conn, $_POST['urgency']) : NULL;
-
+    $urgency = isset($_POST['urgency']) ? mysqli_real_escape_string($conn, $_POST['urgency']) : NULL;
 
     // Generate unique transaction_id
-    $transaction_id = 'TRX' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+    $transaction_id = '01000' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
 
     // Ensure transaction_id is unique in the database
-    $check_query = "SELECT COUNT(*) AS count FROM homeworkhelp WHERE transaction_id = '$transaction_id'";
-    $result = mysqli_query($conn, $check_query);
-    $row = mysqli_fetch_assoc($result);
-
-    while ($row['count'] > 0) {
-        $transaction_id = 'TRX' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+    do {
+        $check_query = "SELECT COUNT(*) AS count FROM homeworkhelp WHERE transaction_id = '$transaction_id'";
         $result = mysqli_query($conn, $check_query);
         $row = mysqli_fetch_assoc($result);
-    }
+
+        if ($row['count'] > 0) {
+            $transaction_id = '01000' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+        }
+    } while ($row['count'] > 0);
 
     // Handle the file upload
     if (isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] === UPLOAD_ERR_OK) {
@@ -70,7 +68,7 @@ $urgency = isset($_POST['urgency']) ? mysqli_real_escape_string($conn, $_POST['u
           '$gcash_name', '$file_path', NOW(), '$urgency')";
     if (mysqli_query($conn, $query)) {
         // Redirect to success.html on success
-        header("Location: success.html");
+        header("Location: success_question.html");
         exit;
     } else {
         echo "Error: " . mysqli_error($conn);

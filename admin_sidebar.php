@@ -4,7 +4,7 @@
 <ul class="sidebar-nav" id="sidebar-nav">
 
   <li class="nav-item">
-    <a class="nav-link " href="student_dashboard.php">
+    <a class="nav-link " href="admin_dashboard.php">
       <i class="bi bi-house"></i>
       <span>Home</span>
     </a>
@@ -57,28 +57,25 @@
     </ul>
 </li><!-- End Manage Quizzes Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" data-bs-target="#homework-help-nav" data-bs-toggle="collapse" href="#">
-      <i class="bi bi-question-circle"></i><span>Homework Help</span><i class="bi bi-chevron-down ms-auto"></i>
-    </a>
-    <ul id="homework-help-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-      <li>
-        <a href="submit-question.php">
-          <i class="bi bi-circle"></i><span>Submit Question</span>
-        </a>
-      </li>
-      <li>
-        <a href="my-questions.html">
-          <i class="bi bi-circle"></i><span>My Questions</span>
-        </a>
-      </li>
-      <li>
-        <a href="pricing.html">
-          <i class="bi bi-circle"></i><span>Pricing</span>
-        </a>
-      </li>
-    </ul>
-  </li><!-- End Homework Help Nav -->
+<li class="nav-item">
+  <a class="nav-link collapsed" data-bs-target="#manage-questions-nav" data-bs-toggle="collapse" href="#">
+    <i class="bi bi-question-circle"></i><span>Manage Assignment Help</span><i class="bi bi-chevron-down ms-auto"></i>
+  </a>
+  <ul id="manage-questions-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+    <li>
+      <a href="admin_managequestions.php">
+        <i class="bi bi-circle"></i><span>Manage Questions</span>
+      </a>
+    </li>
+    <li>
+      <a href="admin_postedquestions.php">
+        <i class="bi bi-circle"></i><span>Posted Questions</span>
+      </a>
+    </li>
+  
+  </ul>
+</li><!-- End Manage Questions Nav -->
+
 
 
 

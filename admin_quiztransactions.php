@@ -374,15 +374,17 @@ $show_modal = $row['count'] == 0;
 </section>
 
 <!-- Bootstrap Modal for Image Preview -->
+<!-- Bootstrap Modal for Image Preview -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Payment Proof</h5>
+                <h5 class="modal-title" id="imageModalLabel">Receipt</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <img id="modalImage" src="" alt="Payment Proof" class="img-fluid" />
+            <div class="modal-body text-center">
+                <!-- Use 'img-fluid' to ensure responsiveness -->
+                <img id="modalImage" src="" alt="Payment Proof" class="img-fluid" style="max-height: 90vh; width: auto;" />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -390,6 +392,7 @@ $show_modal = $row['count'] == 0;
         </div>
     </div>
 </div>
+
 
         <style>
             #gamifiedTable tbody {
@@ -468,7 +471,10 @@ $show_modal = $row['count'] == 0;
                 "data": "payment_proof",
                 "render": function(data, type, row) {
                     if (data !== 'No proof provided') {
-                        return `<img src="${data}" alt="Payment Proof" style="cursor: pointer; max-width: 100px;" class="payment-proof" data-bs-toggle="modal" data-bs-target="#imageModal" />`;
+                        return `<img src="${data}" alt="Payment Proof" style="cursor: pointer; max-width: 100px;" class="payment-proof" 
+        data-bs-toggle="modal" data-bs-target="#imageModal" 
+        onclick="document.getElementById('modalImage').src='${data}';" />`;
+
                     } else {
                         return data; // Return the text if no proof is provided
                     }

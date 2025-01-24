@@ -1,96 +1,32 @@
 <?php
-// Start the session
 session_start();
-
-// Include the database configuration
 include('config.php');
 
-// Initialize gamified_id as empty
-$gamified_id = '';
-$leaderboard_data = [];
-
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id']; // Get the user_id from session
-
-    // Prepare the query to check for the student_id and active status, and afr = 1
-    $query = "SELECT gamefied_id FROM gamified WHERE student_id = ? AND status = 'active' AND afr = 1";
-
-    // Prepare the statement
-    if ($stmt = mysqli_prepare($conn, $query)) {
-        // Bind the parameter (user_id) to the query
-        mysqli_stmt_bind_param($stmt, "i", $user_id);
-
-        // Execute the query
-        mysqli_stmt_execute($stmt);
-
-        // Store the result
-        mysqli_stmt_store_result($stmt);
-
-        // Check if any row exists with the conditions
-        if (mysqli_stmt_num_rows($stmt) > 0) {
-            // Bind the result to a variable
-            mysqli_stmt_bind_result($stmt, $gamified_id);
-
-            // Fetch and store the gamified_id
-            while (mysqli_stmt_fetch($stmt)) {
-                // This will output the gamified_id value
-            }
-        } else {
-            echo "No matching data found.";
-        }
-
-        // Close the statement
-        mysqli_stmt_close($stmt);
-    } else {
-        echo "Error in preparing the query.";
-    }
-
-    // If gamified_id found, proceed to get leaderboard data
-    if (!empty($gamified_id)) {
-        // Query the leaderboards table to find matching transaction_id
-        $query2 = "SELECT transaction_id, created_at, score FROM leaderboards WHERE transaction_id = ?";
-
-        if ($stmt2 = mysqli_prepare($conn, $query2)) {
-            // Bind the parameter (gamified_id) to the query
-            mysqli_stmt_bind_param($stmt2, "i", $gamified_id);
-
-            // Execute the query
-            mysqli_stmt_execute($stmt2);
-
-            // Store the result
-            mysqli_stmt_store_result($stmt2);
-
-            // Check if any row exists
-            if (mysqli_stmt_num_rows($stmt2) > 0) {
-                // Bind the result to variables
-                mysqli_stmt_bind_result($stmt2, $transaction_id, $created_at, $score);
-
-                // Fetch the data and store it
-                while (mysqli_stmt_fetch($stmt2)) {
-                    $leaderboard_data[] = [
-                        'transaction_id' => $transaction_id,
-                        'created_at' => $created_at,
-                        'score' => $score,
-                        'points' => $score * 0.5 // Calculate points as score * 2
-                    ];
-                }
-            } else {
-                echo "No matching leaderboard data found.";
-            }
-
-            // Close the statement
-            mysqli_stmt_close($stmt2);
-        } else {
-            echo "Error in preparing the query for leaderboards.";
-        }
-    }
-} else {
-    echo "User not logged in.";
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    echo "Please log in to continue.";
+    exit;
 }
 
-// Close the database connection
-mysqli_close($conn);
+// Get the current user's user_id from the session
+$current_user_id = $_SESSION['user_id'];
+
+// Query to check if the user_id exists in the homeworkhelp table
+$query = "SELECT COUNT(*) AS count FROM homeworkhelp WHERE user_id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $current_user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+// If user_id does not exist, set a flag to show the modal
+$show_modal = $row['count'] == 0;
 ?>
+
+
+
+
+
 
 
 <!DOCTYPE html>
@@ -120,149 +56,38 @@ mysqli_close($conn);
     <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
     <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
     <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- DataTables CSS (only need this once) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <!-- DataTables Black and White theme CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bbnw.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
     <style>
-        .explanation {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .highlight {
-            font-weight: bold;
-            color: green;
-        }
-
-        h2,
-        h3 {
-            text-align: center;
-            color: #0056b3;
-        }
-
-        .section {
-            padding: 30px 0;
-        }
-
-        /* Form Styles */
-        #quizForm {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h3 {
-            margin-top: 0px;
-            font-size: 24px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-size: 16px;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        input[type="radio"] {
-            margin-right: 10px;
-            margin-left: 10px;
-        }
-
-        input[type="radio"]:checked {
-            background-color: #0056b3;
-        }
-
-        button[type="submit"] {
-            background-color: #0056b3;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            display: block;
-            width: 100%;
-            margin-top: 30px;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #004080;
-        }
-
-        /* Spacing and Alignment */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        section {
-            margin-top: 20px;
-        }
-
-        section .row {
+        .btn-action {
+            width: 40px;
+            /* Set a fixed width */
+            height: 40px;
+            /* Set a fixed height */
             display: flex;
+            /* Use flexbox to center the icon */
             justify-content: center;
-        }
-
-        .row .col-md-12 {
-            width: 100%;
-            padding: 0 15px;
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            font-size: 28px;
-            color: #003366;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 767px) {
-            #quizForm {
-                padding: 15px;
-            }
-
-            h2 {
-                font-size: 24px;
-            }
-
-            h3 {
-                font-size: 20px;
-            }
-
-            button[type="submit"] {
-                padding: 8px 16px;
-                font-size: 14px;
-            }
-        }
-
-        .question-container {
-            display: none;
-            margin-bottom: 20px;
-        }
-
-        .question-container.active {
-            display: block;
-        }
-
-        .highlight {
-            background-color: lightgreen;
-        }
-
-        .buttons {
-            margin-top: 20px;
-        }
-
-        #next-btn {
-            display: none;
+            /* Center horizontally */
+            align-items: center;
+            /* Center vertically */
+            padding: 0;
+            /* Remove default padding */
+            font-size: 18px;
+            /* Icon size */
         }
     </style>
 </head>
@@ -298,7 +123,7 @@ mysqli_close($conn);
 
                 <li class="nav-item dropdown">
 
-                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                    <a class="nav-link nav-icon" href="#" id="notificationIcon">
                         <i class="bi bi-bell"></i>
                         <span class="badge bg-primary badge-number">4</span>
                     </a><!-- End Notification Icon -->
@@ -442,7 +267,7 @@ mysqli_close($conn);
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-person-fill rounded-circle" style="font-size: 1.5rem;"></i>
                         <span class="d-none d-md-block dropdown-toggle ps-2">
-                            <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?>
+                            ADMIN
                         </span>
                     </a>
                     <!-- End Profile Icon -->
@@ -452,7 +277,7 @@ mysqli_close($conn);
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6> <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?></h6>
-                            <span>STUDENT</span>
+                            <span>ADMIN</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -505,95 +330,103 @@ mysqli_close($conn);
     </header><!-- End Header -->
 
     <?php
-include 'sidebar.php'; // Use the correct path
-?>
+    include 'admin_sidebar.php';
+    ?>
+
 
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>My Points</h1>
+            <h1>Posted Questions</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active">My Points</li>
-             
+                    <li class="breadcrumb-item active">Posted Questions</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
 
-
         <section class="section dashboard">
     <div class="row">
-        <div class="col-md-12">
-            <!-- Table Display -->
-          <!-- Add custom CSS for table styling -->
-<style>
-    .table {
-        width: 100%;
-        margin: 0 auto;
-        border-collapse: collapse;
-        background-color: #fff;
-        font-family: Arial, sans-serif;
-        text-align: center;
-    }
-    .table th, .table td {
-        padding: 15px;
-        border: 1px solid #ddd;
-        font-size: 14px;
-    }
-    .table th {
-        background-color: #0056b3;
-        color: #fff;
-    }
-    .table tbody tr:nth-child(odd) {
-        background-color: #f9f9f9;
-    }
-    .table tbody tr:hover {
-        background-color: #f1f1f1;
-    }
-    .table td[colspan="4"] {
-        text-align: center;
-        font-style: italic;
-        color: #999;
-    }
-</style>
-
-<!-- Table content -->
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Quiz ID</th>
-            <th>Date quiz takent</th>
-            <th>Score</th>
-            <th>Points Earned</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if (!empty($leaderboard_data)): ?>
-            <?php foreach ($leaderboard_data as $data): ?>
-                <tr>
-                    <td><?php echo $data['transaction_id']; ?></td>
-                    <td><?php echo date('F j, Y', strtotime($data['created_at'])); ?></td>
-
-                    <td><?php echo $data['score']; ?></td>
-                    <td><?php echo $data['points']; ?></td>
-                </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr>
-                <td colspan="4">No leaderboard data available</td>
-            </tr>
-        <?php endif; ?>
-    </tbody>
-</table>
-
+        <div class="col-12">
+            <table id="gamifiedTable" class="display bbnw">
+                <thead>
+                    <tr>
+                        <th>Gamefied ID</th>
+                        <th>Full Name</th>
+                        <th>Birthdate</th>
+                        <th>Address</th>
+                        <th>Quiz Title</th>
+                        <th>GCash Name</th>
+                        <th>GCash Number</th>
+                        <th>Payment Proof</th>
+                        <th>Created At</th>
+                        <th>Quiz Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data rows will be populated here -->
+                </tbody>
+            </table>
         </div>
     </div>
 </section>
 
+<!-- Bootstrap Modal for Image Preview -->
+<!-- Bootstrap Modal for Image Preview -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Receipt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <!-- Use 'img-fluid' to ensure responsiveness -->
+                <img id="modalImage" src="" alt="Payment Proof" class="img-fluid" style="max-height: 90vh; width: auto;" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-    </main><!-- End #main -->
+        <style>
+            #gamifiedTable tbody {
+                font-size: 0.875rem;
+                /* Smaller font size */
+            }
+
+            #gamifiedTable .btn {
+                margin-right: 5px;
+            }
+        </style>
+
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Are you sure?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to confirm this action?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    </main>
 
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
@@ -620,6 +453,98 @@ include 'sidebar.php'; // Use the correct path
 
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
+
+
+    <script>
+    $(document).ready(function() {
+    $('#gamifiedTable').DataTable({
+        "ajax": "admin_fetchdata.php",
+        "columns": [
+            { "data": "gamefied_id" },
+            { "data": "full_name" },
+            { "data": "birthdate" },
+            { "data": "address" },
+            { "data": "quiz_title" },
+            { "data": "gcash_name" },
+            { "data": "gcash_number" },
+            {
+                "data": "payment_proof",
+                "render": function(data, type, row) {
+                    if (data !== 'No proof provided') {
+                        return `<img src="${data}" alt="Payment Proof" style="cursor: pointer; max-width: 100px;" class="payment-proof" 
+        data-bs-toggle="modal" data-bs-target="#imageModal" 
+        onclick="document.getElementById('modalImage').src='${data}';" />`;
+
+                    } else {
+                        return data; // Return the text if no proof is provided
+                    }
+                }
+            },
+            { "data": "created_at" },
+            { "data": "status" },
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return `
+                        <div class="btn-group">
+                            <button class="btn btn-success btn-action" data-action="approve" data-id="${row.gamefied_id}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn btn-danger btn-action" data-action="deny" data-id="${row.gamefied_id}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        ],
+        "columnDefs": [
+            { "targets": 7, "orderable": false, "searchable": false },
+            { "targets": 10, "orderable": false, "searchable": false }
+        ]
+    });
+
+    // Show image in modal when payment proof image is clicked
+    $('#gamifiedTable').on('click', '.payment-proof', function() {
+        var imageUrl = $(this).attr('src');
+        $('#modalImage').attr('src', imageUrl);
+    });
+
+    // Show confirmation modal
+    $('#gamifiedTable').on('click', '.btn-action', function() {
+        var action = $(this).data('action');
+        var gamefiedId = $(this).data('id');
+
+        // Show the confirmation modal
+        $('#confirmationModal').modal('show');
+        
+        // Handle confirmation
+        $('#confirmButton').off('click').on('click', function() {
+            // Proceed with the action based on the button clicked
+            $.ajax({
+                url: 'update_status.php',
+                method: 'POST',
+                data: {
+                    action: action,
+                    gamefied_id: gamefiedId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Optionally, refresh the table or provide feedback
+                        $('#gamifiedTable').DataTable().ajax.reload();
+                        alert(response.message);
+                    } else {
+                        $('#gamifiedTable').DataTable().ajax.reload();
+                    }
+                }
+            });
+
+            // Close the confirmation modal
+            $('#confirmationModal').modal('hide');
+        });
+    });
+});
+</script>
 
 </body>
 

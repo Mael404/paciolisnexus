@@ -38,13 +38,16 @@ if (isset($_POST['submit'])) {
             $_SESSION['user_id'] = $row['user_id'];  // Store user ID in session for future queries
             $_SESSION['name'] = $row['name'];  // Store user name in session for future queries
 
-            // Check if the user is an admin
+            // Check user role and redirect accordingly
             if ($row['role'] === 'admin') {
                 header("Location: admin_dashboard.php");
                 die();
+            } elseif ($row['role'] === 'CPA') {
+                header("Location: cpa_dashboard.php");
+                die();
             }
 
-            // Redirect to welcome page
+            // Default redirect for students
             header("Location: student_dashboard.php");
             die();
         } else {
@@ -101,6 +104,62 @@ if (isset($_POST['submit'])) {
             /* Infinite loop, smooth transition */
         }
     </style>
+    <style>
+  /* The modal's background */
+  .modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Modal content */
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+  }
+
+  /* Close button */
+  .close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* Button styles */
+  button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+  }
+
+  button:hover {
+    background-color: #ddd;
+  }
+</style>
+
 </head>
 
 <body>
@@ -123,7 +182,7 @@ if (isset($_POST['submit'])) {
                     </div>
                     <div class="content-wthree">
                         <h2>Login Now</h2>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
+                   
                         <?php echo $msg; ?>
                         <form action="" method="post">
                             <input type="email" class="email" name="email" placeholder="Enter Your Email" required>
@@ -132,7 +191,8 @@ if (isset($_POST['submit'])) {
                             <button name="submit" name="submit" class="btn" type="submit">Login</button>
                         </form>
                         <div class="social-icons">
-                            <p>Create Account! <a href="register.php">Register</a>.</p>
+                        <p>Create Account! <a href="#" onclick="openModal()">Register</a>.</p>
+
                             <br>
                             <br>
                             <a href="index.html">Back to Home</a>
@@ -146,6 +206,23 @@ if (isset($_POST['submit'])) {
         </div>
     </section>
     <!-- //form section start -->
+     <!-- Modal Structure -->
+<div id="registrationModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Choose Account Type</h2>
+    </div>
+    <div class="modal-body">
+      <p>Please select the type of account you would like to register for:</p>
+      <div>
+        <button onclick="window.location.href='register_cpa.php';">Register as CPA</button>
+        <button onclick="window.location.href='register.php';">Register as Student</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
     <script src="js/jquery.min.js"></script>
     <script>
@@ -157,6 +234,26 @@ if (isset($_POST['submit'])) {
             });
         });
     </script>
+    <script>
+  // Open the modal
+  function openModal() {
+    document.getElementById("registrationModal").style.display = "flex";
+  }
+
+  // Close the modal
+  function closeModal() {
+    document.getElementById("registrationModal").style.display = "none";
+  }
+
+  // Close the modal if the user clicks outside of it
+  window.onclick = function(event) {
+    var modal = document.getElementById("registrationModal");
+    if (event.target == modal) {
+      closeModal();
+    }
+  }
+</script>
+
 
 </body>
 

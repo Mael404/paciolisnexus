@@ -2,25 +2,7 @@
 session_start();
 include('config.php');
 
-// Check if the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    echo "Please log in to continue.";
-    exit;
-}
 
-// Get the current user's user_id from the session
-$current_user_id = $_SESSION['user_id'];
-
-// Query to check if the user_id exists in the homeworkhelp table
-$query = "SELECT COUNT(*) AS count FROM homeworkhelp WHERE user_id = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $current_user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-
-// If user_id does not exist, set a flag to show the modal
-$show_modal = $row['count'] == 0;
 ?>
 
 
@@ -89,6 +71,94 @@ $show_modal = $row['count'] == 0;
             font-size: 18px;
             /* Icon size */
         }
+
+        /* Dashboard Section */
+.section.dashboard {
+  background: #f9f9f9;
+  padding: 2rem;
+}
+
+/* Card Styles */
+.card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Body */
+.card-body {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+/* Card Title */
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color:rgb(247, 217, 86); /* School quiz theme highlight color */
+}
+
+/* Card Text */
+.card-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.card-text strong {
+  color:rgb(253, 222, 85);
+}
+
+/* View Details Button */
+.btn-primary {
+  background: #ffdc40;
+  color: #0056b3;
+  border: none;
+  font-weight: bold;
+  padding: 0.6rem 1.2rem;
+  border-radius: 24px;
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+  background: #ffc107;
+  color: white;
+}
+
+/* Layout */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.col-md-4 {
+  flex: 1 1 calc(33.333% - 1.5rem);
+  max-width: calc(33.333% - 1.5rem);
+}
+
+@media (max-width: 768px) {
+  .col-md-4 {
+    flex: 1 1 calc(50% - 1.5rem);
+    max-width: calc(50% - 1.5rem);
+  }
+}
+
+@media (max-width: 576px) {
+  .col-md-4 {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
     </style>
 </head>
 
@@ -348,82 +418,41 @@ $show_modal = $row['count'] == 0;
 
         <section class="section dashboard">
     <div class="row">
-        <div class="col-12">
-            <table id="gamifiedTable" class="display bbnw">
-                <thead>
-                    <tr>
-                        <th>Gamefied ID</th>
-                        <th>Full Name</th>
-                        <th>Birthdate</th>
-                        <th>Address</th>
-                        <th>Quiz Title</th>
-                        <th>GCash Name</th>
-                        <th>GCash Number</th>
-                        <th>Payment Proof</th>
-                        <th>Created At</th>
-                        <th>Quiz Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data rows will be populated here -->
-                </tbody>
-            </table>
-        </div>
+        <?php
+        // Query to fetch questions with an "active" status
+        $fetch_query = "SELECT * FROM homeworkhelp WHERE status = 'active'";
+        $result = mysqli_query($conn, $fetch_query);
+
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                // Format the created_at date
+                $formatted_date = date("F j, Y", strtotime($row['created_at']));
+                ?>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= htmlspecialchars($row['subject_title']); ?></h5>
+                            <p class="card-text">
+                                <strong>Question:</strong> <?= htmlspecialchars($row['assignment_question']); ?><br>
+                                <strong>Difficulty:</strong> <?= htmlspecialchars($row['assignment_difficulty']); ?><br>
+                                <strong>Date Submitted:</strong> <?= $formatted_date; ?><br>
+                                <strong>Urgency:</strong> <?= htmlspecialchars($row['urgency']) ?: 'Not specified'; ?><br>
+                            </p>
+                            <a href="#" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
+        } else {
+            echo '<p>No active questions found.</p>';
+        }
+        ?>
     </div>
 </section>
 
-<!-- Bootstrap Modal for Image Preview -->
-<!-- Bootstrap Modal for Image Preview -->
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="imageModalLabel">Receipt</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <!-- Use 'img-fluid' to ensure responsiveness -->
-                <img id="modalImage" src="" alt="Payment Proof" class="img-fluid" style="max-height: 90vh; width: auto;" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
-        <style>
-            #gamifiedTable tbody {
-                font-size: 0.875rem;
-                /* Smaller font size */
-            }
-
-            #gamifiedTable .btn {
-                margin-right: 5px;
-            }
-        </style>
-
-
-<!-- Confirmation Modal -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmationModalLabel">Are you sure?</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Do you want to confirm this action?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="confirmButton">Confirm</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
     </main>
@@ -455,97 +484,7 @@ $show_modal = $row['count'] == 0;
     <script src="assets/js/main.js"></script>
 
 
-    <script>
-    $(document).ready(function() {
-    $('#gamifiedTable').DataTable({
-        "ajax": "admin_fetchdata.php",
-        "columns": [
-            { "data": "gamefied_id" },
-            { "data": "full_name" },
-            { "data": "birthdate" },
-            { "data": "address" },
-            { "data": "quiz_title" },
-            { "data": "gcash_name" },
-            { "data": "gcash_number" },
-            {
-                "data": "payment_proof",
-                "render": function(data, type, row) {
-                    if (data !== 'No proof provided') {
-                        return `<img src="${data}" alt="Payment Proof" style="cursor: pointer; max-width: 100px;" class="payment-proof" 
-        data-bs-toggle="modal" data-bs-target="#imageModal" 
-        onclick="document.getElementById('modalImage').src='${data}';" />`;
-
-                    } else {
-                        return data; // Return the text if no proof is provided
-                    }
-                }
-            },
-            { "data": "created_at" },
-            { "data": "status" },
-            {
-                "data": null,
-                "render": function(data, type, row) {
-                    return `
-                        <div class="btn-group">
-                            <button class="btn btn-success btn-action" data-action="approve" data-id="${row.gamefied_id}">
-                                <i class="fas fa-check"></i>
-                            </button>
-                            <button class="btn btn-danger btn-action" data-action="deny" data-id="${row.gamefied_id}">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    `;
-                }
-            }
-        ],
-        "columnDefs": [
-            { "targets": 7, "orderable": false, "searchable": false },
-            { "targets": 10, "orderable": false, "searchable": false }
-        ]
-    });
-
-    // Show image in modal when payment proof image is clicked
-    $('#gamifiedTable').on('click', '.payment-proof', function() {
-        var imageUrl = $(this).attr('src');
-        $('#modalImage').attr('src', imageUrl);
-    });
-
-    // Show confirmation modal
-    $('#gamifiedTable').on('click', '.btn-action', function() {
-        var action = $(this).data('action');
-        var gamefiedId = $(this).data('id');
-
-        // Show the confirmation modal
-        $('#confirmationModal').modal('show');
-        
-        // Handle confirmation
-        $('#confirmButton').off('click').on('click', function() {
-            // Proceed with the action based on the button clicked
-            $.ajax({
-                url: 'update_status.php',
-                method: 'POST',
-                data: {
-                    action: action,
-                    gamefied_id: gamefiedId
-                },
-                success: function(response) {
-                    if (response.success) {
-                        // Optionally, refresh the table or provide feedback
-                        $('#gamifiedTable').DataTable().ajax.reload();
-                        alert(response.message);
-                    } else {
-                        $('#gamifiedTable').DataTable().ajax.reload();
-                    }
-                }
-            });
-
-            // Close the confirmation modal
-            $('#confirmationModal').modal('hide');
-        });
-    });
-});
-</script>
-
+   
 </body>
 
 </html>

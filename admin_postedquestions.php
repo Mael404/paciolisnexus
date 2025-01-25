@@ -438,7 +438,7 @@ include('config.php');
                                 <strong>Date Submitted:</strong> <?= $formatted_date; ?><br>
                                 <strong>Urgency:</strong> <?= htmlspecialchars($row['urgency']) ?: 'Not specified'; ?><br>
                             </p>
-                            <a href="#" class="btn btn-primary">View Details</a>
+                            <a href="#" class="btn btn-primary">Answer</a>
                         </div>
                     </div>
                 </div>

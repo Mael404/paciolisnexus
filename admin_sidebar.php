@@ -97,28 +97,8 @@
 </li><!-- End Manage Nav -->
 
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" data-bs-target="#career-hub-nav" data-bs-toggle="collapse" href="#">
-      <i class="bi bi-briefcase"></i><span>Career Hub</span><i class="bi bi-chevron-down ms-auto"></i>
-    </a>
-    <ul id="career-hub-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-      <li>
-        <a href="career-articles.html">
-          <i class="bi bi-circle"></i><span>Articles</span>
-        </a>
-      </li>
-      <li>
-        <a href="expert-talks.html">
-          <i class="bi bi-circle"></i><span>Expert Talks</span>
-        </a>
-      </li>
-      <li>
-        <a href="career-paths.html">
-          <i class="bi bi-circle"></i><span>Career Paths</span>
-        </a>
-      </li>
-    </ul>
-  </li><!-- End Career Hub Nav -->
+
+   
 
   <li class="nav-item">
     <a class="nav-link collapsed" data-bs-target="#support-nav" data-bs-toggle="collapse" href="#">

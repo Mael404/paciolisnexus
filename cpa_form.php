@@ -16,15 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'title' => 'Registration Already Exists',
             'body' => 'You have already registered, and your application is currently pending. You will be notified once your account is approved by the administrator.'
         ];
-        header('Location: pendingregistration.html');
+        header('Location: pendingregistration.php');
         exit();
     } else {
-        // Collect CPA personal details
+      
         $full_name = mysqli_real_escape_string($conn, $_POST['full_name']);
         $email = mysqli_real_escape_string($conn, $_POST['email']);
         $phone = mysqli_real_escape_string($conn, $_POST['phone']);
 
-        // File uploads
+     
         $upload_dir = 'uploads/';
         $diploma = $upload_dir . basename($_FILES['diploma']['name']);
         $gov_id = $upload_dir . basename($_FILES['gov_id']['name']);
@@ -32,14 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $modules = $upload_dir . basename($_FILES['modules']['name']);
         $license = $upload_dir . basename($_FILES['license']['name']);
 
-        // Move uploaded files to the server
+    
         move_uploaded_file($_FILES['diploma']['tmp_name'], $diploma);
         move_uploaded_file($_FILES['gov_id']['tmp_name'], $gov_id);
         move_uploaded_file($_FILES['selfie']['tmp_name'], $selfie);
         move_uploaded_file($_FILES['modules']['tmp_name'], $modules);
         move_uploaded_file($_FILES['license']['tmp_name'], $license);
 
-        // Insert data into the database
         $sql = "INSERT INTO cpa_details (user_id, full_name, email, phone, diploma, gov_id, selfie, modules, license) VALUES ('$user_id', '$full_name', '$email', '$phone', '$diploma', '$gov_id', '$selfie', '$modules', '$license')";
 
         if (mysqli_query($conn, $sql)) {

@@ -45,10 +45,13 @@ if (isset($_POST['submit'])) {
             } elseif ($row['role'] === 'CPA') {
                 header("Location: cpa_dashboard.php");
                 die();
-            }
+            }elseif ($row['role'] === '') {
+              header("Location: student_dashboard.php");
+              die();
+          }
 
             // Default redirect for students
-            header("Location: student_dashboard.php");
+            header("Location: index.html");
             die();
         } else {
             $msg = "<div class='alert alert-info'>First verify your account and try again.</div>";

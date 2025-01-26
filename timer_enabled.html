@@ -6,29 +6,29 @@
     <title>Warning</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMRQ5jqja2BQPrj69e3hMew3K1rLMwH8M1wBZP" crossorigin="anonymous">
     <style>
+        /* General Body Styling */
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             font-family: Arial, sans-serif;
-            background: #f8d7da;
             margin: 0;
             animation: background-pulse 5s ease-in-out infinite;
+            background: #f8d7da;
         }
 
+        /* Background Animation */
         @keyframes background-pulse {
-            0% {
+            0%, 100% {
                 background: #f8d7da;
             }
             50% {
                 background: #f5c6cb;
             }
-            100% {
-                background: #f8d7da;
-            }
         }
 
+        /* Message Box Styling */
         .message-box {
             text-align: center;
             padding: 30px;
@@ -37,11 +37,11 @@
             border-radius: 10px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             animation: shake 1s ease-in-out infinite;
-            z-index: 2;
             max-width: 400px;
             width: 100%;
         }
 
+        /* Shake Animation */
         @keyframes shake {
             0%, 100% {
                 transform: translateX(0);
@@ -51,21 +51,25 @@
             }
         }
 
-        h1 {
-            color: #721c24;
-            margin-top: 10px;
-        }
-
-        p {
-            color: #333;
-            margin: 10px 0;
-        }
-
+        /* Icon Styling */
         .icon {
             font-size: 50px;
             color: #721c24;
         }
 
+        /* Heading Styling */
+        h1 {
+            color: #721c24;
+            margin-top: 10px;
+        }
+
+        /* Paragraph Styling */
+        p {
+            color: #333;
+            margin: 10px 0;
+        }
+
+        /* Button Styling */
         button {
             margin-top: 20px;
             padding: 10px 20px;

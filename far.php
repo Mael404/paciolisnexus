@@ -7,6 +7,25 @@ $timer_enabled = false;
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
+    // Check for pending status
+    $pending_query = "SELECT status FROM gamified WHERE student_id = ? AND status = 'pending'";
+    if ($pending_stmt = mysqli_prepare($conn, $pending_query)) {
+        mysqli_stmt_bind_param($pending_stmt, "i", $user_id);
+        mysqli_stmt_execute($pending_stmt);
+        mysqli_stmt_store_result($pending_stmt);
+
+        if (mysqli_stmt_num_rows($pending_stmt) > 0) {
+            // Redirect if pending status is found
+            header("Location: pendingstatus.html");
+            exit();
+        }
+
+        mysqli_stmt_close($pending_stmt);
+    } else {
+        echo "Error in preparing the pending status query.";
+    }
+
+    // Original query for active status and timer
     $query = "SELECT gamefied_id, timer FROM gamified WHERE student_id = ? AND status = 'active' AND afr = 1";
 
     if ($stmt = mysqli_prepare($conn, $query)) {

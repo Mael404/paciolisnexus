@@ -6,6 +6,7 @@
     <title>Success</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMRQ5jqja2BQPrj69e3hMew3K1rLMwH8M1wBZP" crossorigin="anonymous">
     <style>
+        /* General Styling */
         body {
             display: flex;
             justify-content: center;
@@ -16,6 +17,8 @@
             margin: 0;
             overflow: hidden;
         }
+
+        /* Message Box */
         .message-box {
             text-align: center;
             padding: 30px;
@@ -26,6 +29,7 @@
             animation: slide-in 0.8s ease-out;
             z-index: 2;
         }
+
         @keyframes slide-in {
             from {
                 opacity: 0;
@@ -36,11 +40,20 @@
                 transform: translateY(0);
             }
         }
+
+        /* Text Elements */
         h1 {
             color: #007bff;
             margin-top: 10px;
             animation: fade-in 1.2s ease-in-out;
         }
+
+        p {
+            color: #333;
+            margin: 10px 0;
+            animation: fade-in 1.5s ease-in-out;
+        }
+
         @keyframes fade-in {
             from {
                 opacity: 0;
@@ -49,16 +62,14 @@
                 opacity: 1;
             }
         }
-        p {
-            color: #333;
-            margin: 10px 0;
-            animation: fade-in 1.5s ease-in-out;
-        }
+
+        /* Icon */
         .icon {
             font-size: 50px;
             color: #28a745;
             animation: bounce 1.2s infinite;
         }
+
         @keyframes bounce {
             0%, 100% {
                 transform: translateY(0);
@@ -67,6 +78,8 @@
                 transform: translateY(-10px);
             }
         }
+
+        /* Button */
         button {
             margin-top: 20px;
             padding: 10px 20px;
@@ -79,10 +92,13 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
             animation: fade-in 1.8s ease-in-out;
         }
+
         button:hover {
             background-color: #0056b3;
             transform: scale(1.05);
         }
+
+        /* Confetti */
         .confetti {
             position: fixed;
             top: 0;
@@ -93,6 +109,7 @@
             overflow: hidden;
             z-index: 1;
         }
+
         .confetti-piece {
             position: absolute;
             width: 10px;
@@ -101,6 +118,7 @@
             opacity: 0.8;
             animation: confetti-fall 3s linear infinite;
         }
+
         @keyframes confetti-fall {
             0% {
                 transform: translateY(-100%) rotate(0deg);
@@ -120,14 +138,14 @@
         <p>Click the button below to proceed to the quiz.</p>
         <button onclick="redirectToQuiz()">Proceed</button>
     </div>
-    
 
     <script>
+        // Redirect to Quiz Page
         function redirectToQuiz() {
             window.location.href = "student_takequiz.php";
         }
 
-        // Generate confetti
+        // Confetti Generator
         const confettiContainer = document.querySelector('.confetti');
         const colors = ['#FF5733', '#FFC300', '#DAF7A6', '#FFC0CB', '#8E44AD'];
 

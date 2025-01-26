@@ -54,7 +54,8 @@ if (isset($user_id)) {
       SUM(CASE WHEN rfbt IS NOT NULL THEN 1 ELSE 0 END) AS rfbt_count,
       SUM(CASE WHEN mds IS NOT NULL THEN 1 ELSE 0 END) AS mds_count
   FROM gamified 
-  WHERE student_id = ? AND status = 'active' AND attempt <> 3
+ WHERE student_id = ? AND status IN ('active', 'pending') AND attempt <> 3
+
 ";
 
 

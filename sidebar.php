@@ -70,7 +70,7 @@
           </a>
         </li>
         <li>
-          <a href="my-questions.html">
+          <a href="student_myquestions.php">
             <i class="bi bi-circle"></i><span>My Questions</span>
           </a>
         </li>

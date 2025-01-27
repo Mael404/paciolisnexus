@@ -4,7 +4,7 @@
 <ul class="sidebar-nav" id="sidebar-nav">
 
   <li class="nav-item">
-    <a class="nav-link " href="admin_dashboard.php">
+    <a class="nav-link " href="cpa_dashboard.php">
       <i class="bi bi-house"></i>
       <span>Home</span>
     </a>
@@ -39,18 +39,18 @@
     </a>
     <ul id="quizzes-admin-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
       <li>
-        <a href="admin_quiztransactions.php">
+        <a href="cpa_quiztransactions.php">
           <i class="bi bi-circle"></i><span>Quiz Transactions</span>
         </a>
       </li>
     
       <li>
-        <a href="admin_managepoints.php">
+        <a href="cpa_managepoints.php">
           <i class="bi bi-circle"></i><span>Manage Points</span>
         </a>
       </li>
       <li>
-        <a href="admin_leaderboard.php">
+        <a href="cpa_leaderboard.php">
           <i class="bi bi-circle"></i><span>Leaderboard Overview</span>
         </a>
       </li>
@@ -63,12 +63,12 @@
   </a>
   <ul id="manage-questions-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
     <li>
-      <a href="admin_managequestions.php">
+      <a href="cpa_managequestions.php">
         <i class="bi bi-circle"></i><span>Manage Questions</span>
       </a>
     </li>
     <li>
-      <a href="admin_postedquestions.php">
+      <a href="cpa_postedquestions.php">
         <i class="bi bi-circle"></i><span>Posted Questions</span>
       </a>
     </li>
@@ -77,29 +77,10 @@
 </li><!-- End Manage Questions Nav -->
 
 
-<li class="nav-item">
-  <a class="nav-link collapsed" data-bs-target="#manage-nav" data-bs-toggle="collapse" href="#">
-    <i class="bi bi-gear"></i><span>Manage Users</span><i class="bi bi-chevron-down ms-auto"></i>
-  </a>
-  <ul id="manage-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
- 
-    <li>
-      <a href="admin_cpa.php">
-        <i class="bi bi-circle"></i><span>Manage CPAs</span>
-      </a>
-    </li>
-    <li>
-      <a href="admin_students.php">
-        <i class="bi bi-circle"></i><span>Manage Students</span>
-      </a>
-    </li>
-  </ul>
-</li><!-- End Manage Nav -->
 
 
 
-  
-
+   
 
   <li class="nav-item">
     <a class="nav-link collapsed" data-bs-target="#support-nav" data-bs-toggle="collapse" href="#">

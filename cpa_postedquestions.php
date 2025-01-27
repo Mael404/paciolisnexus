@@ -1,55 +1,42 @@
 <?php
-// Start the session
 session_start();
-
-// Include the database configuration
 include('config.php');
 
-// Initialize gamified_id as empty
-$gamified_id = '';
+if (isset($_POST['submitAnswer'])) {
+    $question_id = $_POST['question_id'];
+    $answer = mysqli_real_escape_string($conn, $_POST['answer']);
+    $current_user_id = $_SESSION['user_id']; // Assuming the user ID is stored in the session
 
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id']; // Get the user_id from session
+    // Query to get the name of the logged-in user from the 'users' table
+    $user_query = "SELECT name FROM users WHERE user_id = '$current_user_id'";
+    $result = mysqli_query($conn, $user_query);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        $user = mysqli_fetch_assoc($result);
+        $user_name = $user['name']; // Get the name of the user
+        
+        // Update the homeworkhelp table with the answer, cpa_id, and cpa_name
+        $update_query = "UPDATE homeworkhelp 
+                         SET answer = '$answer', cpa_id = '$current_user_id', cpa_name = '$user_name', status = 'Answered' 
+                         WHERE transaction_id = '$question_id'";
 
-    // Prepare the query to check for the student_id and active status, and afr = 1
-    $query = "SELECT gamefied_id FROM gamified WHERE student_id = ? AND status = 'active' AND afr = 1";
-
-    // Prepare the statement
-    if ($stmt = mysqli_prepare($conn, $query)) {
-        // Bind the parameter (user_id) to the query
-        mysqli_stmt_bind_param($stmt, "i", $user_id);
-
-        // Execute the query
-        mysqli_stmt_execute($stmt);
-
-        // Store the result
-        mysqli_stmt_store_result($stmt);
-
-        // Check if any row exists with the conditions
-        if (mysqli_stmt_num_rows($stmt) > 0) {
-            // Bind the result to a variable
-            mysqli_stmt_bind_result($stmt, $gamified_id);
-
-            // Fetch and store the gamified_id
-            while (mysqli_stmt_fetch($stmt)) {
-                // This will output the gamified_id value
-            }
+        if (mysqli_query($conn, $update_query)) {
+            echo "<script>alert('Answer submitted successfully!');</script>";
         } else {
-            echo "No matching data found.";
+            echo "Error: " . mysqli_error($conn);
+            echo "<script>alert('Error submitting answer. Please try again.');</script>";
         }
-
-        // Close the statement
-        mysqli_stmt_close($stmt);
     } else {
-        echo "Error in preparing the query.";
+        echo "<script>alert('Error: User not found.');</script>";
     }
-} else {
-    echo "User not logged in.";
 }
-
-// Close the database connection
-mysqli_close($conn);
 ?>
+
+
+
+
+
+
 
 
 <!DOCTYPE html>
@@ -79,178 +66,127 @@ mysqli_close($conn);
     <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
     <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
     <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- DataTables CSS (only need this once) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+    <!-- DataTables Black and White theme CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bbnw.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
     <style>
-         .table {
-        width: 100%;
-        margin: 0 auto;
-        border-collapse: collapse;
-        background-color: #fff;
-        font-family: Arial, sans-serif;
-        text-align: center;
-    }
-    .table th, .table td {
-        padding: 15px;
-        border: 1px solid #ddd;
-        font-size: 14px;
-    }
-    .table th {
-        background-color: #0056b3;
-        color: #fff;
-    }
-    .table tbody tr:nth-child(odd) {
-        background-color: #f9f9f9;
-    }
-    .table tbody tr:hover {
-        background-color: #f1f1f1;
-    }
-    .table td[colspan="4"] {
-        text-align: center;
-        font-style: italic;
-        color: #999;
-    }
-        .explanation {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .highlight {
-            font-weight: bold;
-            color: green;
-        }
-
-        h2,
-        h3 {
-            text-align: center;
-            color: #0056b3;
-        }
-
-        .section {
-            padding: 30px 0;
-        }
-
-        /* Form Styles */
-        #quizForm {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        h3 {
-            margin-top: 0px;
-            font-size: 24px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-size: 16px;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        input[type="radio"] {
-            margin-right: 10px;
-            margin-left: 10px;
-        }
-
-        input[type="radio"]:checked {
-            background-color: #0056b3;
-        }
-
-        button[type="submit"] {
-            background-color: #0056b3;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            display: block;
-            width: 100%;
-            margin-top: 30px;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #004080;
-        }
-
-        /* Spacing and Alignment */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        section {
-            margin-top: 20px;
-        }
-
-        section .row {
+        .btn-action {
+            width: 40px;
+            /* Set a fixed width */
+            height: 40px;
+            /* Set a fixed height */
             display: flex;
+            /* Use flexbox to center the icon */
             justify-content: center;
+            /* Center horizontally */
+            align-items: center;
+            /* Center vertically */
+            padding: 0;
+            /* Remove default padding */
+            font-size: 18px;
+            /* Icon size */
         }
 
-        .row .col-md-12 {
-            width: 100%;
-            padding: 0 15px;
-        }
+        /* Dashboard Section */
+.section.dashboard {
+  background: #f9f9f9;
+  padding: 2rem;
+}
 
-        h2 {
-            margin-bottom: 20px;
-            font-size: 28px;
-            color: #003366;
-        }
+/* Card Styles */
+.card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
 
-        /* Responsive Design */
-        @media (max-width: 767px) {
-            #quizForm {
-                padding: 15px;
-            }
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
 
-            h2 {
-                font-size: 24px;
-            }
+/* Card Body */
+.card-body {
+  padding: 1.5rem;
+  text-align: center;
+}
 
-            h3 {
-                font-size: 20px;
-            }
+/* Card Title */
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color:rgb(247, 217, 86); /* School quiz theme highlight color */
+}
 
-            button[type="submit"] {
-                padding: 8px 16px;
-                font-size: 14px;
-            }
-        }
+/* Card Text */
+.card-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
 
-        .question-container {
-            display: none;
-            margin-bottom: 20px;
-        }
+.card-text strong {
+  color:rgb(253, 222, 85);
+}
 
-        .question-container.active {
-            display: block;
-        }
+/* View Details Button */
+.btn-primary {
+  background: #ffdc40;
+  color: #0056b3;
+  border: none;
+  font-weight: bold;
+  padding: 0.6rem 1.2rem;
+  border-radius: 24px;
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
 
-        .highlight {
-            background-color: lightgreen;
-        }
+.btn-primary:hover {
+  background: #ffc107;
+  color: white;
+}
 
-        .buttons {
-            margin-top: 20px;
-        }
+/* Layout */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
 
-        #next-btn {
-            display: none;
-        }
+.col-md-4 {
+  flex: 1 1 calc(33.333% - 1.5rem);
+  max-width: calc(33.333% - 1.5rem);
+}
+
+@media (max-width: 768px) {
+  .col-md-4 {
+    flex: 1 1 calc(50% - 1.5rem);
+    max-width: calc(50% - 1.5rem);
+  }
+}
+
+@media (max-width: 576px) {
+  .col-md-4 {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
     </style>
 </head>
 
@@ -285,7 +221,7 @@ mysqli_close($conn);
 
                 <li class="nav-item dropdown">
 
-                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                    <a class="nav-link nav-icon" href="#" id="notificationIcon">
                         <i class="bi bi-bell"></i>
                         <span class="badge bg-primary badge-number">4</span>
                     </a><!-- End Notification Icon -->
@@ -429,8 +365,9 @@ mysqli_close($conn);
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-person-fill rounded-circle" style="font-size: 1.5rem;"></i>
                         <span class="d-none d-md-block dropdown-toggle ps-2">
-                            <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?>
+                     <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?>
                         </span>
+                        
                     </a>
                     <!-- End Profile Icon -->
 
@@ -439,7 +376,7 @@ mysqli_close($conn);
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6> <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?></h6>
-                            <span>STUDENT</span>
+                            <span>CPA</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -492,90 +429,101 @@ mysqli_close($conn);
     </header><!-- End Header -->
 
     <?php
-include 'sidebar.php'; // Use the correct path
-?>
+    include 'cpa_sidebar.php';
+    ?>
 
 
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Leaderboards</h1>
+            <h1>Posted Questions</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active">Leaderoards</li>
-             
+                    <li class="breadcrumb-item active">Posted Questions</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
 
-        <?php
-// Include database connection
-include 'config.php';
-
-// Fetch data from the leaderboards table
-$query = "SELECT transaction_id, created_at, score FROM leaderboards ORDER BY score DESC";
-$result = mysqli_query($conn, $query);
-?>
-
-<section class="section dashboard">
+        <section class="section dashboard">
     <div class="row">
-        <div class="col-md-12">
-            <!-- Table Display -->
-            
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Quiz ID</th>
-                                <th>Time quiz taken</th>
-                                <th>Score</th>
-                                <th>Full Name</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (mysqli_num_rows($result) > 0): ?>
-                                <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                                    <?php
-                                    // Fetch full name from the gamified table
-                                    $transaction_id = $row['transaction_id'];
-                                    $full_name_query = "SELECT full_name FROM gamified WHERE gamefied_id = '" . mysqli_real_escape_string($conn, $transaction_id) . "'";
-                                    $full_name_result = mysqli_query($conn, $full_name_query);
-                                    $full_name = "Testing Lang Na Pangalan";
-                                    if ($full_name_row = mysqli_fetch_assoc($full_name_result)) {
-                                        $full_name = ucwords(strtolower($full_name_row['full_name']));
-                                    }
+        <?php
+        // Query to fetch questions with an "active" status
+        $fetch_query = "SELECT * FROM homeworkhelp WHERE status = 'active'";
+        $result = mysqli_query($conn, $fetch_query);
 
-                                    // Format the created_at date
-                                    $formatted_date = date("F j, Y", strtotime($row['created_at']));
-                                    ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars($row['transaction_id']); ?></td>
-                                        <td><?php echo htmlspecialchars($formatted_date); ?></td>
-                                        <td><?php echo htmlspecialchars($row['score']); ?></td>
-                                        <td><?php echo htmlspecialchars($full_name); ?></td>
-                                    </tr>
-                                <?php endwhile; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="4">No data available</td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-              
+        if (mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                // Format the created_at date
+                $formatted_date = date("F j, Y", strtotime($row['created_at']));
+                ?>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= htmlspecialchars($row['subject_title']); ?></h5>
+                            <p class="card-text">
+                                <strong>Question:</strong> <?= htmlspecialchars($row['assignment_question']); ?><br>
+                                <strong>Difficulty:</strong> <?= htmlspecialchars($row['assignment_difficulty']); ?><br>
+                                <strong>Date Submitted:</strong> <?= $formatted_date; ?><br>
+                                <strong>Urgency:</strong> <?= htmlspecialchars($row['urgency']) ?: 'Not specified'; ?><br>
+                            </p>
+                            <a href="#" class="btn btn-primary answer-btn" 
+   data-bs-toggle="modal" 
+   data-bs-target="#answerModal"
+   data-transaction_id="<?= $row['transaction_id']; ?>" 
+   data-question="<?= htmlspecialchars($row['assignment_question']); ?>"
+   data-difficulty="<?= htmlspecialchars($row['assignment_difficulty']); ?>"
+   data-urgency="<?= htmlspecialchars($row['urgency']) ?: 'Not specified'; ?>">
+   Answer
+</a>
+
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
+        } else {
+            echo '<div style="display: flex; align-items: center; justify-content: center; height: 90vh;">
+            <p>No active questions found.</p>
+          </div>';
+    
+        }
+        ?>
     </div>
 </section>
 
-<?php
-// Close the database connection
-mysqli_close($conn);
-?>
+<!-- Answer Modal -->
+<div class="modal fade" id="answerModal" tabindex="-1" aria-labelledby="answerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form id="answerForm" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="answerModalLabel">Answer the Question</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="question_id" id="questionId">
+                    <p><strong>Question:</strong> <span id="questionText"></span></p>
+                    <p><strong>Difficulty:</strong> <span id="difficultyText"></span></p>
+                    <p><strong>Urgency:</strong> <span id="urgencyText"></span></p>
+                    <div class="form-group">
+                        <label for="answerText" class="form-label">Your Answer</label>
+                        <textarea class="form-control" name="answer" id="answerText" rows="5" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="submitAnswer" class="btn btn-success">Submit Answer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 
 
-    </main><!-- End #main -->
+
+    </main>
 
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
@@ -603,6 +551,29 @@ mysqli_close($conn);
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
 
+
+   <script>
+   document.addEventListener("DOMContentLoaded", function () {
+    const answerButtons = document.querySelectorAll(".answer-btn");
+
+    answerButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            const questionId = this.dataset.transaction_id; // Updated to match the button attribute
+            const questionText = this.dataset.question;
+            const difficulty = this.dataset.difficulty;
+            const urgency = this.dataset.urgency;
+
+            // Populate modal fields
+            document.getElementById("questionId").value = questionId;
+            document.getElementById("questionText").textContent = questionText;
+            document.getElementById("difficultyText").textContent = difficulty;
+            document.getElementById("urgencyText").textContent = urgency;
+        });
+    });
+});
+
+
+   </script>
 </body>
 
 </html>

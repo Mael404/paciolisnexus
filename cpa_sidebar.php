@@ -34,29 +34,7 @@
     </ul>
   </li><!-- End Study Plans Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" data-bs-target="#quizzes-admin-nav" data-bs-toggle="collapse" href="#">
-      <i class="bi bi-question-square"></i><span>Manage Quizzes</span><i class="bi bi-chevron-down ms-auto"></i>
-    </a>
-    <ul id="quizzes-admin-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
-      <li>
-        <a href="cpa_quiztransactions.php">
-          <i class="bi bi-circle"></i><span>Quiz Transactions</span>
-        </a>
-      </li>
-    
-      <li>
-        <a href="cpa_managepoints.php">
-          <i class="bi bi-circle"></i><span>Manage Points</span>
-        </a>
-      </li>
-      <li>
-        <a href="cpa_leaderboard.php">
-          <i class="bi bi-circle"></i><span>Leaderboard Overview</span>
-        </a>
-      </li>
-    </ul>
-</li><!-- End Manage Quizzes Nav -->
+ 
 
 <li class="nav-item">
   <a class="nav-link collapsed" data-bs-target="#manage-questions-nav" data-bs-toggle="collapse" href="#">

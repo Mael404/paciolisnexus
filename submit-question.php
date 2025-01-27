@@ -554,9 +554,18 @@ $show_modal = $row['count'] == 0;
                     <input type="text" id="address" name="address" class="form-control" placeholder="Enter your address" required>
                   </div>
                   <div class="mb-3">
-                    <label for="quizTitle" style="font-weight: bold;">Quiz Title:</label>
-                    <input type="text" id="quizTitle" name="quiz_title" class="form-control" value="Advanced Financial Accounting and Reporting" readonly>
-                  </div>
+  <label for="quizTitle" style="font-weight: bold;">Quiz Title:</label>
+  <select id="quizTitle" name="quiz_title" class="form-control">
+    <option value="" disabled selected>Choose Subject</option>
+    <option value="Financial Accounting and Reporting">Financial Accounting and Reporting</option>
+    <option value="Advanced Financial Accounting and Reporting">Advanced Financial Accounting and Reporting</option>
+    <option value="Taxation">Taxation</option>
+    <option value="Auditing">Auditing</option>
+    <option value="Regulatory Framework for Business Transactions">Regulatory Framework for Business Transactions</option>
+    <option value="Management Advisory Services">Management Advisory Services</option>
+  </select>
+</div>
+
                   <div style="text-align: center; margin-top: 30px;">
                     <button type="button" class="btn btn-secondary" onclick="prevStep(1)">Previous</button>
                     <button type="button" class="btn btn-primary" onclick="nextStep(3)">Next</button>

@@ -563,13 +563,13 @@ if ($current_user_id) {
                     <h6 class="text-secondary">CPA Information</h6>
                     <p><strong>CPA ID:</strong> <span id="cpaId" class="fw-bold text-dark"></span></p>
                     <p><strong>CPA Name:</strong> <span id="cpaName" class="text-dark"></span></p> <!-- New field for CPA Name -->
-                    <p><strong>Answer:</strong> <span id="answer" class="text-success"></span></p>
+                    <p><strong>Answer:</strong> <span id="answer" class="text-success fw-bold text-uppercase unique-answer"></span></p> <!-- Updated with a unique class and style -->
                 </div>
-               
             </div>
         </div>
     </div>
 </div>
+
 
 
 

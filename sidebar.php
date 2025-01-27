@@ -106,7 +106,19 @@
         </li>
       </ul>
     </li><!-- End Career Guidance Hub -->
-
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#messaging-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-chat-left-dots"></i><span>Messages</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="messaging-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="view-messages.php">
+            <i class="bi bi-circle"></i><span>View Messages</span>
+          </a>
+        </li>
+  
+      </ul>
+    </li><!-- End Messaging Nav -->
     <!-- Support -->
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#support-nav" data-bs-toggle="collapse" href="#">

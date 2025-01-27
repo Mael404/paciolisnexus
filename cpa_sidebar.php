@@ -15,19 +15,20 @@
       <i class="bi bi-book"></i><span>Study Plans</span><i class="bi bi-chevron-down ms-auto"></i>
     </a>
     <ul id="study-plans-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+    
       <li>
-        <a href="view-plan.html">
-          <i class="bi bi-circle"></i><span>View Plan</span>
+        <a href="cpa_uploadmaterials.php">
+          <i class="bi bi-circle"></i><span>Manage Materials</span>
         </a>
       </li>
       <li>
-        <a href="update-profile.html">
-          <i class="bi bi-circle"></i><span>Update Profile</span>
+        <a href="cpa_transactionhistory.php">
+          <i class="bi bi-circle"></i><span>Transaction History</span>
         </a>
       </li>
       <li>
-        <a href="progress-tracker.html">
-          <i class="bi bi-circle"></i><span>Progress Tracker</span>
+        <a href="cpa_incomesummary.php">
+          <i class="bi bi-circle"></i><span>Income Summary</span>
         </a>
       </li>
     </ul>

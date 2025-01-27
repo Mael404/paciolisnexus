@@ -301,7 +301,7 @@ if (isset($_POST['submitAnswer'])) {
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6> <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?></h6>
-                            <span>CPA</span>
+                            <span>ADMIN</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -354,18 +354,18 @@ if (isset($_POST['submitAnswer'])) {
     </header><!-- End Header -->
 
     <?php
-    include 'cpa_sidebar.php';
+    include 'sidebar.php';
     ?>
 
 
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Manage Materials</h1>
+            <h1>Library</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active">Posted Questions</li>
+                    <li class="breadcrumb-item active">Library</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -408,9 +408,7 @@ if (isset($_POST['submitAnswer'])) {
 <section class="section dashboard">
   <div class="container">
     <!-- Button to toggle the upload form visibility -->
-    <button id="toggleUploadForm" class="btn btn-success mb-4">
-      <i class="bi bi-plus-circle"></i> Upload PDF
-    </button>
+   
 
     <!-- Upload Form Section (Initially hidden) -->
     <div id="uploadSection" class="row" style="display: none;">
@@ -478,12 +476,11 @@ if (isset($_POST['submitAnswer'])) {
 
 
 
-
 <section class="section dashboard">
   <div class="container">
     <div class="row mb-4">
       <div class="col-12">
-        <h2 class="section-title text-center">Uploaded PDF Files</h2>
+        <h2 class="section-title text-center">Library</h2>
       </div>
     </div>
 
@@ -509,15 +506,15 @@ if (isset($_POST['submitAnswer'])) {
 
     <div class="row">
       <?php
-      // Assuming the user_id is stored in the session
-      $userId = $_SESSION['user_id'];
+   
+      $user_id = $_SESSION['user_id']; // Assuming user_id is stored in the session
 
       // Get selected subject from the dropdown (if any)
       $selectedSubject = isset($_GET['subject']) ? $_GET['subject'] : '';
 
-      // Build query to fetch file paths, file names, and subject based on selected subject
-      $query = "SELECT file_path, file_name, subject FROM materials WHERE cpa_id = ?";
-      
+      // Build query to fetch file paths, file names, subject, and status based on selected subject and student_id match
+      $query = "SELECT id, file_path, file_name, subject, status FROM materials WHERE student_id = ?";
+
       // Add condition for subject if selected
       if ($selectedSubject != '') {
           $query .= " AND subject = ?";
@@ -526,22 +523,26 @@ if (isset($_POST['submitAnswer'])) {
       // Prepare and execute the query
       $stmt = $conn->prepare($query);
       if ($selectedSubject != '') {
-          $stmt->bind_param("is", $userId, $selectedSubject); // Bind user_id and subject
+          $stmt->bind_param("is", $user_id, $selectedSubject); // Bind user_id and subject
       } else {
-          $stmt->bind_param("i", $userId); // Bind only user_id
+          $stmt->bind_param("i", $user_id); // Bind only user_id if no subject is selected
       }
       $stmt->execute();
       $result = $stmt->get_result();
 
       if ($result && $result->num_rows > 0) {
           while ($row = $result->fetch_assoc()) {
+              $fileId = $row['id']; // ID of the file
               $filePath = $row['file_path']; // Path to the PDF file
               $fileName = $row['file_name']; // Name of the file
               $subject = $row['subject']; // Subject from the database
+              $status = $row['status']; // Status of the file
               ?>
               <div class="col-md-6 mb-4">
                 <div class="card shadow-sm">
                   <div class="card-body">
+                 
+
                     <h5 class="card-title text-primary"><?= htmlspecialchars($fileName) ?></h5>
                     <p class="text-secondary"><strong>Subject:</strong> <?= htmlspecialchars($subject) ?></p> <!-- Display subject here -->
                     <?php 
@@ -549,13 +550,31 @@ if (isset($_POST['submitAnswer'])) {
                     if (file_exists($filePath)) { 
                         $fileUrl = htmlspecialchars($filePath); 
                     ?>
-                      <!-- Embed PDF content in iframe -->
-                      <iframe 
-                        src="<?= $fileUrl ?>" 
-                        width="100%" 
-                        height="500px" 
-                        style="border: 1px solid #ddd;">
-                      </iframe>
+                     <!-- Embed PDF content in iframe -->
+<iframe 
+  src="<?= $fileUrl ?>" 
+  width="100%" 
+  height="500px" 
+  style="border: 1px solid #ddd;">
+</iframe>
+
+<!-- Progress Tracker -->
+<div style="margin-top: 20px;">
+  <label for="progress">Progress:</label>
+  <div style="background-color: #f3f3f3; border-radius: 5px; width: 100%; height: 30px;">
+    <div id="progress" style="background-color: #4caf50; height: 100%; width: 78%; border-radius: 5px; text-align: center; color: white; font-weight: bold; line-height: 30px;">
+      78%
+    </div>
+  </div>
+</div>
+
+<!-- Expiration Date -->
+<div style="margin-top: 10px; font-weight:bold; color:#dc3545">
+  <label for="expiration">Material Expiration Date:</label>
+  <span id="expiration">July 14, 2025</span>
+</div>
+
+                      <!-- Checkbox for visibility -->
                     <?php } else { ?>
                       <p class="text-danger">PDF file not found or inaccessible.</p>
                     <?php } ?>
@@ -565,13 +584,103 @@ if (isset($_POST['submitAnswer'])) {
               <?php
           }
       } else {
-          // No PDFs found in the table for this user
-          echo "<p class='text-warning'>No PDF files found for your account.</p>";
+          // No PDFs found for the logged-in user
+          echo "<p class='text-warning'>No PDF files found.</p>";
       }
       ?>
     </div>
   </div>
 </section>
+
+
+<!-- Confirmation Modal -->
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmationModalLabel">Confirm Visibility Change</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="confirmationModalMessage">
+        Are you sure you want to hide this material?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" id="confirmVisibility">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // Handle checkbox change event
+  document.querySelectorAll('.form-check-input').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+      const fileId = this.getAttribute('data-id');
+      
+      // Show confirmation modal if unchecked (for hiding)
+      if (!this.checked) {
+        // Store file ID in the modal's confirm button
+        document.getElementById('confirmVisibility').setAttribute('data-id', fileId);
+        // Set the confirmation message to "Hide"
+        document.getElementById('confirmationModalLabel').textContent = 'Confirm Visibility Change';
+        document.getElementById('confirmationModalMessage').textContent = 'Are you sure you want to hide this material?';
+        // Show the modal
+        new bootstrap.Modal(document.getElementById('confirmationModal')).show();
+      } else {
+        // Show confirmation modal if checked (for making visible)
+        document.getElementById('confirmVisibility').setAttribute('data-id', fileId);
+        // Set the confirmation message to "Visible"
+        document.getElementById('confirmationModalLabel').textContent = 'Confirm Visibility Change';
+        document.getElementById('confirmationModalMessage').textContent = 'Are you sure you want to make this material visible?';
+        // Show the modal
+        new bootstrap.Modal(document.getElementById('confirmationModal')).show();
+      }
+    });
+  });
+
+  // Handle modal confirmation for setting status to either hidden or visible
+  document.getElementById('confirmVisibility').addEventListener('click', function() {
+    const fileId = this.getAttribute('data-id');
+    const status = document.getElementById('visibilityCheckbox' + fileId).checked ? 'visible' : 'hidden';
+    
+    // Send an AJAX request to update the status in the database
+    updateFileStatus(fileId, status);
+    
+    // Close the modal
+    bootstrap.Modal.getInstance(document.getElementById('confirmationModal')).hide();
+  });
+
+  // Function to update file status
+  function updateFileStatus(fileId, status) {
+    // Determine the correct PHP file based on the status (visible or hidden)
+    const url = (status === 'visible') ? 'update_visibility.php' : 'update_visibility_hidden.php';
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id: fileId })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Update the checkbox based on the status
+        document.getElementById('visibilityCheckbox' + fileId).checked = (status === 'visible');
+        alert('File status updated to ' + status + '.');
+        location.reload(); // Reload the page to reflect changes
+      } else {
+        alert('Error updating status.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+</script>
 
 
 

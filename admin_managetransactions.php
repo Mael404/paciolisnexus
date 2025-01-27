@@ -1,37 +1,7 @@
 <?php
 session_start();
-include('config.php');
 
-if (isset($_POST['submitAnswer'])) {
-    $question_id = $_POST['question_id'];
-    $answer = mysqli_real_escape_string($conn, $_POST['answer']);
-    $current_user_id = $_SESSION['user_id']; // Assuming the user ID is stored in the session
-
-    // Query to get the name of the logged-in user from the 'users' table
-    $user_query = "SELECT name FROM users WHERE user_id = '$current_user_id'";
-    $result = mysqli_query($conn, $user_query);
-    
-    if ($result && mysqli_num_rows($result) > 0) {
-        $user = mysqli_fetch_assoc($result);
-        $user_name = $user['name']; // Get the name of the user
-        
-        // Update the homeworkhelp table with the answer, cpa_id, and cpa_name
-        $update_query = "UPDATE homeworkhelp 
-                         SET answer = '$answer', cpa_id = '$current_user_id', cpa_name = '$user_name', status = 'Answered' 
-                         WHERE transaction_id = '$question_id'";
-
-        if (mysqli_query($conn, $update_query)) {
-            echo "<script>alert('Answer submitted successfully!');</script>";
-        } else {
-            echo "Error: " . mysqli_error($conn);
-            echo "<script>alert('Error submitting answer. Please try again.');</script>";
-        }
-    } else {
-        echo "<script>alert('Error: User not found.');</script>";
-    }
-}
 ?>
-
 
 
 
@@ -53,7 +23,10 @@ if (isset($_POST['submitAnswer'])) {
     <!-- Favicons -->
     <link href="assets/img/favicon.png" rel="icon">
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <!-- DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -99,19 +72,6 @@ if (isset($_POST['submitAnswer'])) {
             font-size: 18px;
             /* Icon size */
         }
-
-     
-  .card {
-    margin-bottom: 20px;
-  }
-  .text-danger {
-    color: #dc3545;
-  }
-  .text-warning {
-    color: #ffc107;
-  }
-
-
     </style>
 </head>
 
@@ -290,9 +250,8 @@ if (isset($_POST['submitAnswer'])) {
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-person-fill rounded-circle" style="font-size: 1.5rem;"></i>
                         <span class="d-none d-md-block dropdown-toggle ps-2">
-                     <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?>
+                            ADMIN
                         </span>
-                        
                     </a>
                     <!-- End Profile Icon -->
 
@@ -301,7 +260,7 @@ if (isset($_POST['submitAnswer'])) {
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6> <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?></h6>
-                            <span>CPA</span>
+                            <span>ADMIN</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -354,295 +313,94 @@ if (isset($_POST['submitAnswer'])) {
     </header><!-- End Header -->
 
     <?php
-    include 'cpa_sidebar.php';
+    include 'admin_sidebar.php';
     ?>
 
 
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Manage Materials</h1>
+            <h1>Manage Transactions</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active">Posted Questions</li>
+                    <li class="breadcrumb-item active">Manage Transactions</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
-        <style>
-  .upload-container {
-    max-width: 600px; /* Reduced max-width */
-    margin: auto;
-    background-color: #fff;
-    padding: 20px; /* Reduced padding */
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-  }
-
-  .upload-container h2 {
-    margin-bottom: 15px; /* Reduced margin */
-    color: #0056b3;
-    font-size: 1.8rem; /* Reduced font size */
-  }
-
-  .upload-container label {
-    font-weight: bold;
-    font-size: 1rem; /* Adjusted font size for label */
-  }
-
-  .upload-container button {
-    background-color: #0056b3;
-    color: white;
-    border: none;
-    padding: 8px 18px; /* Reduced padding */
-    font-size: 14px; /* Smaller button font size */
-    cursor: pointer;
-  }
-
-  .upload-container button:hover {
-    background-color: #004085;
-  }
-</style>
-
-<section class="section dashboard">
-  <div class="container">
-    <!-- Button to toggle the upload form visibility -->
-    <button id="toggleUploadForm" class="btn btn-success mb-4">
-      <i class="bi bi-plus-circle"></i> Upload PDF
-    </button>
-
-    <!-- Upload Form Section (Initially hidden) -->
-    <div id="uploadSection" class="row" style="display: none;">
-      <div class="container">
-        <div class="upload-container">
-          <h2>Upload Your PDF</h2>
-          <form action="upload_pdf.php" method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-              <label for="subject" class="form-label">Choose Subject:</label>
-              <select name="subject" id="subject" class="form-control" required>
-                <option value="">Select a Subject</option>
-                <option value="Financial Accounting and Reporting">Financial Accounting and Reporting</option>
-                <option value="Advanced Financial Accounting and Reporting">Advanced Financial Accounting and Reporting</option>
-                <option value="Taxation">Taxation</option>
-                <option value="Auditing">Auditing</option>
-                <option value="Regulatory Framework for Business Transactions">Regulatory Framework for Business Transactions</option>
-                <option value="Management Advisory Services">Management Advisory Services</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="pdfFile" class="form-label">Choose PDF File:</label>
-              <input type="file" name="pdfFile" id="pdfFile" accept="application/pdf" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Upload</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-
-<!-- JavaScript to toggle the upload form visibility with fade-in animation -->
-<script>
-  document.getElementById("toggleUploadForm").addEventListener("click", function() {
-    var uploadSection = document.getElementById("uploadSection");
-    if (uploadSection.style.display === "none" || uploadSection.style.display === "") {
-      uploadSection.style.display = "block";  // Show the section
-      uploadSection.classList.add("fade-in");  // Add fade-in animation class
-      this.innerHTML = '<i class="bi bi-dash-circle"></i> Hide Upload Form';  // Change button text to "Hide"
-    } else {
-      uploadSection.style.display = "none";  // Hide the section
-      uploadSection.classList.remove("fade-in");  // Remove fade-in class to reset animation
-      this.innerHTML = '<i class="bi bi-plus-circle"></i> Upload PDF';  // Change button text back to "+"
-    }
-  });
-</script>
-
-<!-- CSS for fade-in animation -->
-<style>
-  .fade-in {
-    animation: fadeIn 1s ease-in-out;
-  }
-
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-</style>
-
-
-
-
-<section class="section dashboard">
-  <div class="container">
-    <div class="row mb-4">
-      <div class="col-12">
-        <h2 class="section-title text-center">Uploaded PDF Files</h2>
-      </div>
-    </div>
-
-    <!-- Dropdown for sorting by subject -->
-    <div class="row mb-3">
-      <div class="col-12">
-        <form method="GET" action="">
-          <div class="form-group">
-            <label for="subject">Sort by Subject:</label>
-            <select name="subject" id="subject" class="form-control" onchange="this.form.submit()">
-              <option value="">All Subjects</option>
-              <option value="Financial Accounting and Reporting" <?= isset($_GET['subject']) && $_GET['subject'] == 'Financial Accounting and Reporting' ? 'selected' : '' ?>>Financial Accounting and Reporting</option>
-              <option value="Advanced Financial Accounting and Reporting" <?= isset($_GET['subject']) && $_GET['subject'] == 'Advanced Financial Accounting and Reporting' ? 'selected' : '' ?>>Advanced Financial Accounting and Reporting</option>
-              <option value="Taxation" <?= isset($_GET['subject']) && $_GET['subject'] == 'Taxation' ? 'selected' : '' ?>>Taxation</option>
-              <option value="Auditing" <?= isset($_GET['subject']) && $_GET['subject'] == 'Auditing' ? 'selected' : '' ?>>Auditing</option>
-              <option value="Regulatory Framework for Business Transactions" <?= isset($_GET['subject']) && $_GET['subject'] == 'Regulatory Framework for Business Transactions' ? 'selected' : '' ?>>Regulatory Framework for Business Transactions</option>
-              <option value="Management Advisory Services" <?= isset($_GET['subject']) && $_GET['subject'] == 'Management Advisory Services' ? 'selected' : '' ?>>Management Advisory Services</option>
-            </select>
-          </div>
-        </form>
-      </div>
-    </div>
-
+        
+        
+        <section class="section dashboard">
     <div class="row">
-      <?php
-      // Assuming the user_id is stored in the session
-      $userId = $_SESSION['user_id'];
-
-      // Get selected subject from the dropdown (if any)
-      $selectedSubject = isset($_GET['subject']) ? $_GET['subject'] : '';
-
-      // Build query to fetch file paths, file names, and subject based on selected subject
-      $query = "SELECT file_path, file_name, subject FROM materials WHERE cpa_id = ?";
-      
-      // Add condition for subject if selected
-      if ($selectedSubject != '') {
-          $query .= " AND subject = ?";
-      }
-
-      // Prepare and execute the query
-      $stmt = $conn->prepare($query);
-      if ($selectedSubject != '') {
-          $stmt->bind_param("is", $userId, $selectedSubject); // Bind user_id and subject
-      } else {
-          $stmt->bind_param("i", $userId); // Bind only user_id
-      }
-      $stmt->execute();
-      $result = $stmt->get_result();
-
-      if ($result && $result->num_rows > 0) {
-          while ($row = $result->fetch_assoc()) {
-              $filePath = $row['file_path']; // Path to the PDF file
-              $fileName = $row['file_name']; // Name of the file
-              $subject = $row['subject']; // Subject from the database
-              ?>
-              <div class="col-md-6 mb-4">
-                <div class="card shadow-sm">
-                  <div class="card-body">
-                    <h5 class="card-title text-primary"><?= htmlspecialchars($fileName) ?></h5>
-                    <p class="text-secondary"><strong>Subject:</strong> <?= htmlspecialchars($subject) ?></p> <!-- Display subject here -->
-                    <?php 
-                    // Check if file path is valid and accessible
-                    if (file_exists($filePath)) { 
-                        $fileUrl = htmlspecialchars($filePath); 
-                    ?>
-                      <!-- Embed PDF content in iframe -->
-                      <iframe 
-                        src="<?= $fileUrl ?>" 
-                        width="100%" 
-                        height="500px" 
-                        style="border: 1px solid #ddd;">
-                      </iframe>
-                    <?php } else { ?>
-                      <p class="text-danger">PDF file not found or inaccessible.</p>
-                    <?php } ?>
-                  </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Material Access Records</h5>
                 </div>
-              </div>
-              <?php
-          }
-      } else {
-          // No PDFs found in the table for this user
-          echo "<p class='text-warning'>No PDF files found for your account.</p>";
-      }
-      ?>
+                <div class="card-body">
+                    <table id="materialTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                       
+                                <th>Full Name</th>
+                                <th>GCash Number</th>
+                                <th>GCash Name</th>
+                                <th>Proof of Payment</th>
+                                <th>Created At</th>
+                                <th>Status</th>
+                                <th>Action</th> <!-- Action Column -->
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to <span id="confirmAction"></span> this request?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmButton">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Proof of Payment</h5>
+               
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Zoomed Image" class="img-fluid" style="border-radius: 5px; max-height: 80vh;">
+            </div>
+        </div>
+    </div>
+</div>
+        <style>
+            #gamifiedTable tbody {
+                font-size: 0.875rem;
+                /* Smaller font size */
+            }
 
-
-<!-- Additional Styling -->
-<style>
-    .section-title {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #333; /* Dark text color for visibility */
-    background: linear-gradient(135deg, #0056b3, #00bfff); /* Gradient color */
-    -webkit-background-clip: text;
-    background-clip: text;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    letter-spacing: 2px;
-    position: relative;
-    display: inline-block;
-    padding-bottom: 5px;
-  }
-
-  .section-title::after {
-    content: '';
-    position: absolute;
-    width: 50%;
-    height: 3px;
-    background-color: #00bfff; /* Underline effect with highlight color */
-    bottom: 0;
-    left: 25%;
-    transition: width 0.3s ease-in-out;
-  }
-
-  .section-title:hover::after {
-    width: 100%; /* Full underline effect on hover */
-    left: 0;
-  }
-  
-  .card {
-    border-radius: 8px;
-    transition: transform 0.3s ease-in-out;
-  }
-
-  .card:hover {
-    transform: translateY(-5px);
-  }
-
-  .card-body {
-    padding: 20px;
-  }
-
-  .card-title {
-    font-size: 1.25rem;
-    font-weight: 500;
-    color: #0056b3;
-    margin-bottom: 20px;
-  }
-
-  iframe {
-    border-radius: 8px;
-    border: 1px solid #ccc;
-  }
-
-  .row.mb-4 {
-    margin-bottom: 20px;
-  }
-</style>
-
-
-
-
+            #gamifiedTable .btn {
+                margin-right: 5px;
+            }
+        </style>
 
 
 
@@ -675,8 +433,91 @@ if (isset($_POST['submitAnswer'])) {
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
 
+    <script>
+    $(document).ready(function () {
+        var selectedRowId; // Store selected row ID for confirmation
+
+        $('#materialTable').DataTable({
+            "ajax": "fetch_materials.php", // URL to fetch data
+            "columns": [
+                { "data": "full_name" },
+                { "data": "gcash_number" },
+                { "data": "gcash_name" },
+                {
+                    "data": "proof_of_payment",
+                    "render": function (data) {
+                        return `
+                            <img src="${data}" alt="Proof of Payment" 
+                                 width="50" height="50" 
+                                 style="object-fit:cover; border-radius:5px; cursor:pointer;" 
+                                 onclick="showImageModal('${data}')">`;
+                    }
+                },
+                { "data": "created_at" },
+                { "data": "status" }, // Add the status column here
+                {
+                    "data": null, // Placeholder for Action column
+                    "render": function (data, type, row) {
+                        return `
+                          <button class="btn btn-success btn-sm" onclick="confirmAction(${row.id}, 'Confirmed')">
+    <i class="bi bi-check"></i>
+</button>
+<button class="btn btn-danger btn-sm" onclick="confirmAction(${row.id}, 'Denied')">
+    <i class="bi bi-x"></i>
+</button>
+`;
+                    }
+                }
+            ],
+            "order": [[0, "asc"]]
+        });
+
+        // Function to show the image in a modal
+        window.showImageModal = function (imageUrl) {
+            $('#modalImage').attr('src', imageUrl);
+            $('#imageModal').modal('show');
+        };
+
+        // Function to show confirmation modal
+        window.confirmAction = function (id, action) {
+            selectedRowId = id; // Store the ID of the selected row
+            const actionText = action === 'confirm' ? 'confirm' : 'deny';
+            $('#confirmAction').text(actionText);
+            $('#confirmModal').modal('show');
+
+            // When the user confirms the action
+            $('#confirmButton').off().on('click', function () {
+                updateStatus(selectedRowId, action);
+                $('#confirmModal').modal('hide');
+            });
+        };
+
+        // Function to update the status in the database
+        function updateStatus(id, action) {
+            $.ajax({
+                url: 'material_update.php',
+                method: 'POST',
+                data: {
+                    id: id, 
+                    status: action
+                },
+                success: function (response) {
+                    console.log(response); // Log the response
+                    if (response.success) {
+                        alert("Status updated successfully.");
+                        $('#materialTable').DataTable().ajax.reload(); // Reload the table
+                    } else {
+                        alert("Status updated successfully.");
+                        $('#materialTable').DataTable().ajax.reload(); // Reload the table
+                    }
+                }
+            });
+        }
+    });
+</script>
 
 
+    
 </body>
 
 </html>

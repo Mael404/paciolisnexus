@@ -301,7 +301,7 @@ if (isset($_POST['submitAnswer'])) {
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6> <?php echo htmlspecialchars($_SESSION['name'], ENT_QUOTES, 'UTF-8'); ?></h6>
-                            <span>CPA</span>
+                            <span>ADMIN</span>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -354,7 +354,7 @@ if (isset($_POST['submitAnswer'])) {
     </header><!-- End Header -->
 
     <?php
-    include 'cpa_sidebar.php';
+    include 'admin_sidebar.php';
     ?>
 
 
@@ -478,7 +478,6 @@ if (isset($_POST['submitAnswer'])) {
 
 
 
-
 <section class="section dashboard">
   <div class="container">
     <div class="row mb-4">
@@ -509,32 +508,28 @@ if (isset($_POST['submitAnswer'])) {
 
     <div class="row">
       <?php
-      // Assuming the user_id is stored in the session
-      $userId = $_SESSION['user_id'];
-
       // Get selected subject from the dropdown (if any)
       $selectedSubject = isset($_GET['subject']) ? $_GET['subject'] : '';
 
       // Build query to fetch file paths, file names, and subject based on selected subject
-      $query = "SELECT file_path, file_name, subject FROM materials WHERE cpa_id = ?";
+      $query = "SELECT id, file_path, file_name, subject FROM materials";
       
       // Add condition for subject if selected
       if ($selectedSubject != '') {
-          $query .= " AND subject = ?";
+          $query .= " WHERE subject = ?";
       }
 
       // Prepare and execute the query
       $stmt = $conn->prepare($query);
       if ($selectedSubject != '') {
-          $stmt->bind_param("is", $userId, $selectedSubject); // Bind user_id and subject
-      } else {
-          $stmt->bind_param("i", $userId); // Bind only user_id
+          $stmt->bind_param("s", $selectedSubject); // Bind only subject
       }
       $stmt->execute();
       $result = $stmt->get_result();
 
       if ($result && $result->num_rows > 0) {
           while ($row = $result->fetch_assoc()) {
+              $fileId = $row['id']; // ID of the file
               $filePath = $row['file_path']; // Path to the PDF file
               $fileName = $row['file_name']; // Name of the file
               $subject = $row['subject']; // Subject from the database
@@ -556,6 +551,13 @@ if (isset($_POST['submitAnswer'])) {
                         height="500px" 
                         style="border: 1px solid #ddd;">
                       </iframe>
+                      <!-- Checkbox for visibility (Positioned to the upper right) -->
+                      <div class="form-check position-absolute top-0 end-0 m-3">
+                        <input class="form-check-input" type="checkbox" id="visibilityCheckbox<?= $fileId ?>" data-id="<?= $fileId ?>" style="transform: scale(1.5);">
+                        <label class="form-check-label" for="visibilityCheckbox<?= $fileId ?>">
+                          Mark as visible
+                        </label>
+                      </div>
                     <?php } else { ?>
                       <p class="text-danger">PDF file not found or inaccessible.</p>
                     <?php } ?>
@@ -565,13 +567,81 @@ if (isset($_POST['submitAnswer'])) {
               <?php
           }
       } else {
-          // No PDFs found in the table for this user
-          echo "<p class='text-warning'>No PDF files found for your account.</p>";
+          // No PDFs found in the table
+          echo "<p class='text-warning'>No PDF files found.</p>";
       }
       ?>
     </div>
   </div>
 </section>
+
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmationModalLabel">Confirm Visibility</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to mark this file as visible?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" id="confirmVisibility">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Handle checkbox change event
+  document.querySelectorAll('.form-check-input').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+      // Show confirmation modal if checked
+      if (this.checked) {
+        const fileId = this.getAttribute('data-id');
+        // Store file ID in the modal's confirm button
+        document.getElementById('confirmVisibility').setAttribute('data-id', fileId);
+        // Show the modal
+        new bootstrap.Modal(document.getElementById('confirmationModal')).show();
+      }
+    });
+  });
+
+  // Handle modal confirmation
+  document.getElementById('confirmVisibility').addEventListener('click', function() {
+    const fileId = this.getAttribute('data-id');
+    
+    // Send an AJAX request to update the status in the database
+    fetch('update_visibility.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id: fileId })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Change checkbox to checked and notify the user
+        document.getElementById('visibilityCheckbox' + fileId).checked = true;
+        alert('File status updated to visible.');
+      } else {
+        alert('Failed to update file status.');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+
+    // Close the modal
+    bootstrap.Modal.getInstance(document.getElementById('confirmationModal')).hide();
+  });
+</script>
+
+
 
 
 

@@ -10,6 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $uploadDir = "uploads/"; // Ensure this directory exists and is writable
         $filePath = $uploadDir . basename($fileName);
 
+        // Get the selected subject
+        $subject = isset($_POST['subject']) ? $_POST['subject'] : '';
+
         // Check if user_id is set in the session
         if (isset($_SESSION['user_id'])) {
             $cpa_id = $_SESSION['user_id']; // Get the user_id from the session
@@ -25,9 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($name) {
                 // Move the uploaded file
                 if (move_uploaded_file($fileTmp, $filePath)) {
-                    // Insert data into materials table with cpa_id and name
-                    $stmt = $conn->prepare("INSERT INTO materials (file_name, file_path, uploaded_at, cpa_id, name) VALUES (?, ?, NOW(), ?, ?)");
-                    $stmt->bind_param("ssis", $fileName, $filePath, $cpa_id, $name);
+                    // Insert data into materials table with cpa_id, name, and subject
+                    $stmt = $conn->prepare("INSERT INTO materials (file_name, file_path, uploaded_at, cpa_id, name, subject) VALUES (?, ?, NOW(), ?, ?, ?)");
+                    $stmt->bind_param("ssiss", $fileName, $filePath, $cpa_id, $name, $subject);
+                    
 
                     if ($stmt->execute()) {
                         // Redirect to upload success page

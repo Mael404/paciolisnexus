@@ -17,20 +17,16 @@
       </a>
       <ul id="study-plans-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
         <li>
-          <a href="view-plan.html">
+          <a href="viewplan.php">
             <i class="bi bi-circle"></i><span>View Plan</span>
           </a>
         </li>
         <li>
-          <a href="update-profile.html">
-            <i class="bi bi-circle"></i><span>Update Profile</span>
+          <a href="library.php">
+            <i class="bi bi-circle"></i><span>Library</span>
           </a>
         </li>
-        <li>
-          <a href="progress-tracker.html">
-            <i class="bi bi-circle"></i><span>Progress Tracker</span>
-          </a>
-        </li>
+       
       </ul>
     </li><!-- End Study Plans Nav -->
 
@@ -74,11 +70,7 @@
             <i class="bi bi-circle"></i><span>My Questions</span>
           </a>
         </li>
-        <li>
-          <a href="pricing.html">
-            <i class="bi bi-circle"></i><span>Pricing</span>
-          </a>
-        </li>
+       
       </ul>
     </li><!-- End Homework Help Nav -->
 

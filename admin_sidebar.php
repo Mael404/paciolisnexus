@@ -9,27 +9,23 @@
       <span>Home</span>
     </a>
   </li><!-- End Home Nav -->
-
   <li class="nav-item">
     <a class="nav-link collapsed" data-bs-target="#study-plans-nav" data-bs-toggle="collapse" href="#">
       <i class="bi bi-book"></i><span>Study Plans</span><i class="bi bi-chevron-down ms-auto"></i>
     </a>
     <ul id="study-plans-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+    
       <li>
-        <a href="view-plan.html">
-          <i class="bi bi-circle"></i><span>View Plan</span>
+        <a href="admin_uploadmaterials.php">
+          <i class="bi bi-circle"></i><span>Manage Materials</span>
         </a>
       </li>
       <li>
-        <a href="update-profile.html">
-          <i class="bi bi-circle"></i><span>Update Profile</span>
+        <a href="admin_managetransactions.php">
+          <i class="bi bi-circle"></i><span>Manage Transactions</span>
         </a>
       </li>
-      <li>
-        <a href="progress-tracker.html">
-          <i class="bi bi-circle"></i><span>Progress Tracker</span>
-        </a>
-      </li>
+   
     </ul>
   </li><!-- End Study Plans Nav -->
 

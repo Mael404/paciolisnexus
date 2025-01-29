@@ -68,7 +68,12 @@ if (isset($_POST['submit'])) {
 <html lang="zxx">
 
 <head>
-    <title>Login Form - Paciolis Nexus</title>
+<title>Pacioli’S Nexus</title>
+
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
     <!-- Meta tag Keywords -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8" />

@@ -80,7 +80,12 @@ if (isset($_POST['submit'])) {
 <html lang="zxx">
 
 <head>
-    <title>Login Form - Brave Coder</title>
+<title>Pacioli’S Nexus</title>
+
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
     <!-- Meta tag Keywords -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8" />
@@ -118,6 +123,95 @@ if (isset($_POST['submit'])) {
             animation: upDown 2s ease-in-out infinite;
             /* Infinite loop, smooth transition */
         }
+
+              /* Restore native checkbox appearance */
+input[type="checkbox"] {
+    -webkit-appearance: checkbox;
+    -moz-appearance: checkbox;
+    appearance: checkbox;
+    width: 16px; /* Standard size */
+    height: 16px;
+    cursor: pointer;
+    accent-color: #106eea; /* Optional: Customize checkbox color */
+}
+  /* Modal Background */
+  .custom-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    /* Modal Content */
+    .custom-modal-content {
+        background: white;
+        padding: 20px;
+        width: 300px;
+        max-width: 90%;
+        margin: 15% auto;
+        text-align: center;
+        border-radius: 8px;
+        position: relative;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        animation: slideDown 0.3s ease-in-out;
+    }
+
+    /* Close Button */
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .close-btn {
+        background: #106eea;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .close-btn:hover {
+        background: #0056b3;
+    }
+
+    /* Checkbox Styling */
+    .small-checkbox {
+        width: 14px;
+        height: 14px;
+        vertical-align: middle;
+        cursor: pointer;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
     </style>
 </head>
 
@@ -143,12 +237,23 @@ if (isset($_POST['submit'])) {
                         <h2>Register Now</h2>
          
                         <?php echo $msg; ?>
-                        <form action="" method="post">
+                        <form action="" method="post" onsubmit="return validateForm()">
     <input type="text" class="name" name="name" placeholder="Enter Your Name" value="<?php if (isset($_POST['submit'])) { echo $name; } ?>" required>
     <input type="email" class="email" name="email" placeholder="Enter Your Email" value="<?php if (isset($_POST['submit'])) { echo $email; } ?>" required>
     <input type="password" class="password" name="password" placeholder="Enter Your Password" required>
     <input type="password" class="confirm-password" name="confirm-password" placeholder="Enter Your Confirm Password" required>
     
+                        <!-- Terms and Conditions Checkbox -->
+                        <div style="display: flex; align-items: center; gap: 5px; margin-top: 10px;">
+                            <input type="checkbox" id="terms" name="terms">
+                            <label for="terms">I agree to the <a href="terms.php">Terms and Conditions</a></label>
+                        </div>
+
+                        <!-- Special Deals Checkbox -->
+                        <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+                            <input type="checkbox" id="offers" name="offers">
+                            <label for="offers">I want to receive special deals and offers</label>
+                        </div>
     <!-- Hidden input for user role -->
     <input type="hidden" name="user_role" value="CPA">
 
@@ -164,8 +269,18 @@ if (isset($_POST['submit'])) {
             <!-- //form -->
         </div>
     </section>
-    <!-- //form section start -->
 
+<!-- Custom Modal -->
+<div id="termsModal" class="custom-modal">
+    <div class="custom-modal-content">
+        <span class="close-modal">&times;</span>
+        <h3>Notice</h3>
+        <p>You must agree to the Terms and Conditions to proceed.</p>
+        <button class="close-btn">OK</button>
+    </div>
+</div>
+</body>
+    <!-- //form section start -->
     <script src="js/jquery.min.js"></script>
     <script>
         $(document).ready(function(c) {
@@ -176,7 +291,35 @@ if (isset($_POST['submit'])) {
             });
         });
     </script>
+<script>
+     function validateForm() {
+        var termsChecked = document.getElementById("terms").checked;
+        if (!termsChecked) {
+            document.getElementById("termsModal").style.display = "block";
+            return false;
+        }
+        return true;
+    }
 
-</body>
+    // Close modal when clicking the close button
+    document.querySelector(".close-modal").onclick = function () {
+        document.getElementById("termsModal").style.display = "none";
+    };
+
+    // Close modal when clicking the OK button
+    document.querySelector(".close-btn").onclick = function () {
+        document.getElementById("termsModal").style.display = "none";
+    };
+
+    // Close modal when clicking outside of it
+    window.onclick = function (event) {
+        var modal = document.getElementById("termsModal");
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    console.log('red');
+</script>
 
 </html>

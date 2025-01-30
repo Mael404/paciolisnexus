@@ -217,34 +217,52 @@ session_start();
             </nav>
         </div><!-- End Page Title -->
         
-        
         <section class="section dashboard">
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Material Access Records</h5>
-                </div>
+            
+               
                 <div class="card-body">
-                    <table id="materialTable" class="display" style="width:100%">
-                        <thead>
+                    <table id="materialTable" class="display bbnw table table-bordered text-center align-middle" style="width:100%">
+                        <thead class="table-dark">
                             <tr>
-                       
                                 <th>Full Name</th>
                                 <th>GCash Number</th>
                                 <th>GCash Name</th>
                                 <th>Proof of Payment</th>
                                 <th>Created At</th>
                                 <th>Status</th>
-                                <th>Action</th> <!-- Action Column -->
+                                <th>Action</th>
                             </tr>
                         </thead>
+                        <tbody>
+                            <!-- Data will be populated dynamically -->
+                        </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+    /* Ensure table content is centered */
+    #materialTable th, #materialTable td,
+    #usersTable th, #usersTable td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* Ensure consistency in modal images */
+    #materialTable img {
+        max-width: 50px;
+        max-height: 50px;
+        object-fit: cover;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
+
 
 <!-- Confirmation Modal -->
 <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
@@ -279,17 +297,7 @@ session_start();
         </div>
     </div>
 </div>
-        <style>
-            #gamifiedTable tbody {
-                font-size: 0.875rem;
-                /* Smaller font size */
-            }
-
-            #gamifiedTable .btn {
-                margin-right: 5px;
-            }
-        </style>
-
+     
 
 
 

@@ -233,33 +233,58 @@ $show_modal = $row['count'] == 0;
                 </ol>
             </nav>
         </div><!-- End Page Title -->
+<br>
 
         <section class="section dashboard">
     <div class="row">
         <div class="col-12">
-            <table id="homeworkHelpTable" class="display bbnw">
-                <thead>
-                    <tr>
-                        <th>Transaction ID</th>
-                        <th>Full Name</th>
-                        <th>Subject Title</th>
-                        <th>Assignment Question</th>
-                        <th>Assignment Difficulty</th>
-                        <th>Urgency</th>
-                        <th>GCash Name</th>
-                        <th>Payment Proof</th>
-                        <th>Created At</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data rows will be populated here -->
-                </tbody>
-            </table>
-        </div>
+           
+                <div class="card-body">
+                    <table id="homeworkHelpTable" class="display bbnw table table-bordered text-center align-middle" style="width:100%">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Full Name</th>
+                                <th>Subject Title</th>
+                                <th>Assignment Question</th>
+                                <th>Assignment Difficulty</th>
+                                <th>Urgency</th>
+                                <th>GCash Name</th>
+                                <th>Payment Proof</th>
+                                <th>Created At</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be dynamically populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+      
     </div>
 </section>
+
+<style>
+    /* Ensure table content is centered */
+    #homeworkHelpTable th, #homeworkHelpTable td,
+    #gamifiedTable th, #gamifiedTable td,
+    #materialTable th, #materialTable td,
+    #usersTable th, #usersTable td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* Ensure consistent image styling for payment proof */
+    #homeworkHelpTable img {
+        max-width: 50px;
+        max-height: 50px;
+        object-fit: cover;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
 
 <!-- Bootstrap Modal for Image Preview -->
 <!-- Bootstrap Modal for Image Preview -->
@@ -282,17 +307,7 @@ $show_modal = $row['count'] == 0;
 </div>
 
 
-        <style>
-            #gamifiedTable tbody {
-                font-size: 0.875rem;
-                /* Smaller font size */
-            }
-
-            #gamifiedTable .btn {
-                margin-right: 5px;
-            }
-        </style>
-
+      
 
 <!-- Confirmation Modal -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">

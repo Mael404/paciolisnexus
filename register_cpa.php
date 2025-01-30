@@ -1,5 +1,5 @@
 <?php
-//Import PHPMailer classes into the global namespace
+// Import PHPMailer classes into the global namespace
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -10,7 +10,7 @@ if (isset($_SESSION['SESSION_EMAIL'])) {
     die();
 }
 
-//Load Composer's autoloader
+// Load Composer's autoloader
 require 'vendor/autoload.php';
 
 include 'config.php';
@@ -22,41 +22,47 @@ if (isset($_POST['submit'])) {
     $password = mysqli_real_escape_string($conn, md5($_POST['password']));
     $confirm_password = mysqli_real_escape_string($conn, md5($_POST['confirm-password']));
     $code = mysqli_real_escape_string($conn, md5(rand()));
-    $user_role = mysqli_real_escape_string($conn, $_POST['user_role']); // Capture the user role
+    $user_role = mysqli_real_escape_string($conn, $_POST['user_role']);
 
     // Check if the email already exists
     if (mysqli_num_rows(mysqli_query($conn, "SELECT * FROM users WHERE email='{$email}'")) > 0) {
-        $msg = "<div class='alert alert-danger'>{$email} - This email address has been already exists.</div>";
+        $msg = "<div class='alert alert-danger'>{$email} - This email address already exists.</div>";
     } else {
         if ($password === $confirm_password) {
-            // Insert the user with role into the database
-            $sql = "INSERT INTO users (name, email, password, code, role) VALUES ('{$name}', '{$email}', '{$password}', '{$code}', '{$user_role}')";
+            // Generate a unique user ID
+            do {
+                $random_number = mt_rand(100000, 999999); // Generate a 6-digit number
+                $user_id = "02000" . $random_number;
+                $check_id = mysqli_query($conn, "SELECT user_id FROM users WHERE user_id = '{$user_id}'");
+            } while (mysqli_num_rows($check_id) > 0); // Ensure uniqueness
+
+            // Insert the user with user_id, role, and default verify value as 0
+            $sql = "INSERT INTO users (user_id, name, email, password, code, role, verify) 
+                    VALUES ('{$user_id}', '{$name}', '{$email}', '{$password}', '{$code}', '{$user_role}', 0)";
             $result = mysqli_query($conn, $sql);
 
             if ($result) {
                 echo "<div style='display: none;'>";
-                //Create an instance; passing `true` enables exceptions
                 $mail = new PHPMailer(true);
 
                 try {
-                    //Server settings
-                    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-                    $mail->isSMTP();                                            //Send using SMTP
-                    $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
-                    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-                    $mail->Username   = "maelaquino141@gmail.com";                     //SMTP username
-                    $mail->Password   = "aytbbzlqaordegbl";                               //SMTP password
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-                    $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+                    // Server settings
+                    $mail->isSMTP();
+                    $mail->Host       = 'smtp.gmail.com';
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = "maelaquino141@gmail.com";
+                    $mail->Password   = "aytbbzlqaordegbl";
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                    $mail->Port       = 465;
 
-                    //Recipients
+                    // Recipients
                     $mail->setFrom("maelaquino141@gmail.com");
                     $mail->addAddress($email);
 
-                    //Content
-                    $mail->isHTML(true);                                  //Set email format to HTML
-                    $mail->Subject = 'no reply';
-                    $mail->Body = 'Here is the verification link <b><a href="http://localhost/paciolisnexus/login.php?verification=' . $code . '">http://localhost/paciolisnexus/login.php?verification=' . $code . '</a></b>';
+                    // Content
+                    $mail->isHTML(true);
+                    $mail->Subject = 'No Reply';
+                    $mail->Body = 'Here is the verification link <b><a href="http://localhost/paciolisnexus/login.php?verification=' . $code . '">Verify Your Account</a></b>';
 
                     $mail->send();
                     echo 'Message has been sent';
@@ -74,6 +80,7 @@ if (isset($_POST['submit'])) {
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>

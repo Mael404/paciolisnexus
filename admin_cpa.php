@@ -239,28 +239,56 @@ $show_modal = $row['count'] == 0;
         <section class="section dashboard">
     <div class="row">
         <div class="col-12">
-            <table id="cpaDetailsTable" class="display bbnw">
-                <thead>
-                    <tr>
-                        <th>User ID</th>
-                        <th>Full Name</th>
-                        <th>Status</th>
-                        <th>Diploma</th>
-                        <th>Gov ID</th>
-                        <th>Selfie</th>
-                        <th>Modules</th>
-                        <th>License</th>
-                        <th>Date Applied</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data rows will be populated here -->
-                </tbody>
-            </table>
+            <div class="card">
+                <div class="card-header">
+                    <h5>CPA Details</h5>
+                </div>
+                <div class="card-body">
+                    <table id="cpaDetailsTable" class="display bbnw table table-bordered text-center align-middle" style="width:100%">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>User ID</th>
+                                <th>Full Name</th>
+                                <th>Status</th>
+                                <th>Diploma</th>
+                                <th>Gov ID</th>
+                                <th>Selfie</th>
+                                <th>Modules</th>
+                                <th>License</th>
+                                <th>Date Applied</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be dynamically populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </section>
+
+<style>
+    /* Ensure table content is centered */
+    #cpaDetailsTable th, #cpaDetailsTable td,
+    #homeworkHelpTable th, #homeworkHelpTable td,
+    #gamifiedTable th, #gamifiedTable td,
+    #materialTable th, #materialTable td,
+    #usersTable th, #usersTable td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* Ensure consistent image styling for diploma, gov ID, selfie, and license */
+    #cpaDetailsTable img {
+        max-width: 50px;
+        max-height: 50px;
+        object-fit: cover;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+</style>
 
 
 <!-- Bootstrap Modal for Image Preview -->

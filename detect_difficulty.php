@@ -7,18 +7,27 @@ function assessDifficulty($question) {
         'definition', 'basic', 'examples', 'explain', 
         'overview', 'list', 'describe', 'identify', 
         'meaning', 'introduction', 'outline', 'purpose',
-        'types', 'characteristics', 'principles', 'features'
+        'types', 'characteristics', 'principles', 'features',
+        'introduction', 'summary', 'simplify', 'fundamentals', 
+        'outline', 'overview', 'classification', 'basic principles', 
+        'categories', 'comparison', 'overview', 'steps'
     ];
+    
     $keywords_moderate = [
         'calculation', 'process', 'compare', 'difference', 
         'analyze', 'interpret', 'application', 'steps', 
         'prepare', 'adjust', 'record', 'entries', 
         'journal', 'ledger', 'trial balance', 'accounts',
         'reconciliation', 'allocation', 'matching', 'provisions',
-        'depreciation', 'inventory', 'valuation', 'adjusting'
+        'depreciation', 'inventory', 'valuation', 'adjusting',
+        'estimate', 'assessment', 'measurement', 'practical', 
+        'method', 'review', 'example', 'budgeting', 
+        'monitoring', 'adjustments', 'taxation', 'revenue', 
+        'cost analysis', 'calculations', 'spreadsheet'
     ];
+    
     $keywords_complex = [
-        'consolidation', 'amortization', 'complex', 'advanced', 
+        'consolidation', 'amortization', 'complex', 'advanced','cashflow', 
         'subsidiary', 'acquisition', 'goodwill', 'merger', 
         'business combinations', 'joint ventures', 'impairment', 
         'cash flow', 'financial instruments', 'hedging', 
@@ -27,8 +36,13 @@ function assessDifficulty($question) {
         'lease accounting', 'share-based payments', 
         'deferred tax', 'segment reporting', 'transfer pricing', 
         'earnings per share', 'dilution', 'equity method', 
-        'provision for doubtful accounts'
+        'provision for doubtful accounts', 'asset management',
+        'strategic planning', 'liabilities', 'credit risk', 'equity',
+        'valuation models', 'forecasting', 'capital budgeting', 
+        'risk management', 'interest rates', 'debt instruments', 
+        'performance metrics', 'accounting policies', 'financial modeling'
     ];
+    
 
     // Assign scores for each category
     $score_easy = 1;

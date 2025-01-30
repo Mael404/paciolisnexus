@@ -33,7 +33,7 @@
     <!-- Quizzes -->
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#quizzes-nav" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-question-square"></i><span>Quizzes</span><i class="bi bi-chevron-down ms-auto"></i>
+        <i class="bi bi-question-square"></i><span>Gamefied</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="quizzes-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
         <li>

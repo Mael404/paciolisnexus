@@ -235,19 +235,13 @@ $show_modal = $row['count'] == 0;
         <section class="section dashboard">
     <div class="row">
         <div class="col-12">
-            <table id="cpaDetailsTable" class="display bbnw">
-                <thead>
+            <table id="usersTable" class="display bbnw table table-bordered text-center align-middle">
+                <thead class="table-dark">
                     <tr>
                         <th>User ID</th>
                         <th>Full Name</th>
-                        <th>Status</th>
-                        <th>Diploma</th>
-                        <th>Gov ID</th>
-                        <th>Selfie</th>
-                        <th>Modules</th>
-                        <th>License</th>
-                        <th>Date Applied</th>
-                        <th>Actions</th>
+                        <th>Date Created</th>
+                        <th>Verification Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -257,6 +251,14 @@ $show_modal = $row['count'] == 0;
         </div>
     </div>
 </section>
+
+<style>
+    /* Ensure table content is centered */
+    #usersTable th, #usersTable td {
+        text-align: center; 
+        vertical-align: middle;
+    }
+</style>
 
 
 <!-- Bootstrap Modal for Image Preview -->
@@ -333,125 +335,24 @@ $show_modal = $row['count'] == 0;
 
     <script>
     $(document).ready(function () {
-        $('#cpaDetailsTable').DataTable({
-            "ajax": "admin_fetchdata_cpadetails.php",
+        $('#usersTable').DataTable({
+            "ajax": "fetch_users.php",
             "columns": [
                 { "data": "user_id" },
-                { "data": "full_name" },
-               { "data": "status" }, // Replace "data": "phone" with "data": "status"
-
-                {
-                    "data": "diploma",
-                    "render": function (data) {
-                        return data
-                            ? `<img src="${data}" alt="Diploma" style="cursor: pointer; max-width: 100px;" class="image-preview" 
-                                data-bs-toggle="modal" data-bs-target="#imageModal" 
-                                onclick="document.getElementById('modalImage').src='${data}';" />`
-                            : 'No image provided';
-                    }
-                },
-                {
-                    "data": "gov_id",
-                    "render": function (data) {
-                        return data
-                            ? `<img src="${data}" alt="Gov ID" style="cursor: pointer; max-width: 100px;" class="image-preview" 
-                                data-bs-toggle="modal" data-bs-target="#imageModal" 
-                                onclick="document.getElementById('modalImage').src='${data}';" />`
-                            : 'No image provided';
-                    }
-                },
-                {
-                    "data": "selfie",
-                    "render": function (data) {
-                        return data
-                            ? `<img src="${data}" alt="Selfie" style="cursor: pointer; max-width: 100px;" class="image-preview" 
-                                data-bs-toggle="modal" data-bs-target="#imageModal" 
-                                onclick="document.getElementById('modalImage').src='${data}';" />`
-                            : 'No image provided';
-                    }
-                },
-                {
-                    "data": "modules",
-                    "render": function (data) {
-                        return data
-                            ? `<img src="${data}" alt="Modules" style="cursor: pointer; max-width: 100px;" class="image-preview" 
-                                data-bs-toggle="modal" data-bs-target="#imageModal" 
-                                onclick="document.getElementById('modalImage').src='${data}';" />`
-                            : 'No image provided';
-                    }
-                },
-                {
-                    "data": "license",
-                    "render": function (data) {
-                        return data
-                            ? `<img src="${data}" alt="License" style="cursor: pointer; max-width: 100px;" class="image-preview" 
-                                data-bs-toggle="modal" data-bs-target="#imageModal" 
-                                onclick="document.getElementById('modalImage').src='${data}';" />`
-                            : 'No image provided';
-                    }
-                },
+                { "data": "name" },
                 { "data": "created_at" },
                 {
-                    "data": null,
-                    "render": function (data, type, row) {
-                        return `
-                          <div class="btn-group">
-    <button class="btn btn-success btn-sm btn-action me-1" data-action="approve" data-id="${row.user_id}">
-        <i class="fas fa-check"></i>
-    </button>
-    <button class="btn btn-danger btn-sm btn-action" data-action="deny" data-id="${row.user_id}">
-        <i class="fas fa-times"></i>
-    </button>
-</div>
-
-
-                        `;
+                    "data": "verify",
+                    "render": function (data) {
+                        return data == 1 
+                            ? '<span class="badge bg-success">Verified</span>' 
+                            : '<span class="badge bg-danger">Not Verified</span>';
                     }
                 }
-            ],
-            "columnDefs": [
-                { "targets": [3, 4, 5, 6, 7, 9], "orderable": false, "searchable": false }
             ]
-        });
-
-        // Show image in modal when clicked
-        $('#cpaDetailsTable').on('click', '.image-preview', function () {
-            var imageUrl = $(this).attr('src');
-            $('#modalImage').attr('src', imageUrl);
-        });
-
-        // Handle action buttons
-        $('#cpaDetailsTable').on('click', '.btn-action', function () {
-            var action = $(this).data('action');
-            var userId = $(this).data('id');
-
-            $('#confirmationModal').modal('show');
-
-            // Confirm action
-            $('#confirmButton').off('click').on('click', function () {
-                $.ajax({
-                    url: 'update_status_cpadetails.php',
-                    method: 'POST',
-                    data: {
-                        action: action,
-                        user_id: userId
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            $('#cpaDetailsTable').DataTable().ajax.reload();
-                            alert(response.message);
-                        } else {
-                            $('#cpaDetailsTable').DataTable().ajax.reload();
-                        }
-                    }
-                });
-
-                $('#confirmationModal').modal('hide');
-            });
         });
     });
 </script>
-
 </body>
 
 </html>

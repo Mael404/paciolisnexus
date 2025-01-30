@@ -21,7 +21,7 @@ if (isset($_GET['verification'])) {
     }
 }
 
-// Login submission handling
+
 if (isset($_POST['submit'])) {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = mysqli_real_escape_string($conn, md5($_POST['password']));
@@ -33,12 +33,12 @@ if (isset($_POST['submit'])) {
         $row = mysqli_fetch_assoc($result);
 
         if (empty($row['code'])) {
-            // Set session for logged-in user
+           
             $_SESSION['SESSION_EMAIL'] = $email;
-            $_SESSION['user_id'] = $row['user_id'];  // Store user ID in session for future queries
-            $_SESSION['name'] = $row['name'];  // Store user name in session for future queries
+            $_SESSION['user_id'] = $row['user_id']; 
+            $_SESSION['name'] = $row['name']; 
 
-            // Check user role and redirect accordingly
+         
             if ($row['role'] === 'admin') {
                 header("Location: admin_dashboard.php");
                 die();
@@ -50,7 +50,7 @@ if (isset($_POST['submit'])) {
               die();
           }
 
-            // Default redirect for students
+
             header("Location: index.html");
             die();
         } else {

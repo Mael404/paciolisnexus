@@ -1,17 +1,17 @@
 <?php
-// Include the database connection
+
 include 'config.php';
 
 // Start the session
 session_start();
 
-// Check if the user is logged in and has a valid session
+
 if (!isset($_SESSION['user_id'])) {
     echo "User not logged in.";
     exit;
 }
 
-// Get the current user ID from the session
+
 $user_id = $_SESSION['user_id'];
 
 // Check if the form is submitted
@@ -60,13 +60,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    $query = "INSERT INTO homeworkhelp (transaction_id, user_id, afar, status, subject_title, 
-          assignment_difficulty, assignment_question, full_name, birthdate, address, 
-          gcash_name, payment_proof, created_at, urgency) 
-          VALUES ('$transaction_id', '$user_id', '$afar', '$status', '$subject_title', 
-          '$assignment_difficulty', '$assignment_question', '$full_name', '$birthdate', '$address', 
-          '$gcash_name', '$file_path', NOW(), '$urgency')";
+// Collect the 'amountToPay' value from the form submission
+$amount_to_pay = mysqli_real_escape_string($conn, $_POST['amountToPay']); // Add this line
+
+// Existing query with the new field 'amount_to_pay'
+$query = "INSERT INTO homeworkhelp (transaction_id, user_id, afar, status, subject_title, 
+      assignment_difficulty, assignment_question, full_name, birthdate, address, 
+      gcash_name, payment_proof, created_at, urgency, amount_to_pay) 
+      VALUES ('$transaction_id', '$user_id', '$afar', '$status', '$subject_title', 
+      '$assignment_difficulty', '$assignment_question', '$full_name', '$birthdate', '$address', 
+      '$gcash_name', '$file_path', NOW(), '$urgency', '$amount_to_pay')"; // Modify this line
+
+if (mysqli_query($conn, $query)) {
+    // Redirect to success.html on success
+    header("Location: success_question.html");
+    exit;
+} else {
+    echo "Error: " . mysqli_error($conn);
+}
+
     if (mysqli_query($conn, $query)) {
+
+        
         // Redirect to success.html on success
         header("Location: success_question.html");
         exit;

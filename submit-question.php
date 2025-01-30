@@ -495,48 +495,57 @@ $show_modal = $row['count'] == 0;
               <!-- Multi-Step Form -->
               <form id="multiStepForm" action="submit_question_data.php" method="POST" enctype="multipart/form-data">
 
-
               <div id="step1" class="form-step">
-                  <h3 style="color: #ff6347; font-weight: bold; margin-bottom: 15px; margin-top:15px;">Question Details</h3>
-                  <!-- HTML -->
-                  <div class="mb-3">
-                    <label for="question" style="font-weight: bold;">Question:</label>
-                    <textarea id="question" name="question" class="form-control" rows="4" placeholder="Enter your question" required></textarea>
-                  </div>
-
-
-
-
-                  <div class="mb-3">
-                    <label for="difficulty" style="font-weight: bold;">Detected Difficulty:</label>
-                    <input type="text" id="difficulty" name="difficulty" class="form-control" readonly placeholder="Difficulty will be detected automatically">
-                  </div>
-
-
-                  <div class="mb-3">
-                    <label style="font-weight: bold;">Is it urgent?</label>
-                    <div class="form-check">
-                      <input type="checkbox" id="urgentCheck" class="form-check-input" onclick="toggleUrgencyDropdown()">
-                      <label for="urgentCheck" class="form-check-label">Yes, it's urgent</label>
-                    </div>
-                    <div id="urgencyOptions" class="mb-3" style="display: none;">
-                      <label for="urgencyTime" style="font-weight: bold;">Select Urgency:</label>
-                      <select id="urgencyTime" name="urgency" class="form-control">
-                        <option value="Not Urgent">--------</option>
-                        <option value="1 hour">1 Hour</option>
-                        <option value="2 hours">2 Hours</option>
-                        <option value="3 hours">3 Hours</option>
-                      </select>
-                    </div>
-
-
-              
-
-                    <div style="text-align: center; margin-top: 30px;">
-                    <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next</button>
-                  </div>
-              </div>
+  <h3 style="color: #ff6347; font-weight: bold; margin-bottom: 15px; margin-top:15px;">Question Details</h3>
+  
+  <div class="mb-3">
+    <label for="question" style="font-weight: bold;">Question:</label>
+    <textarea id="question" name="question" class="form-control" rows="4" placeholder="Enter your question" required></textarea>
   </div>
+
+  <div class="mb-3">
+    <label for="difficulty" style="font-weight: bold;">Detected Difficulty:</label>
+    <!-- Difficulty is automatically populated -->
+    <input type="text" id="difficulty" name="difficulty" class="form-control" readonly placeholder="Difficulty will be detected automatically">
+  </div>
+
+  <!-- Amount to Pay Field -->
+  <!-- Amount to Pay Field -->
+<div class="mb-3">
+  <label for="amountToPay" style="font-weight: bold;">Amount to Pay:</label>
+  <div class="input-group">
+    <span class="input-group-text" id="basic-addon1">₱</span>
+    <input type="text" id="amountToPay" name="amountToPay" class="form-control" readonly style="font-size: 1.25rem;">
+  </div>
+</div>
+
+<!-- Note -->
+<div class="mb-3">
+  <small class="form-text text-muted">Note: The CPA will answer questions in 1-2 days around the expected time.</small>
+</div>
+  <div class="mb-3">
+    <label style="font-weight: bold;">Is it urgent?</label>
+    <div class="form-check">
+      <input type="checkbox" id="urgentCheck" class="form-check-input" onclick="updateAmountToPay()">
+      <label for="urgentCheck" class="form-check-label">Yes, it's urgent</label>
+    </div>
+    <div id="urgencyOptions" class="mb-3" style="display: none;">
+      <label for="urgencyTime" style="font-weight: bold;">Select Urgency:</label>
+      <select id="urgencyTime" name="urgency" class="form-control">
+        <option value="Not Urgent">--------</option>
+        <option value="1 hour">1 Hour</option>
+        <option value="2 hours">2 Hours</option>
+        <option value="3 hours">3 Hours</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div style="text-align: center; margin-top: 30px;">
+    <button type="button" class="btn btn-primary" onclick="nextStep(2)">Next</button>
+  </div>
+</div>
+
 
                 <!-- Step 1: Personal Details -->
                 <div id="step2" class="form-step" style="display: none;">
@@ -554,17 +563,17 @@ $show_modal = $row['count'] == 0;
                     <input type="text" id="address" name="address" class="form-control" placeholder="Enter your address" required>
                   </div>
                   <div class="mb-3">
-  <label for="quizTitle" style="font-weight: bold;">Quiz Title:</label>
-  <select id="quizTitle" name="quiz_title" class="form-control">
-    <option value="" disabled selected>Choose Subject</option>
-    <option value="Financial Accounting and Reporting">Financial Accounting and Reporting</option>
-    <option value="Advanced Financial Accounting and Reporting">Advanced Financial Accounting and Reporting</option>
-    <option value="Taxation">Taxation</option>
-    <option value="Auditing">Auditing</option>
-    <option value="Regulatory Framework for Business Transactions">Regulatory Framework for Business Transactions</option>
-    <option value="Management Advisory Services">Management Advisory Services</option>
-  </select>
-</div>
+                    <label for="quizTitle" style="font-weight: bold;">Quiz Title:</label>
+                    <select id="quizTitle" name="quiz_title" class="form-control">
+                      <option value="" disabled selected>Choose Subject</option>
+                      <option value="Financial Accounting and Reporting">Financial Accounting and Reporting</option>
+                      <option value="Advanced Financial Accounting and Reporting">Advanced Financial Accounting and Reporting</option>
+                      <option value="Taxation">Taxation</option>
+                      <option value="Auditing">Auditing</option>
+                      <option value="Regulatory Framework for Business Transactions">Regulatory Framework for Business Transactions</option>
+                      <option value="Management Advisory Services">Management Advisory Services</option>
+                    </select>
+                  </div>
 
                   <div style="text-align: center; margin-top: 30px;">
                     <button type="button" class="btn btn-secondary" onclick="prevStep(1)">Previous</button>
@@ -600,16 +609,14 @@ $show_modal = $row['count'] == 0;
                     </div>
                   </div>
 
-            
-
                   <div style="text-align: center; margin-top: 30px;">
-                      <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Previous</button>
-                      <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
+                    <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Previous</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </div>
                 </div>
 
-           
-                
+
+
               </form>
             </div>
           </div>
@@ -619,8 +626,8 @@ $show_modal = $row['count'] == 0;
 
     <!-- Warning Modal -->
 
-    <!-- Modal Code -->
-    <div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <!-- Modal Code  RESULT MODAL DEFAULT NAME, ID, IS resultModalLabel-->
+    <div class="modal fade" id="resultModal1" tabindex="-1" aria-labelledby="resultModalLabel1" aria-hidden="true">
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
@@ -779,35 +786,70 @@ $show_modal = $row['count'] == 0;
   </script>
 
 
-  <!-- JavaScript for Auto Detecting Difficulty -->
-  <script>
-    const questionInput = document.getElementById("question");
-    const difficultyInput = document.getElementById("difficulty");
 
-    questionInput.addEventListener("blur", function() {
-      const questionText = questionInput.value.trim();
-      if (questionText) {
-        // Send question to the backend for difficulty detection
-        fetch("detect_difficulty.php", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              question: questionText
-            }),
-          })
-          .then((response) => response.json())
-          .then((data) => {
-            difficultyInput.value = data.difficulty || "Could not detect difficulty";
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            difficultyInput.value = "Error detecting difficulty";
-          });
-      }
-    });
-  </script>
+<script>
+  // Function to automatically update the amount to pay based on the detected difficulty and urgency checkbox
+  function updateAmountToPay() {
+    let difficulty = document.getElementById("difficulty").value.toLowerCase();
+    let urgentCheck = document.getElementById("urgentCheck").checked;
+    let amount = 0;
+
+    // Set the amount based on the detected difficulty
+    if (difficulty === "easy") {
+      amount = 30;
+    } else if (difficulty === "moderate") {
+      amount = 60;
+    } else if (difficulty === "complex") {
+      amount = 90;
+    }
+
+    // Add the urgent fee if the checkbox is checked
+    if (urgentCheck) {
+      amount += 75;
+    }
+
+    // Update the Amount to Pay field
+    document.getElementById("amountToPay").value = amount;
+  }
+
+  // Automatically update the amount when the difficulty is set
+  window.onload = function() {
+    updateAmountToPay();
+  };
+
+  // JavaScript for Auto Detecting Difficulty
+  const questionInput = document.getElementById("question");
+  const difficultyInput = document.getElementById("difficulty");
+
+  questionInput.addEventListener("blur", function() {
+    const questionText = questionInput.value.trim();
+    if (questionText) {
+      // Send question to the backend for difficulty detection
+      fetch("detect_difficulty.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          question: questionText
+        }),
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        // Populate the difficulty input field
+        difficultyInput.value = data.difficulty || "Could not detect difficulty";
+
+        // Automatically update the Amount to Pay after setting difficulty
+        updateAmountToPay();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        difficultyInput.value = "Error detecting difficulty";
+      });
+    }
+  });
+</script>
+
 
   <script>
     function toggleUrgencyDropdown() {

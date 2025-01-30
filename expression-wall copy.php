@@ -31,26 +31,6 @@ session_start();
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
-  <style>
-  /* Custom styles for black carousel controls */
-  .carousel-control-prev-icon,
-  .carousel-control-next-icon {
-    background-color: black;
-  }
-
-  .carousel-control-prev,
-  .carousel-control-next {
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%);
-  }
-
-  .carousel-item img {
-  width: 200px;
-  height: 200px;
-  object-fit: cover; /* Ensures uniform cropping */
-  border-radius: 50%; /* Keeps images circular */
-}
-
-</style>
 
 </head>
 
@@ -299,11 +279,11 @@ include 'sidebar.php'; // Use the correct path
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Testimonials</h1>
+      <h1>Expression Wall</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Testimonials</li>
+          <li class="breadcrumb-item active">Expression Wall</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -311,100 +291,67 @@ include 'sidebar.php'; // Use the correct path
 
     <section class="section dashboard">
   <!-- Expression Wall Header -->
-  <div class="header-image" style="background-image: url('testimonials.jpg'); background-size: cover; background-position: center; height: 300px; position: relative;">
+  <div class="header-image" style="background-image: url('mind.jpg'); background-size: cover; background-position: center; height: 300px; position: relative;">
     <div class="overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1;"></div>
     <div class="container text-center text-white" style="position: relative; z-index: 2; padding-top: 100px;">
-      <h1 class="display-1" style="font-weight: bold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">Testimonials</h1>
-      <p class="lead" style="font-size: 1.25rem; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);">Testimonials from CPA'S</p>
+      <h1 class="display-1" style="font-weight: bold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);">What's on your mind?</h1>
+      <p class="lead" style="font-size: 1.25rem; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);">Share your thoughts and expressions here</p>
+      
+      <!-- Input and Post Button -->
+    
     </div>
   </div>
 
-  <!-- Testimonials Carousel -->
-<div id="testimonialsCarousel" class="carousel slide mt-5" data-bs-ride="carousel">
-  <div class="carousel-inner">
-    <!-- Testimonial 1 -->
-  <!-- Testimonial 1 -->
-<div class="carousel-item active">
-    <div class="d-flex justify-content-center">
-        <div class="text-center p-4">
-            <img src="img/nge.jpeg" alt="User Icon" class="rounded-circle mb-3" width="200" height="200">
-            <h5 class="card-title">Paul A. Garvey, CPA</h5>
-            <p class="card-text">"An exceptional experience! The attention to detail and ease of use make it stand out from the rest."</p>
-        </div>
-    </div>
+  <!-- Clearfix to ensure cards are below the header -->
+  <div class="clearfix"></div>
+  <div class="mt-4">
+    <textarea id="expressionInput" class="form-control" rows="4" placeholder="Write your thoughts here..."></textarea>
+    <button id="postButton" class="btn btn-primary mt-3">Post Now</button>
 </div>
 
-<!-- Testimonial 2 -->
-<div class="carousel-item">
-    <div class="d-flex justify-content-center">
-        <div class="text-center p-4">
-            <img src="img/girl.jpg" alt="User Icon" class="rounded-circle mb-3" width="200" height="200">
-            <h5 class="card-title">Edith Orenstein, CPA</h5>
-            <p class="card-text">"Highly intuitive and efficient! It simplifies complex tasks and makes everything more manageable."</p>
-        </div>
-    </div>
-</div>
-
-<!-- Testimonial 3 -->
-<div class="carousel-item">
-    <div class="d-flex justify-content-center">
-        <div class="text-center p-4">
-            <img src="img/man2.jpg" alt="User Icon" class="rounded-circle mb-3" width="200" height="200">
-            <h5 class="card-title">Rick Telberg, CPA</h5>
-            <p class="card-text">"A must-have! The level of convenience and reliability it provides is truly impressive."</p>
-        </div>
-    </div>
-</div>
-
-<!-- Testimonial 4 -->
-<div class="carousel-item">
-    <div class="d-flex justify-content-center">
-        <div class="text-center p-4">
-            <img src="img/man3.jpg" alt="User Icon" class="rounded-circle mb-3" width="200" height="200">
-            <h5 class="card-title">Tom Hood, CPA</h5>
-            <p class="card-text">"Absolutely fantastic! It brings a level of simplicity and organization that makes a real difference."</p>
-        </div>
-    </div>
-</div>
-
-<!-- Testimonial 5 -->
-<div class="carousel-item">
-    <div class="d-flex justify-content-center">
-        <div class="text-center p-4">
-            <img src="img/man4.jpg" alt="User Icon" class="rounded-circle mb-3" width="200" height="200">
-            <h5 class="card-title">Steve Rogers, CPA</h5>
-            <p class="card-text">"A game-changer! The ease of use and thoughtful design make it a standout choice."</p>
-        </div>
-    </div>
-</div>
-
-<!-- Testimonial 6 -->
-<div class="carousel-item">
-    <div class="d-flex justify-content-center">
-        <div class="text-center p-4">
-            <img src="img/man5.jpg" alt="User Icon" class="rounded-circle mb-3" width="200" height="200">
-            <h5 class="card-title">Gail Perry, CPA</h5>
-            <p class="card-text">"Highly recommended! It provides exactly what you need in the most seamless way possible."</p>
-        </div>
-    </div>
-</div>
+<?php
+include('config.php'); 
 
 
+$sql = "SELECT user_name, content, created_at FROM posts ORDER BY created_at DESC"; // Fetch posts ordered by creation date
+$result = $conn->query($sql);
 
 
-    <!-- Carousel Controls -->
-    <button class="carousel-control-prev" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#testimonialsCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
-  </div>
+if ($result && $result->num_rows > 0) {
+    echo '<div class="container mt-5">
+            <div class="row">
+            <p class="lead" style="font-size: 1.25rem; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);">Recent Posts</p>';
+    
+
+    while ($row = $result->fetch_assoc()) {
+        $user_name = $row['user_name'];
+        $content = $row['content'];
+        $created_at = $row['created_at'];
+
+      
+        $formatted_date = date('F j, Y, g:i a', strtotime($created_at)); 
+
+        echo '<div class="col-md-6 mb-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">' . htmlspecialchars($user_name) . '</h5>
+                    <p class="card-text">"' . htmlspecialchars($content) . '"</p>
+                    <p class="card-text text-muted" style="font-size: 0.85rem;">Posted on: ' . $formatted_date . '</p>
+                  </div>
+                </div>
+              </div>';
+              
+    }
+
+    echo '</div></div>';
+} else {
+    echo '<div class="container mt-5"><p>No posts available.</p></div>';
+}
+
+$conn->close();
+?>
 
 </section>
-
 
 
 
@@ -436,7 +383,32 @@ include 'sidebar.php'; // Use the correct path
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+<script>
+  document.getElementById('postButton').addEventListener('click', function() {
+    var content = document.getElementById('expressionInput').value;  // Get the value of the textarea
 
+    if(content.trim() === "") {
+        alert("Please write something to post!");
+        return;
+    }
+
+    // Send the content to the server using AJAX
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "insert_post.php", true);  // Pointing to PHP script that will handle the insertion
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            alert("Post submitted successfully!");
+            document.getElementById('expressionInput').value = "";  // Clear the textarea after successful post
+        }
+    };
+
+    // Send the content and user_id (from session) to the server
+    xhr.send("content=" + encodeURIComponent(content));
+});
+
+</script>
 </body>
 
 </html>

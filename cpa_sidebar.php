@@ -26,11 +26,7 @@
           <i class="bi bi-circle"></i><span>Transaction History</span>
         </a>
       </li>
-      <li>
-        <a href="cpa_incomesummary.php">
-          <i class="bi bi-circle"></i><span>Income Summary</span>
-        </a>
-      </li>
+      
     </ul>
   </li><!-- End Study Plans Nav -->
 
@@ -47,6 +43,12 @@
         <i class="bi bi-circle"></i><span>Posted Questions</span>
       </a>
     </li>
+
+    <li>
+        <a href="pq_history.php">
+          <i class="bi bi-circle"></i><span>Transaction History</span>
+        </a>
+      </li>
   
   </ul>
 </li><!-- End Manage Questions Nav -->

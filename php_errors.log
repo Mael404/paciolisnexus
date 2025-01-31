@@ -1,0 +1,41 @@
+[31-Jan-2025 20:39:24 Europe/Berlin] POST Data: Array
+(
+    [gamified_id] => 
+    [score] => 1
+)
+
+[31-Jan-2025 20:39:24 Europe/Berlin] gamified_id is empty
+[31-Jan-2025 20:39:24 Europe/Berlin] Invalid input: score=1, gamified_id=
+[31-Jan-2025 20:40:28 Europe/Berlin] POST Data: Array
+(
+    [gamified_id] => 
+    [score] => 1
+)
+
+[31-Jan-2025 20:40:28 Europe/Berlin] Received score: 1, gamified_id: 
+[31-Jan-2025 20:40:28 Europe/Berlin] gamified_id is empty
+[31-Jan-2025 20:40:28 Europe/Berlin] Invalid input: score=1, gamified_id=
+[31-Jan-2025 20:41:57 Europe/Berlin] POST Data: Array
+(
+    [gamified_id] => 
+    [score] => 1
+)
+
+[31-Jan-2025 20:41:57 Europe/Berlin] Received score: 1, gamified_id: 
+[31-Jan-2025 20:41:57 Europe/Berlin] Invalid input: score=1, gamified_id=
+[31-Jan-2025 20:42:48 Europe/Berlin] POST Data: Array
+(
+    [gamified_id] => 
+    [score] => 1
+)
+
+[31-Jan-2025 20:42:48 Europe/Berlin] Received score: 1, gamified_id: 
+[31-Jan-2025 20:42:48 Europe/Berlin] Invalid input: score=1, gamified_id=
+[31-Jan-2025 20:43:31 Europe/Berlin] POST Data: Array
+(
+    [gamified_id] => 
+    [score] => 1
+)
+
+[31-Jan-2025 20:43:31 Europe/Berlin] Received score: 1, gamified_id: 
+[31-Jan-2025 20:43:31 Europe/Berlin] Invalid input: score=1, gamified_id=

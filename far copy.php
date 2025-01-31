@@ -7,15 +7,6 @@ $timer_enabled = false;
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
-    // Check if gamified_id is set in the URL and is numeric
-    if (isset($_GET['gamified_id']) && is_numeric($_GET['gamified_id'])) {
-        $gamified_id = $_GET['gamified_id'];
-        echo "Received gamified_id: " . $gamified_id . "<br>";  // Debugging output
-    } else {
-        echo "Invalid or missing gamified_id.";
-        exit();
-    }
-
     // Check for pending status
     $pending_query = "SELECT status FROM gamified WHERE student_id = ? AND status = 'pending'";
     if ($pending_stmt = mysqli_prepare($conn, $pending_query)) {
@@ -43,9 +34,8 @@ if (isset($_SESSION['user_id'])) {
         mysqli_stmt_store_result($stmt);
 
         if (mysqli_stmt_num_rows($stmt) > 0) {
-            mysqli_stmt_bind_result($stmt, $gamified_id, $timer); // Binding both variables
+            mysqli_stmt_bind_result($stmt, $gamified_id, $timer);
             while (mysqli_stmt_fetch($stmt)) {
-                echo "Game ID: " . $gamified_id . " - Timer: " . $timer . "<br>"; // Debugging output
                 if ($timer === 'enabled') {
                     $timer_enabled = true;
                 }
@@ -69,7 +59,6 @@ if (isset($_SESSION['user_id'])) {
 
 mysqli_close($conn);
 ?>
-
 
 
 
@@ -635,8 +624,36 @@ include 'sidebar.php'; // Use the correct path
         // Questions and answers
 
         const questions = [
-            "Shareholders' equity represents the residual interest in the assets of a company after deducting liabilities."
-           
+            "Shareholders' equity represents the residual interest in the assets of a company after deducting liabilities.",
+            "A company can issue both ordinary shares and preference shares.",
+            "The par value of a share is the market value at which it is traded.",
+            "Share premium arises when shares are issued at a price above their par value.",
+            "Accumulated profits and losses are not included in the shareholders' equity section of the balance sheet.",
+            "The exercise of share options does not affect the total shareholders' equity.",
+            "A company can repurchase its own shares, which is known as treasury stock.",
+            "The vesting period for share options is the time during which employees must remain with the company to earn their options.",
+            "Shareholders have a claim on the company's assets only after all liabilities have been settled.",
+            "The market value of a share is always higher than its par value.",
+            "What is the primary purpose of issuing preference shares?",
+            "Which of the following is NOT a component of shareholders' equity?",
+            "When a company issues shares at a price higher than par value, the excess amount is credited to:",
+            "The vesting condition for share options typically requires:",
+            "If a company has 100,000 shares outstanding with a par value of P10 and a market price of P50, what is the total par value of the shares?",
+            "Which of the following statements about share options is true?",
+            "What happens to the share premium account when shares are repurchased?",
+            "Which of the following is a characteristic of ordinary shares?",
+            "The accumulated profits and losses account reflects:",
+            "In the context of share-based payments, the term \"vesting\" refers to:",
+            "Which of the following is true regarding the exercise of share options?",
+            "The primary risk associated with issuing shares is:",
+            "Which of the following is NOT a reason for a company to repurchase its own shares?",
+            "The term \"treasury stock\" refers to:",
+            "Which of the following is a common method for valuing share options?",
+            "A company has issued 10,000 shares with a par value of P5 and a market price of P20. What is the total par value of the shares?",
+            "If a company has a share premium of P200,000 and issues additional shares at a premium of P10, what will be the new share premium if 5,000 shares are issued?",
+            "A company has 1,000 preference shares with a par value of P10 and a dividend rate of 5%. What is the total annual dividend obligation?",
+            "If a company repurchases 1,000 shares at P15 each, what is the total cost of the repurchase?",
+            "A company has retained earnings of P300,000 and decides to declare a dividend of P50,000. What will be the retained earnings after the dividend declaration"
 
 
 

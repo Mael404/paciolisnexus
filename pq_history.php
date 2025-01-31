@@ -447,19 +447,16 @@ if (isset($_POST['submitAnswer'])) {
 
         <section class="section dashboard">
     <div class="row">
-        <!-- DataTable for Materials -->
+        <!-- DataTable for Homework Help -->
         <div class="col-12">
             <table id="materialsTable" class="display bbnw table table-bordered text-center align-middle" style="width:100%">
                 <thead class="table-dark">
                     <tr>
-                        <th>File Name</th>
-                        <th>File Path</th>
-                        <th>Uploaded At</th>
-                        <th>Subject</th>
-                        <th>Status</th>
-                        <th>Students Availing</th> <!-- New column -->
-                        <th>Payment Method</th> <!-- New column -->
-                        <th>Earnings</th> <!-- New Earnings column -->
+                        <th>Transaction ID</th>
+                        <th>Assignment Question</th>
+                        <th>Assignment Difficulty</th>
+                        <th>Earnings</th>
+                        <th>Payment Method</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -467,47 +464,47 @@ if (isset($_POST['submitAnswer'])) {
                     // Include config.php to connect to the database
                     include('config.php');
 
-                    // Fetch materials from the database where student_id has a value
-                    $sql = "SELECT file_name, file_path, uploaded_at, subject, status FROM materials WHERE student_id IS NOT NULL";
-                    $result = $conn->query($sql);
+               
+                    if (!isset($_SESSION['user_id'])) {
+                        echo "<tr><td colspan='5'>You need to log in to view this data</td></tr>";
+                        exit;
+                    }
+                    $user_id = $_SESSION['user_id'];
+
+                    // Fetch data from homeworkhelp where cpa_id matches the logged-in user_id
+                    $sql = "SELECT transaction_id, assignment_question, assignment_difficulty, amount_to_pay FROM homeworkhelp WHERE cpa_id = ?";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param("i", $user_id); // Bind the user_id
+                    $stmt->execute();
+                    $result = $stmt->get_result();
 
                     if ($result->num_rows > 0) {
                         // Output each row
-                        while($row = $result->fetch_assoc()) {
-                            // Earnings calculation (40% of 59)
-                            $earnings = 59 * 0.4; // 40% of 59 is 23.6
-                            
+                        while ($row = $result->fetch_assoc()) {
+                            // Calculate 40% of the amount to pay
+                            $amount_to_pay = $row['amount_to_pay'];
+                            $forty_percent = $amount_to_pay * 0.4;
+
                             echo "<tr>";
-                            echo "<td>" . $row['file_name'] . "</td>";
-                            echo "<td>" . $row['file_path'] . "</td>";
-                            
-                            // Format the uploaded_at field to be human-readable
-                            $formattedDate = date("F j, Y, g:i a", strtotime($row['uploaded_at']));
-                            echo "<td>" . $formattedDate . "</td>";
-                            
-                            echo "<td>" . $row['subject'] . "</td>";
-                            echo "<td>" . $row['status'] . "</td>";
-                            
-                            // Default value for "No of Students"
-                            echo "<td>1</td>"; 
-                            
-                            // Default value for "Payment Method"
-                            echo "<td>GCash</td>";
-                            
-                            // Output the earnings
-                            echo "<td>₱" . number_format($earnings, 2) . "</td>"; // Display earnings formatted to 2 decimal places
-                            
+                            echo "<td>" . $row['transaction_id'] . "</td>";
+                            echo "<td>" . $row['assignment_question'] . "</td>";
+                            echo "<td>" . $row['assignment_difficulty'] . "</td>";
+                            echo "<td>₱" . number_format($forty_percent, 2) . "</td>"; // Display 40% of amount formatted
+                            echo "<td>GCash</td>"; // Payment method set to GCash
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='8'>No records found</td></tr>"; 
+                        echo "<tr><td colspan='5'>No records found</td></tr>";
                     }
+
+                    $stmt->close();
                     ?>
                 </tbody>
             </table>
         </div>
     </div>
 </section>
+
 
 <style>
     /* Ensure table content is centered */

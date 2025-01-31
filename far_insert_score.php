@@ -8,7 +8,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate input
     if (!empty($score) && is_numeric($score) && !empty($gamified_id)) {
-        // Prepare and execute the SQL query to insert both score and gamified_id
+        // Check if gamified_id already exists in the transaction_id column of leaderboards
+        $check_exists_stmt = $conn->prepare("SELECT transaction_id FROM leaderboards WHERE transaction_id = ?");
+        $check_exists_stmt->bind_param("i", $gamified_id);
+        $check_exists_stmt->execute();
+        $check_exists_result = $check_exists_stmt->get_result();
+
+        if ($check_exists_result->num_rows > 0) {
+            // If gamified_id exists, redirect to timer_enabled.html
+            header("Location: timer_enabled.html");
+            exit();
+        }
+
+        // Prepare and execute the SQL query to insert both score and gamified_id into leaderboards
         $stmt = $conn->prepare("INSERT INTO leaderboards (score, transaction_id) VALUES (?, ?)");
         $stmt->bind_param("ii", $score, $gamified_id); // Bind both score and gamified_id as integers
 

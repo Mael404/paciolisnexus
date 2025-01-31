@@ -6,14 +6,15 @@ if (isset($_POST['id']) && isset($_POST['status'])) {
     $id = $_POST['id'];
     $status = $_POST['status'];
 
-    // Start a transaction to ensure all operations are executed together
+    // Start a transaction to ensure both operations are executed together
     $conn->begin_transaction();
 
     try {
-        // Update the status in material_access table
+        // Prepare the SQL query to update the status in material_access table
         $sqlUpdate = "UPDATE material_access SET status = ? WHERE id = ?";
+        
         if ($stmtUpdate = $conn->prepare($sqlUpdate)) {
-            $stmtUpdate->bind_param('si', $status, $id);
+            $stmtUpdate->bind_param('si', $status, $id); // 'si' means string and integer types
             if (!$stmtUpdate->execute()) {
                 throw new Exception('Failed to update status');
             }
@@ -35,28 +36,15 @@ if (isset($_POST['id']) && isset($_POST['status'])) {
         }
 
         // Insert student_id into the materials table where material_id matches
-        $sqlInsertMaterial = "UPDATE materials SET student_id = ? WHERE id = ?";
-        if ($stmtInsertMaterial = $conn->prepare($sqlInsertMaterial)) {
-            $stmtInsertMaterial->bind_param('ii', $student_id, $material_id);
-            if (!$stmtInsertMaterial->execute()) {
-                throw new Exception('Failed to update student_id in materials table');
+        $sqlInsert = "UPDATE materials SET student_id = ? WHERE id = ?";
+        if ($stmtInsert = $conn->prepare($sqlInsert)) {
+            $stmtInsert->bind_param('ii', $student_id, $material_id); // 'ii' means two integer types
+            if (!$stmtInsert->execute()) {
+                throw new Exception('Failed to insert student_id into materials table');
             }
-            $stmtInsertMaterial->close();
+            $stmtInsert->close();
         } else {
-            throw new Exception('Failed to prepare insert statement for materials');
-        }
-
-        // Send a success message to the user
-        $message = "Your transaction has successfully been approved!";
-        $sqlInsertMessage = "INSERT INTO messages (student_id, message) VALUES (?, ?)";
-        if ($stmtInsertMessage = $conn->prepare($sqlInsertMessage)) {
-            $stmtInsertMessage->bind_param('is', $student_id, $message);
-            if (!$stmtInsertMessage->execute()) {
-                throw new Exception('Failed to insert message into messages table');
-            }
-            $stmtInsertMessage->close();
-        } else {
-            throw new Exception('Failed to prepare insert message statement');
+            throw new Exception('Failed to prepare insert statement');
         }
 
         // Commit the transaction if all queries are successful
@@ -64,6 +52,7 @@ if (isset($_POST['id']) && isset($_POST['status'])) {
 
         // Return success response
         echo json_encode(['success' => true]);
+
     } catch (Exception $e) {
         // Rollback the transaction if any error occurs
         $conn->rollback();

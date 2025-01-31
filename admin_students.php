@@ -232,6 +232,7 @@ $show_modal = $row['count'] == 0;
                 </ol>
             </nav>
         </div><!-- End Page Title -->
+        <br>
         <section class="section dashboard">
     <div class="row">
         <div class="col-12">

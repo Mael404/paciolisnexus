@@ -223,22 +223,31 @@ session_start();
             
                
                 <div class="card-body">
-                    <table id="materialTable" class="display bbnw table table-bordered text-center align-middle" style="width:100%">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Full Name</th>
-                                <th>GCash Number</th>
-                                <th>GCash Name</th>
-                                <th>Proof of Payment</th>
-                                <th>Created At</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Data will be populated dynamically -->
-                        </tbody>
-                    </table>
+                <table id="materialTable" class="display bbnw table table-bordered text-center align-middle" style="width:100%">
+    <thead class="table-dark">
+        <tr>
+            <th>Full Name</th>
+            <th>GCash Number</th>
+            <th>GCash Name</th>
+            <th>Proof of Payment</th>
+            <th>Created At</th>
+            <th>Status</th>
+            <th>Admin Share</th>
+            <th>CPA Share</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Data will be populated dynamically -->
+        <tr>
+            <td colspan="6"></td>
+            <td>₱35.40</td>
+            <td>₱23.60</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
                 </div>
             </div>
         </div>
@@ -329,89 +338,103 @@ session_start();
     <!-- Template Main JS File -->
     <script src="assets/js/main.js"></script>
 
-    <script>
+   <script>
     $(document).ready(function () {
-        var selectedRowId; // Store selected row ID for confirmation
+    var selectedRowId; // Store selected row ID for confirmation
 
-        $('#materialTable').DataTable({
-            "ajax": "fetch_materials.php", // URL to fetch data
-            "columns": [
-                { "data": "full_name" },
-                { "data": "gcash_number" },
-                { "data": "gcash_name" },
-                {
-                    "data": "proof_of_payment",
-                    "render": function (data) {
-                        return `
-                            <img src="${data}" alt="Proof of Payment" 
-                                 width="50" height="50" 
-                                 style="object-fit:cover; border-radius:5px; cursor:pointer;" 
-                                 onclick="showImageModal('${data}')">`;
-                    }
-                },
-                { "data": "created_at" },
-                { "data": "status" }, // Add the status column here
-                {
-                    "data": null, // Placeholder for Action column
-                    "render": function (data, type, row) {
-                        return `
-                          <button class="btn btn-success btn-sm" onclick="confirmAction(${row.id}, 'Confirmed')">
-    <i class="bi bi-check"></i>
-</button>
-<button class="btn btn-danger btn-sm" onclick="confirmAction(${row.id}, 'Denied')">
-    <i class="bi bi-x"></i>
-</button>
-`;
-                    }
+    $('#materialTable').DataTable({
+        "ajax": "fetch_materials.php", // URL to fetch data
+        "columns": [
+            { "data": "full_name" },
+            { "data": "gcash_number" },
+            { "data": "gcash_name" },
+            {
+                "data": "proof_of_payment",
+                "render": function (data) {
+                    return `
+                        <img src="${data}" alt="Proof of Payment" 
+                             width="50" height="50" 
+                             style="object-fit:cover; border-radius:5px; cursor:pointer;" 
+                             onclick="showImageModal('${data}')">`;
                 }
-            ],
-            "order": [[0, "asc"]]
-        });
-
-        // Function to show the image in a modal
-        window.showImageModal = function (imageUrl) {
-            $('#modalImage').attr('src', imageUrl);
-            $('#imageModal').modal('show');
-        };
-
-        // Function to show confirmation modal
-        window.confirmAction = function (id, action) {
-            selectedRowId = id; // Store the ID of the selected row
-            const actionText = action === 'confirm' ? 'confirm' : 'deny';
-            $('#confirmAction').text(actionText);
-            $('#confirmModal').modal('show');
-
-            // When the user confirms the action
-            $('#confirmButton').off().on('click', function () {
-                updateStatus(selectedRowId, action);
-                $('#confirmModal').modal('hide');
-            });
-        };
-
-        // Function to update the status in the database
-        function updateStatus(id, action) {
-            $.ajax({
-                url: 'material_update.php',
-                method: 'POST',
-                data: {
-                    id: id, 
-                    status: action
-                },
-                success: function (response) {
-                    console.log(response); // Log the response
-                    if (response.success) {
-                        alert("Status updated successfully.");
-                        $('#materialTable').DataTable().ajax.reload(); // Reload the table
-                    } else {
-                        alert("Status updated successfully.");
-                        $('#materialTable').DataTable().ajax.reload(); // Reload the table
-                    }
+            },
+            { "data": "created_at" },
+            { "data": "status" },
+            {
+                "data": null, 
+                "render": function () {
+                    let adminShare = (59 * 0.60).toFixed(2); // 60% of 59
+                    return `₱${adminShare}`;
                 }
-            });
-        }
+            },
+            {
+                "data": null, 
+                "render": function () {
+                    let cpaShare = (59 * 0.40).toFixed(2); // 40% of 59
+                    return `₱${cpaShare}`;
+                }
+            },
+            {
+                "data": null, 
+                "render": function (data, type, row) {
+                    return `
+                      <button class="btn btn-success btn-sm" onclick="confirmAction(${row.id}, 'Confirmed')">
+                          <i class="bi bi-check"></i>
+                      </button>
+                      <button class="btn btn-danger btn-sm" onclick="confirmAction(${row.id}, 'Denied')">
+                          <i class="bi bi-x"></i>
+                      </button>
+                    `;
+                }
+            }
+        ],
+        "order": [[0, "asc"]]
     });
-</script>
 
+    // Function to show the image in a modal
+    window.showImageModal = function (imageUrl) {
+        $('#modalImage').attr('src', imageUrl);
+        $('#imageModal').modal('show');
+    };
+
+    // Function to show confirmation modal
+    window.confirmAction = function (id, action) {
+        selectedRowId = id; // Store the ID of the selected row
+        const actionText = action === 'confirm' ? 'confirm' : 'deny';
+        $('#confirmAction').text(actionText);
+        $('#confirmModal').modal('show');
+
+        // When the user confirms the action
+        $('#confirmButton').off().on('click', function () {
+            updateStatus(selectedRowId, action);
+            $('#confirmModal').modal('hide');
+        });
+    };
+
+    // Function to update the status in the database
+    function updateStatus(id, action) {
+        $.ajax({
+            url: 'material_update.php',
+            method: 'POST',
+            data: {
+                id: id, 
+                status: action
+            },
+            success: function (response) {
+                console.log(response); // Log the response
+                if (response.success) {
+                    alert("Status updated successfully.");
+                    $('#materialTable').DataTable().ajax.reload(); // Reload the table
+                } else {
+                    alert("Status updated successfully.");
+                    $('#materialTable').DataTable().ajax.reload(); // Reload the table
+                }
+            }
+        });
+    }
+});
+
+   </script>
 
     
 </body>

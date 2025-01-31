@@ -38,6 +38,11 @@
       <ul id="quizzes-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
         <li>
           <a href="student_takequiz.php">
+            <i class="bi bi-circle"></i><span>Subjects</span>
+          </a>
+        </li>
+        <li>
+          <a href="takequiz.php">
             <i class="bi bi-circle"></i><span>Take a Quiz</span>
           </a>
         </li>

@@ -272,9 +272,140 @@ session_start();
     </header><!-- End Header -->
 
     <!-- ======= Sidebar ======= -->
-  <?php
-  include('sidebar.php');
-  ?>
+    <aside id="sidebar" class="sidebar">
+
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+            <li class="nav-item">
+                <a class="nav-link " href="student_dashboard.php">
+                    <i class="bi bi-house"></i>
+                    <span>Home</span>
+                </a>
+            </li><!-- End Home Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#study-plans-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-book"></i><span>Study Plans</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="study-plans-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="view-plan.html">
+                            <i class="bi bi-circle"></i><span>View Plan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="update-profile.html">
+                            <i class="bi bi-circle"></i><span>Update Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="progress-tracker.html">
+                            <i class="bi bi-circle"></i><span>Progress Tracker</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Study Plans Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#quizzes-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-question-square"></i><span>Quizzes</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="quizzes-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="student_takequiz.php">
+                            <i class="bi bi-circle"></i><span>Take a Quiz</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="leaderboard.html">
+                            <i class="bi bi-circle"></i><span>Leaderboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="points-rewards.html">
+                            <i class="bi bi-circle"></i><span>Points & Rewards</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Quizzes Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#homework-help-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-question-circle"></i><span>Homework Help</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="homework-help-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="submit-question.html">
+                            <i class="bi bi-circle"></i><span>Submit Question</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="my-questions.html">
+                            <i class="bi bi-circle"></i><span>My Questions</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="pricing.html">
+                            <i class="bi bi-circle"></i><span>Pricing</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Homework Help Nav -->
+
+
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#career-hub-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-briefcase"></i><span>Career Hub</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="career-hub-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="career-articles.html">
+                            <i class="bi bi-circle"></i><span>Articles</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="expert-talks.html">
+                            <i class="bi bi-circle"></i><span>Expert Talks</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="career-paths.html">
+                            <i class="bi bi-circle"></i><span>Career Paths</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Career Hub Nav -->
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" data-bs-target="#support-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-life-preserver"></i><span>Support</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="support-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="faq.html">
+                            <i class="bi bi-circle"></i><span>FAQ</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="contact.html">
+                            <i class="bi bi-circle"></i><span>Contact</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="feedback.html">
+                            <i class="bi bi-circle"></i><span>Feedback</span>
+                        </a>
+                    </li>
+                </ul>
+            </li><!-- End Support Nav -->
+
+
+
+        </ul>
+
+    </aside><!-- End Sidebar -->
+
 
     <main id="main" class="main">
 
@@ -297,7 +428,7 @@ session_start();
                     <form id="multiStepForm" action="quiz_AFAR_data.php" method="POST" enctype="multipart/form-data">
                         
                         <!-- Step 1: Personal Details -->
-                        <div class="form-step mt-3" id="step1">
+                        <div class="form-step" id="step1">
                             <h3 style="color: #4154f1; font-weight: bold;">Personal Details</h3>
                             <div class="mb-3">
                                 <label for="fullName" class="form-label">Full Name:</label>
@@ -311,7 +442,10 @@ session_start();
                                 <label for="address" class="form-label">Address:</label>
                                 <input type="text" id="address" name="address" class="form-control" required>
                             </div>
-                          
+                            <div class="mb-3">
+                                <label for="quizTitle" class="form-label">Quiz Title:</label>
+                                <input type="text" id="quizTitle" name="quiz_title" class="form-control" value="Advanced Financial Accounting and Reporting" readonly>
+                            </div>
                             <div class="mb-3">
                                 <label class="form-label">Choose Payment Plan:</label>
                                 <select id="paymentPlan" name="payment_plan" class="form-control">
@@ -363,7 +497,7 @@ session_start();
                         </div>
 
                         <!-- Step 2: Payment Details -->
-                        <div class="form-step mt-3" id="step2" style="display: none;">
+                        <div class="form-step" id="step2" style="display: none;">
                             <h3 style="color: #2eca6a; font-weight: bold;">Payment Details</h3>
                             <div class="mb-3">
                                 <label for="gcashName" class="form-label">Gcash Account Name:</label>

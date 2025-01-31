@@ -236,13 +236,12 @@ $show_modal = $row['count'] == 0;
                 </ol>
             </nav>
         </div><!-- End Page Title -->
+        <br>
         <section class="section dashboard">
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5>CPA Details</h5>
-                </div>
+    
+               
                 <div class="card-body">
                     <table id="cpaDetailsTable" class="display bbnw table table-bordered text-center align-middle" style="width:100%">
                         <thead class="table-dark">
@@ -263,7 +262,7 @@ $show_modal = $row['count'] == 0;
                             <!-- Data will be dynamically populated -->
                         </tbody>
                     </table>
-                </div>
+            
             </div>
         </div>
     </div>

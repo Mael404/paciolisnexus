@@ -238,26 +238,28 @@ $show_modal = $row['count'] == 0;
         <div class="col-12">
            
                 <div class="card-body">
-                    <table id="gamifiedTable" class="display bbnw table table-bordered text-center align-middle" style="width:100%">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Gamified ID</th>
-                                <th>Full Name</th>
-                                <th>Birthdate</th>
-                                <th>Address</th>
-                                <th>Quiz Title</th>
-                                <th>GCash Name</th>
-                                <th>GCash Number</th>
-                                <th>Payment Proof</th>
-                                <th>Created At</th>
-                                <th>Quiz Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Data will be dynamically populated -->
-                        </tbody>
-                    </table>
+                <table id="gamifiedTable" class="display bbnw table table-bordered text-center align-middle" style="width:100%">
+    <thead class="table-dark">
+        <tr>
+            <th>Gamified ID</th>
+            <th>Full Name</th>
+            <th>Birthdate</th>
+            <th>GCash Name</th>
+            <th>GCash Number</th>
+            <th>Payment Proof</th>
+            <th>Created At</th>
+            <th>Quiz Status</th>
+            <th>Admin Share</th>
+            <th>CPA Share</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Data will be dynamically populated -->
+    </tbody>
+</table>
+
+
                 </div>
             </div>
         </div>
@@ -357,32 +359,43 @@ $show_modal = $row['count'] == 0;
 
 
     <script>
-    $(document).ready(function() {
+   $(document).ready(function() {
     $('#gamifiedTable').DataTable({
         "ajax": "admin_fetchdata.php",
         "columns": [
             { "data": "gamefied_id" },
             { "data": "full_name" },
             { "data": "birthdate" },
-            { "data": "address" },
-            { "data": "quiz_title" },
             { "data": "gcash_name" },
             { "data": "gcash_number" },
             {
                 "data": "payment_proof",
-                "render": function(data, type, row) {
+                "render": function(data) {
                     if (data !== 'No proof provided') {
                         return `<img src="${data}" alt="Payment Proof" style="cursor: pointer; max-width: 100px;" class="payment-proof" 
-        data-bs-toggle="modal" data-bs-target="#imageModal" 
-        onclick="document.getElementById('modalImage').src='${data}';" />`;
-
+                        data-bs-toggle="modal" data-bs-target="#imageModal" 
+                        onclick="document.getElementById('modalImage').src='${data}';" />`;
                     } else {
-                        return data; // Return the text if no proof is provided
+                        return data; // Return text if no proof is provided
                     }
                 }
             },
             { "data": "created_at" },
             { "data": "status" },
+            {
+                "data": null,
+                "render": function () {
+                    let adminShare = (60 * 0.60).toFixed(2); // 60% of 59
+                    return `₱${adminShare}`;
+                }
+            },
+            {
+                "data": null,
+                "render": function () {
+                    let cpaShare = (60 * 0.40).toFixed(2); // 40% of 59
+                    return `₱${cpaShare}`;
+                }
+            },
             {
                 "data": null,
                 "render": function(data, type, row) {
@@ -400,8 +413,8 @@ $show_modal = $row['count'] == 0;
             }
         ],
         "columnDefs": [
-            { "targets": 7, "orderable": false, "searchable": false },
-            { "targets": 10, "orderable": false, "searchable": false }
+            { "targets": 5, "orderable": false, "searchable": false }, // Payment Proof column
+            { "targets": 10, "orderable": false, "searchable": false } // Actions column
         ]
     });
 
@@ -445,7 +458,9 @@ $show_modal = $row['count'] == 0;
         });
     });
 });
-</script>
+
+
+    </script>
 
 </body>
 

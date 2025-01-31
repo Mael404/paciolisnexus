@@ -23,28 +23,31 @@ if (isset($_POST['id']) && isset($_POST['status'])) {
             throw new Exception('Failed to prepare update statement');
         }
 
-        // Retrieve student_id and material_id from material_access table
-        $sqlSelect = "SELECT student_id, material_id FROM material_access WHERE id = ?";
+        // Retrieve student_id from material_access table
+        $sqlSelect = "SELECT student_id FROM material_access WHERE id = ?";
         if ($stmtSelect = $conn->prepare($sqlSelect)) {
             $stmtSelect->bind_param('i', $id);
             $stmtSelect->execute();
-            $stmtSelect->bind_result($student_id, $material_id);
+            $stmtSelect->bind_result($student_id);
             $stmtSelect->fetch();
             $stmtSelect->close();
         } else {
             throw new Exception('Failed to prepare select statement');
         }
 
-        // Insert student_id into the materials table where material_id matches
-        $sqlInsert = "UPDATE materials SET student_id = ? WHERE id = ?";
-        if ($stmtInsert = $conn->prepare($sqlInsert)) {
-            $stmtInsert->bind_param('ii', $student_id, $material_id); // 'ii' means two integer types
-            if (!$stmtInsert->execute()) {
-                throw new Exception('Failed to insert student_id into materials table');
+        // Send a success message to the user
+        $message = "Your transaction has successfully been approved!";
+
+        // Insert student_id and message into the messages table
+        $sqlInsertMessage = "INSERT INTO messages (student_id, message) VALUES (?, ?)";
+        if ($stmtInsertMessage = $conn->prepare($sqlInsertMessage)) {
+            $stmtInsertMessage->bind_param('is', $student_id, $message); // 'is' means integer and string types
+            if (!$stmtInsertMessage->execute()) {
+                throw new Exception('Failed to insert message into messages table');
             }
-            $stmtInsert->close();
+            $stmtInsertMessage->close();
         } else {
-            throw new Exception('Failed to prepare insert statement');
+            throw new Exception('Failed to prepare insert message statement');
         }
 
         // Commit the transaction if all queries are successful

@@ -560,10 +560,10 @@ if (isset($_POST['submitAnswer'])) {
 
 <!-- Progress Tracker -->
 <div style="margin-top: 20px;">
-  <label for="progress">Progress:</label>
+  <label for="progress" style="font-weight: bold;">Progress:</label>
   <div style="background-color: #f3f3f3; border-radius: 5px; width: 100%; height: 30px;">
-    <div id="progress" style="background-color: #4caf50; height: 100%; width: 78%; border-radius: 5px; text-align: center; color: white; font-weight: bold; line-height: 30px;">
-      78%
+    <div id="progress" style="background-color: #4caf50; height: 100%; width: 5%; border-radius: 5px; text-align: center; color: white; font-weight: bold; line-height: 30px;">
+      5%
     </div>
   </div>
 </div>

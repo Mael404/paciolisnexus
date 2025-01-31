@@ -194,6 +194,8 @@ $current_user_id = $_SESSION['user_id']; // Ensure 'user_id' is stored in the se
       flex-direction: column;
       flex-grow: 1;
     }
+
+
   </style>
 </head>
 
@@ -442,133 +444,71 @@ include 'sidebar.php'; // Use the correct path
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Quizes</h1>
+      <h1>Preview</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Take a Quiz</li>
+          <li class="breadcrumb-item active">CASH Topic Quiz Preview</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
-    <style>
-      .subject-card {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
+  
 
-      .subject-card .card-body {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        /* Distributes the content evenly */
-      }
-
-      .card-title {
-        margin-bottom: 0px;
-      }
-
-      .btn {
-        margin-top: auto;
-        /* Ensures the button stays at the bottom */
-      }
-    </style>
-
-<!-- Section with Subject Cards -->
-<section class="section dashboard">
-  <div class="row">
-    <!-- Subject 1: Financial Accounting and Reporting -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Financial Accounting and Reporting</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f6f6; width: 70px; height: 70px;">
-            <i class="bi bi-clipboard-check" style="color: #4154f1; font-size: 30px;"></i>
-          </div>
-          <a href="far_dashboard.php" class="btn btn-primary mt-3 position-relative">
-            View topics
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Subject 2: Advanced Financial Accounting and Reporting -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Advanced Financial Accounting and Reporting</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #e6f4ea; width: 70px; height: 70px;">
-            <i class="bi bi-calculator" style="color: #2eca6a; font-size: 30px;"></i>
-          </div>
-          <a href="afar_dashboard.php" class="btn btn-success mt-3 position-relative">
-          View topics
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Subject 3: Taxation -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Taxation</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f1eb; width: 70px; height: 70px;">
-            <i class="bi bi-wallet2" style="color: #ff771d; font-size: 30px;"></i>
-          </div>
-          <a href="tax_dashboard.php" class="btn btn-warning mt-3 position-relative">
-          View topics
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Subject 4: Auditing -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Auditing</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eef6ff; width: 70px; height: 70px;">
-            <i class="bi bi-graph-up" style="color: #0d6efd; font-size: 30px;"></i>
-          </div>
-          <a href="aud_dashboard.php" class="btn btn-info mt-3 position-relative">
-          View topics
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Subject 5: Regulatory Framework for Business Transactions -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Regulatory Framework for Business Transactions</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #fff6e6; width: 70px; height: 70px;">
-            <i class="bi bi-briefcase" style="color: #f39c12; font-size: 30px;"></i>
-          </div>
-          <a href="rfbt_dashboard.php" class="btn btn-dark mt-3 position-relative">
-          View topics
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Subject 6: Management Advisory Services -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Management Advisory Services</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eaf2ff; width: 70px; height: 70px;">
-            <i class="bi bi-bar-chart" style="color: #5e60ce; font-size: 30px;"></i>
-          </div>
-          <a href="mas_dashboard.php" class="btn btn-primary mt-3 position-relative">
-          View topics
-          </a>
-        </div>
-      </div>
+    <section class="section dashboard">
+  <div class="container mt-5 text-center">
+    <h2 class="text-center">Quiz Preview</h2>
+    <button id="takeQuizButton" class="btn btn-primary mt-3">Take Quiz</button>
+    <div id="quizContainer" class="mt-4">
+      <!-- Questions will be dynamically inserted here -->
     </div>
   </div>
 </section>
+
+<style>
+  .blurred {
+    filter: blur(5px);
+    cursor: pointer;
+    transition: filter 0.3s ease-in-out;
+  }
+  .blurred:hover {
+    filter: blur(0px);
+  }
+  .question {
+    padding: 10px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+</style>
+
+<script>
+  const questions = [
+    "Shareholders' equity represents the residual interest in the assets of a company after deducting liabilities.",
+    "A company can issue both ordinary shares and preference shares.",
+    "The par value of a share is the market value at which it is traded.",
+    "Share premium arises when shares are issued at a price above their par value.",
+    "Accumulated profits and losses are not included in the shareholders' equity section of the balance sheet.",
+    "The exercise of share options does not affect the total shareholders' equity.",
+    "A company can repurchase its own shares, which is known as treasury stock.",
+    "The vesting period for share options is the time during which employees must remain with the company to earn their options.",
+    "Shareholders have a claim on the company's assets only after all liabilities have been settled.",
+    "The market value of a share is always higher than its par value."
+  ];
+
+  const quizContainer = document.getElementById('quizContainer');
+
+  questions.forEach((question, index) => {
+    const questionElement = document.createElement('div');
+    questionElement.classList.add('question', 'blurred');
+    questionElement.innerText = `${index + 1}. ${question}`;
+    quizContainer.appendChild(questionElement);
+  });
+
+  document.getElementById('takeQuizButton').addEventListener('click', function() {
+    window.location.href = 'quiz_AFAR.php';
+  });
+</script>
 
 
 

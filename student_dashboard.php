@@ -70,71 +70,7 @@ session_start();
             <span class="badge bg-primary badge-number">4</span>
           </a><!-- End Notification Icon -->
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-            <li class="dropdown-header">
-              You have 4 new notifications
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-exclamation-circle text-warning"></i>
-              <div>
-                <h4>Lorem Ipsum</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>30 min. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-x-circle text-danger"></i>
-              <div>
-                <h4>Atque rerum nesciunt</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>1 hr. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-check-circle text-success"></i>
-              <div>
-                <h4>Sit rerum fuga</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>2 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-info-circle text-primary"></i>
-              <div>
-                <h4>Dicta reprehenderit</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>4 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="dropdown-footer">
-              <a href="#">Show all notifications</a>
-            </li>
-
-          </ul><!-- End Notification Dropdown Items -->
+       
 
         </li><!-- End Notification Nav -->
 
@@ -145,63 +81,7 @@ session_start();
             <span class="badge bg-success badge-number">3</span>
           </a><!-- End Messages Icon -->
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-            <li class="dropdown-header">
-              You have 3 new messages
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/messages-1.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Maria Hudson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>4 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/messages-2.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Anna Nelson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>6 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/messages-3.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>David Muldon</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>8 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="dropdown-footer">
-              <a href="#">Show all messages</a>
-            </li>
-
-          </ul><!-- End Messages Dropdown Items -->
-
+        
         </li><!-- End Messages Nav -->
 
         <li class="nav-item dropdown pe-3">
@@ -289,200 +169,207 @@ include 'sidebar.php'; // Use the correct path
     </div><!-- End Page Title -->
 
     <section class="section dashboard">
+  <div class="row">
+    <!-- Left side columns -->
+    <div class="col-lg-12">
       <div class="row">
 
-        <!-- Left side columns -->
-        <div class="col-lg-12">
-          <div class="row">
+        <!-- Assignments Card -->
+        <div class="col-xxl-4 col-md-6">
+          <div class="card info-card assignments-card">
 
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
 
-            <!-- Students Card -->
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card students-card">
+                <li><a class="dropdown-item" href="#">Today</a></li>
+                <li><a class="dropdown-item" href="#">This Week</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+              </ul>
+            </div>
 
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
+            <div class="card-body">
+              <h5 class="card-title">Quizes <span>| This Week</span></h5>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #f6f6f6;">
+                  <i class="bi bi-pencil" style="color: #4154f1; font-size: 24px;"></i>
                 </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">Users <span>| Today</span></h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #f6f6f6;">
-                      <i class="bi bi-person" style="color: #4154f1; font-size: 24px;"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>145</h6>
-                      <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-                    </div>
-                  </div>
+                <div class="ps-3">
+                  <h6>3</h6>
+                  <span class="text-success small pt-1 fw-bold">Pending</span>
+                  <span class="text-muted small pt-2 ps-1">quizes</span>
                 </div>
               </div>
-            </div><!-- End Students Card -->
-
-            <!-- Attendance Card -->
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card attendance-card">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">Questions <span>| Today</span></h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #e6f4ea;">
-                      <i class="bi bi-check-circle" style="color: #2eca6a; font-size: 24px;"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>95%</h6>
-                      <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div><!-- End Attendance Card -->
-
-            <!-- Teachers Card -->
-            <div class="col-xxl-4 col-xl-12">
-              <div class="card info-card teachers-card">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">CPA <span>| This Year</span></h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #f6f1eb;">
-                      <i class="bi bi-person-circle" style="color: #ff771d; font-size: 24px;"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>45</h6>
-                      <span class="text-danger small pt-1 fw-bold">5%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div><!-- End Teachers Card -->
-
-
-
-
-            <!-- Recent Sales -->
-            <div class="col-12">
-              <div class="card recent-sales overflow-auto">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-
-                <div class="card-body">
-                  <h5 class="card-title">Recent Assignments <span>| Today</span></h5>
-
-                  <table class="table table-borderless datatable">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Student</th>
-                        <th scope="col">Assignment</th>
-                        <th scope="col">Grade</th>
-                        <th scope="col">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row"><a href="#">#2457</a></th>
-                        <td>Brandon Jacob</td>
-                        <td><a href="#" class="text-primary">Math Homework</a></td>
-                        <td>A</td>
-                        <td><span class="badge bg-success">Completed</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2147</a></th>
-                        <td>Bridie Kessler</td>
-                        <td><a href="#" class="text-primary">Science Project</a></td>
-                        <td>B+</td>
-                        <td><span class="badge bg-warning">Pending</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2049</a></th>
-                        <td>Ashleigh Langosh</td>
-                        <td><a href="#" class="text-primary">History Essay</a></td>
-                        <td>A-</td>
-                        <td><span class="badge bg-success">Completed</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2644</a></th>
-                        <td>Angus Grady</td>
-                        <td><a href="#" class="text-primary">English Presentation</a></td>
-                        <td>B</td>
-                        <td><span class="badge bg-danger">Missing</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2644</a></th>
-                        <td>Raheem Lehner</td>
-                        <td><a href="#" class="text-primary">Art Project</a></td>
-                        <td>A+</td>
-                        <td><span class="badge bg-success">Completed</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-
-              </div>
-            </div><!-- End Recent Sales -->
-
+            </div>
           </div>
-        </div><!-- End Left side columns -->
+        </div><!-- End Assignments Card -->
 
-        <!-- Right side columns -->
-        <div class="col-lg-12">
+        <!-- Grades Card -->
+        <div class="col-xxl-4 col-md-6">
+          <div class="card info-card grades-card">
+
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">This Semester</a></li>
+                <li><a class="dropdown-item" href="#">This Year</a></li>
+              </ul>
+            </div>
+
+            <div class="card-body">
+              <h5 class="card-title">Leaderboards <span>| This Year</span></h5>
+
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #e6f4ea;">
+                  <i class="bi bi-bar-chart" style="color: #2eca6a; font-size: 24px;"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>A</h6>
+                  <span class="text-success small pt-1 fw-bold">Top 85%</span>
+                  <span class="text-muted small pt-2 ps-1">Leaderboards</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- End Grades Card -->
+
+        <!-- Notifications Card -->
+        <div class="col-xxl-4 col-md-6">
+          <div class="card info-card notifications-card">
+
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">New</a></li>
+                <li><a class="dropdown-item" href="#">This Week</a></li>
+                <li><a class="dropdown-item" href="#">This Month</a></li>
+              </ul>
+            </div>
+
+            <div class="card-body">
+              <h5 class="card-title">Notifications <span>| This Week</span></h5>
+
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center" style="background-color: #f6f1eb;">
+                  <i class="bi bi-bell" style="color: #ff771d; font-size: 24px;"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>2</h6>
+                  <span class="text-warning small pt-1 fw-bold">Unread</span>
+                  <span class="text-muted small pt-2 ps-1">notifications</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- End Notifications Card -->
+
+      </div>
+    </div><!-- End Left side columns -->
+
+    <!-- Right side columns -->
+    <div class="col-lg-12">
+
+      <!-- Recent Assignments -->
+      <div class="card recent-assignments overflow-auto">
+
+        <div class="filter">
+          <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+            <li class="dropdown-header text-start">
+              <h6>Filter</h6>
+            </li>
+
+            <li><a class="dropdown-item" href="#">Today</a></li>
+            <li><a class="dropdown-item" href="#">This Week</a></li>
+            <li><a class="dropdown-item" href="#">This Month</a></li>
+          </ul>
+        </div>
+
+        <div class="card-body">
+  <h5 class="card-title">Quiz Leaderboard <span>| This Week</span></h5>
+
+  <table class="table table-borderless datatable">
+    <thead>
+      <tr>
+        <th scope="col">Rank</th>
+        <th scope="col">Name</th>
+        <th scope="col">Subject</th>
+        <th scope="col">Score</th>
+        <th scope="col">Max Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Example 1 -->
+      <tr>
+        <th scope="row">1</th>
+        <td>John Doe</td>
+        <td>Financial Accounting and Reporting</td>
+        <td>28</td>
+        <td>30</td>
+      </tr>
+      <!-- Example 2 -->
+      <tr>
+        <th scope="row">2</th>
+        <td>Jane Smith</td>
+        <td>Advanced Financial Accounting and Reporting</td>
+        <td>26</td>
+        <td>30</td>
+      </tr>
+      <!-- Example 3 -->
+      <tr>
+        <th scope="row">3</th>
+        <td>Mike Johnson</td>
+        <td>Auditing</td>
+        <td>22</td>
+        <td>30</td>
+      </tr>
+      <!-- Example 4 -->
+      <tr>
+        <th scope="row">4</th>
+        <td>Amy Williams</td>
+        <td>Taxation</td>
+        <td>20</td>
+        <td>30</td>
+      </tr>
+      <!-- Example 5 -->
+      <tr>
+        <th scope="row">5</th>
+        <td>David Lee</td>
+        <td>Regulatory Framework for Business Transactions</td>
+        <td>18</td>
+        <td>30</td>
+      </tr>
+      <!-- Example 6 -->
+      <tr>
+        <th scope="row">6</th>
+        <td>Sarah Kim</td>
+        <td>Management Advisory Services</td>
+        <td>15</td>
+        <td>30</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 
+      </div>
+    </div><!-- End Recent Assignments -->
 
+  </div>
+</section>
 
-    </section>
 
   </main><!-- End #main -->
 

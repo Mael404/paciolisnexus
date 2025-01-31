@@ -194,6 +194,8 @@ $current_user_id = $_SESSION['user_id']; // Ensure 'user_id' is stored in the se
       flex-direction: column;
       flex-grow: 1;
     }
+
+
   </style>
 </head>
 
@@ -442,133 +444,118 @@ include 'sidebar.php'; // Use the correct path
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Quizes</h1>
+      <h1>FAR Topics</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Take a Quiz</li>
+          <li class="breadcrumb-item active">FAR Topics</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
-    <style>
-      .subject-card {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
+  
 
-      .subject-card .card-body {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        /* Distributes the content evenly */
-      }
-
-      .card-title {
-        margin-bottom: 0px;
-      }
-
-      .btn {
-        margin-top: auto;
-        /* Ensures the button stays at the bottom */
-      }
-    </style>
-
-<!-- Section with Subject Cards -->
-<section class="section dashboard">
-  <div class="row">
-    <!-- Subject 1: Financial Accounting and Reporting -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Financial Accounting and Reporting</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f6f6; width: 70px; height: 70px;">
-            <i class="bi bi-clipboard-check" style="color: #4154f1; font-size: 30px;"></i>
+    <section class="section dashboard">
+  <div class="container mt-5">
+    <div class="row">
+    <div class="pagetitle">
+        <h1 class="text-center mb-4" style="font-size: 2.5rem; font-weight: bold; color: #333;">Financial Accounting and Reporting Topics</h1>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm d-flex flex-column" style="height: 100%;">
+          <div class="card-header bg-primary text-white">
+            <h5>Cash</h5>
           </div>
-          <a href="far_dashboard.php" class="btn btn-primary mt-3 position-relative">
-            View topics
-          </a>
+          <div class="card-body d-flex flex-column" style="flex-grow: 1;">
+            <ul class="mt-3">
+              <li><i class="bi bi-cash-coin"></i> Cash in bank</li>
+              <li><i class="bi bi-wallet2"></i> Cash on hand</li>
+              <li><i class="bi bi-cash-stack"></i> Cash fund</li>
+              <li><i class="bi bi-cash-coin"></i> Cash equivalents</li>
+              <li><i class="bi bi-x-circle"></i> Fraudulent activities in cash</li>
+              <li><i class="bi bi-file-earmark-zip"></i> Bank reconciliations</li>
+              <li><i class="bi bi-file-earmark-check"></i> Proof of cash</li>
+            </ul>
+            <!-- Button spans full width -->
+            <div class="d-flex mt-auto">
+  <a href="far_quiz_preview.php" class="btn btn-primary w-100">Take a Quiz</a>
+</div>
+
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Subject 2: Advanced Financial Accounting and Reporting -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Advanced Financial Accounting and Reporting</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #e6f4ea; width: 70px; height: 70px;">
-            <i class="bi bi-calculator" style="color: #2eca6a; font-size: 30px;"></i>
+      <!-- Receivables Category -->
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm d-flex flex-column" style="height: 100%;">
+          <div class="card-header bg-success text-white">
+            <h5>Receivables</h5>
           </div>
-          <a href="afar_dashboard.php" class="btn btn-success mt-3 position-relative">
-          View topics
-          </a>
+          <div class="card-body d-flex flex-column" style="flex-grow: 1;">
+            <ul class="mt-3">
+              <li><i class="bi bi-file-earmark"></i> Accounts receivables</li>
+              <li><i class="bi bi-file-earmark-x"></i> Estimation of doubtful accounts</li>
+              <li><i class="bi bi-file-earmark-post"></i> Notes receivables</li>
+              <li><i class="bi bi-file-earmark"></i> Loan receivables</li>
+              <li><i class="bi bi-file-earmark-earmark"></i> Receivable financing</li>
+              <li><i class="bi bi-file-earmark-lock"></i> Dishonored notes</li>
+            </ul>
+            <!-- Button spans full width -->
+            <div class="d-flex mt-auto">
+              <button class="btn btn-success w-100">Take a Quiz</button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Subject 3: Taxation -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Taxation</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f1eb; width: 70px; height: 70px;">
-            <i class="bi bi-wallet2" style="color: #ff771d; font-size: 30px;"></i>
+      <!-- Inventories Category -->
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm d-flex flex-column" style="height: 100%;">
+          <div class="card-header bg-warning text-white">
+            <h5>Inventories</h5>
           </div>
-          <a href="tax_dashboard.php" class="btn btn-warning mt-3 position-relative">
-          View topics
-          </a>
+          <div class="card-body d-flex flex-column" style="flex-grow: 1;">
+            <ul class="mt-3">
+              <li><i class="bi bi-box"></i> Inventories</li>
+              <li><i class="bi bi-box-arrow-in-down"></i> Inventory cost flow</li>
+              <li><i class="bi bi-arrow-down-right-circle"></i> Lower of cost and net realizable value</li>
+              <li><i class="bi bi-file-earmark"></i> Gross profit method</li>
+              <li><i class="bi bi-file-earmark-earmark"></i> Retail inventory method</li>
+            </ul>
+            <!-- Button spans full width -->
+            <div class="d-flex mt-auto">
+              <button class="btn btn-warning w-100">Take a Quiz</button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Subject 4: Auditing -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Auditing</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eef6ff; width: 70px; height: 70px;">
-            <i class="bi bi-graph-up" style="color: #0d6efd; font-size: 30px;"></i>
+      <!-- Investments Category -->
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-sm d-flex flex-column" style="height: 100%;">
+          <div class="card-header bg-info text-white">
+            <h5>Investments</h5>
           </div>
-          <a href="aud_dashboard.php" class="btn btn-info mt-3 position-relative">
-          View topics
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Subject 5: Regulatory Framework for Business Transactions -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Regulatory Framework for Business Transactions</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #fff6e6; width: 70px; height: 70px;">
-            <i class="bi bi-briefcase" style="color: #f39c12; font-size: 30px;"></i>
+          <div class="card-body d-flex flex-column" style="flex-grow: 1;">
+            <ul class="mt-3">
+              <li><i class="bi bi-bar-chart-line"></i> Financial asset at fair value</li>
+              <li><i class="bi bi-graph-up"></i> Investment in equity securities</li>
+              <li><i class="bi bi-box-arrow-in-up-right"></i> Investment in associate</li>
+              <li><i class="bi bi-graph-up"></i> Financial asset at amortized cost</li>
+              <li><i class="bi bi-mortarboard"></i> Effective interest method</li>
+              <li><i class="bi bi-arrow-repeat"></i> Reclassification of financial asset</li>
+              <li><i class="bi bi-building"></i> Invest in property</li>
+            </ul>
+            <!-- Button spans full width -->
+            <div class="d-flex mt-auto">
+              <button class="btn btn-info w-100">Take a Quiz</button>
+            </div>
           </div>
-          <a href="rfbt_dashboard.php" class="btn btn-dark mt-3 position-relative">
-          View topics
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Subject 6: Management Advisory Services -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Management Advisory Services</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eaf2ff; width: 70px; height: 70px;">
-            <i class="bi bi-bar-chart" style="color: #5e60ce; font-size: 30px;"></i>
-          </div>
-          <a href="mas_dashboard.php" class="btn btn-primary mt-3 position-relative">
-          View topics
-          </a>
         </div>
       </div>
     </div>
   </div>
 </section>
+
 
 
 

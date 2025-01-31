@@ -194,6 +194,8 @@ $current_user_id = $_SESSION['user_id']; // Ensure 'user_id' is stored in the se
       flex-direction: column;
       flex-grow: 1;
     }
+
+
   </style>
 </head>
 
@@ -446,131 +448,85 @@ include 'sidebar.php'; // Use the correct path
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Take a Quiz</li>
+          <li class="breadcrumb-item active">Quizes</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
-    <style>
-      .subject-card {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-      }
+    <?php
+include('config.php'); // Ensure you have your database connection file included
 
-      .subject-card .card-body {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        /* Distributes the content evenly */
-      }
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    echo "<div class='alert alert-danger text-center'>You must be logged in to view this content.</div>";
+    exit;
+}
 
-      .card-title {
-        margin-bottom: 0px;
-      }
+$user_id = $_SESSION['user_id'];
 
-      .btn {
-        margin-top: auto;
-        /* Ensures the button stays at the bottom */
-      }
-    </style>
+// Query to retrieve data if user_id exists in student_id column
+$sql = "SELECT gamefied_id, created_at, status, timer, attempt FROM gamified WHERE student_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+?>
 
-<!-- Section with Subject Cards -->
 <section class="section dashboard">
-  <div class="row">
-    <!-- Subject 1: Financial Accounting and Reporting -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Financial Accounting and Reporting</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f6f6; width: 70px; height: 70px;">
-            <i class="bi bi-clipboard-check" style="color: #4154f1; font-size: 30px;"></i>
-          </div>
-          <a href="far_dashboard.php" class="btn btn-primary mt-3 position-relative">
-            View topics
-          </a>
-        </div>
-      </div>
-    </div>
+    <div class="container mt-5">
+        <div class="row">
+            <?php while ($row = $result->fetch_assoc()) { ?>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card shadow-lg border-0 rounded-lg text-center p-4" style="background-color: #f3f4f6; border-radius: 20px; box-shadow: 0px 12px 30px rgba(0, 0, 0, 0.1);">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary mb-3" style="font-size: 1.5rem; font-weight: bold; color: #ff6347;">Game ID: <?php echo $row['gamefied_id']; ?></h5>
+                            <p class="text-muted mb-2" style="font-size: 1rem; font-weight: bold;">Status: <span class="text-dark"><?php echo $row['status']; ?></span></p>
+                            <p class="text-muted mb-2" style="font-size: 1rem; font-weight: bold;">Timer: <span class="text-dark"><?php echo $row['timer']; ?> seconds</span></p>
+                            <p class="text-muted mb-2" style="font-size: 1rem; font-weight: bold;">Attempts: <span class="text-dark"><?php echo $row['attempt']; ?></span></p>
+                            <p class="text-muted mb-3" style="font-size: 0.9rem;"><small>Created on: <?php echo date('F j, Y, g:i A', strtotime($row['created_at'])); ?></small></p>
+                            
+                            <p class="text-dark font-weight-bold" style="font-size: 1.1rem; color: #ff6347;">Do you want to proceed with a timer or without a timer?</p>
+                            <p class="text-muted mb-3" style="font-size: 0.9rem;">
+                                <small>If you proceed with a timer, your score will be recorded and posted on the leaderboard. If you proceed without a timer, you can take the quiz at your own pace, but your score will not be recorded or posted on the leaderboard.</small>
+                            </p>
 
-    <!-- Subject 2: Advanced Financial Accounting and Reporting -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Advanced Financial Accounting and Reporting</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #e6f4ea; width: 70px; height: 70px;">
-            <i class="bi bi-calculator" style="color: #2eca6a; font-size: 30px;"></i>
-          </div>
-          <a href="afar_dashboard.php" class="btn btn-success mt-3 position-relative">
-          View topics
-          </a>
+                            <!-- Button Row (disable buttons if status is 'denied' or 'pending') -->
+                            <div class="d-flex justify-content-center">
+                                <a href="far.php" class="btn btn-fun px-4 py-3 w-48" style="font-size: 1.1rem; border-radius: 10px; margin-right: 10px;" <?php echo ($row['status'] == 'denied' || $row['status'] == 'pending') ? 'disabled' : ''; ?>>Proceed with Timer</a>
+                                <a href="farnotimer.php" class="btn btn-fun px-4 py-3 w-48" style="font-size: 1.1rem; border-radius: 10px; margin-left: 10px;" <?php echo ($row['status'] == 'denied' || $row['status'] == 'pending') ? 'disabled' : ''; ?>>Proceed without Timer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
         </div>
-      </div>
     </div>
-
-    <!-- Subject 3: Taxation -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Taxation</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #f6f1eb; width: 70px; height: 70px;">
-            <i class="bi bi-wallet2" style="color: #ff771d; font-size: 30px;"></i>
-          </div>
-          <a href="tax_dashboard.php" class="btn btn-warning mt-3 position-relative">
-          View topics
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Subject 4: Auditing -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Auditing</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eef6ff; width: 70px; height: 70px;">
-            <i class="bi bi-graph-up" style="color: #0d6efd; font-size: 30px;"></i>
-          </div>
-          <a href="aud_dashboard.php" class="btn btn-info mt-3 position-relative">
-          View topics
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Subject 5: Regulatory Framework for Business Transactions -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Regulatory Framework for Business Transactions</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #fff6e6; width: 70px; height: 70px;">
-            <i class="bi bi-briefcase" style="color: #f39c12; font-size: 30px;"></i>
-          </div>
-          <a href="rfbt_dashboard.php" class="btn btn-dark mt-3 position-relative">
-          View topics
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Subject 6: Management Advisory Services -->
-    <div class="col-lg-4 col-md-6 mb-3">
-      <div class="card info-card subject-card">
-        <div class="card-body text-center">
-          <h5 class="card-title">Management Advisory Services</h5>
-          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center mx-auto" style="background-color: #eaf2ff; width: 70px; height: 70px;">
-            <i class="bi bi-bar-chart" style="color: #5e60ce; font-size: 30px;"></i>
-          </div>
-          <a href="mas_dashboard.php" class="btn btn-primary mt-3 position-relative">
-          View topics
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
 </section>
 
+<?php
+$stmt->close();
+$conn->close();
+?>
 
+
+<style>
+  .btn-fun {
+    background: linear-gradient(45deg, rgb(60, 37, 212), rgb(29, 6, 172)); /* Gradient from purple to blue */
+    color: white;
+    border: none;
+    transition: all 0.3s ease-in-out;
+    font-weight: bold;
+    padding: 6px 12px; /* Further reduced padding */
+    font-size: 0.8rem; /* Smaller font size */
+    border-radius: 6px; /* Smaller border radius */
+}
+
+.btn-fun:hover {
+    background: linear-gradient(45deg, rgb(169, 154, 216), rgb(120, 98, 214)); /* Reverse gradient on hover */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Smaller shadow */
+}
+
+
+</style>
 
 
 

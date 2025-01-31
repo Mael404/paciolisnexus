@@ -240,26 +240,27 @@ $show_modal = $row['count'] == 0;
         <div class="col-12">
            
                 <div class="card-body">
-                    <table id="homeworkHelpTable" class="display bbnw table table-bordered text-center align-middle" style="width:100%">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Transaction ID</th>
-                                <th>Full Name</th>
-                                <th>Subject Title</th>
-                                <th>Assignment Question</th>
-                                <th>Assignment Difficulty</th>
-                                <th>Urgency</th>
-                                <th>GCash Name</th>
-                                <th>Payment Proof</th>
-                                <th>Created At</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Data will be dynamically populated -->
-                        </tbody>
-                    </table>
+                <table id="homeworkHelpTable" class="display bbnw table table-bordered text-center align-middle" style="width:100%">
+    <thead class="table-dark">
+        <tr>
+            <th>Transaction ID</th>
+            <th>Full Name</th>
+            <th>Assignment Question</th>
+            <th>Assignment Difficulty</th>
+            <th>Urgency</th>
+            <th>Payment Proof</th>
+            <th>Created At</th>
+            <th>Status</th>
+            <th>Admin Share</th>
+            <th>CPA Share</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Data will be dynamically populated -->
+    </tbody>
+</table>
+
                 </div>
             </div>
       
@@ -359,92 +360,105 @@ $show_modal = $row['count'] == 0;
 
 
     <script>
-    $(document).ready(function() {
-        $('#homeworkHelpTable').DataTable({
-            "ajax": "admin_fetchdata_homeworkhelp.php",
-            "columns": [
-                { "data": "transaction_id" },
-                { "data": "full_name" },
-                { "data": "subject_title" },
-                { "data": "assignment_question" },
-                { "data": "assignment_difficulty" },
-                { "data": "urgency" },
-                { "data": "gcash_name" },
-                {
-                    "data": "payment_proof",
-                    "render": function(data) {
-                        if (data !== 'No proof provided') {
-                            return `<img src="${data}" alt="Payment Proof" style="cursor: pointer; max-width: 100px;" class="payment-proof" 
-                                data-bs-toggle="modal" data-bs-target="#imageModal" 
-                                onclick="document.getElementById('modalImage').src='${data}';" />`;
-                        } else {
-                            return data; // Return the text if no proof is provided
-                        }
-                    }
-                },
-                { "data": "created_at" },
-                { "data": "status" },
-                {
-                    "data": null,
-                    "render": function(data, type, row) {
-                        return `
-                            <div class="btn-group">
-                                <button class="btn btn-success btn-action" data-action="approve" data-id="${row.transaction_id}">
-                                    <i class="fas fa-check"></i>
-                                </button>
-                                <button class="btn btn-danger btn-action" data-action="deny" data-id="${row.transaction_id}">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>`;
+   $(document).ready(function() {
+    $('#homeworkHelpTable').DataTable({
+        "ajax": "admin_fetchdata_homeworkhelp.php",
+        "columns": [
+            { "data": "transaction_id" },
+            { "data": "full_name" },
+            { "data": "assignment_question" },
+            { "data": "assignment_difficulty" },
+            { "data": "urgency" },
+            {
+                "data": "payment_proof",
+                "render": function(data) {
+                    if (data !== 'No proof provided') {
+                        return `<img src="${data}" alt="Payment Proof" style="cursor: pointer; max-width: 100px;" class="payment-proof" 
+                            data-bs-toggle="modal" data-bs-target="#imageModal" 
+                            onclick="document.getElementById('modalImage').src='${data}';" />`;
+                    } else {
+                        return data; // Return text if no proof is provided
                     }
                 }
-            ],
-            "columnDefs": [
-                { "targets": 7, "orderable": false, "searchable": false },
-                { "targets": 10, "orderable": false, "searchable": false }
-            ]
-        });
+            },
+            { "data": "created_at" },
+            { "data": "status" },
+            {
+                "data": null,
+                "render": function () {
+                    let adminShare = (60 * 0.60).toFixed(2); // 60% of 59
+                    return `₱${adminShare}`;
+                }
+            },
+            {
+                "data": null,
+                "render": function () {
+                    let cpaShare = (60 * 0.40).toFixed(2); // 40% of 59
+                    return `₱${cpaShare}`;
+                }
+            },
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return `
+                        <div class="btn-group">
+                            <button class="btn btn-success btn-action" data-action="approve" data-id="${row.transaction_id}">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn btn-danger btn-action" data-action="deny" data-id="${row.transaction_id}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>`;
+                }
+            }
+        ],
+        "columnDefs": [
+            { "targets": 5, "orderable": false, "searchable": false }, // Payment Proof column
+            { "targets": 10, "orderable": false, "searchable": false } // Actions column
+        ]
+    });
 
-        // Show image in modal when payment proof image is clicked
-        $('#homeworkHelpTable').on('click', '.payment-proof', function() {
-            var imageUrl = $(this).attr('src');
-            $('#modalImage').attr('src', imageUrl);
-        });
+    // Show image in modal when payment proof image is clicked
+    $('#homeworkHelpTable').on('click', '.payment-proof', function() {
+        var imageUrl = $(this).attr('src');
+        $('#modalImage').attr('src', imageUrl);
+    });
 
-        // Show confirmation modal
-        $('#homeworkHelpTable').on('click', '.btn-action', function() {
-            var action = $(this).data('action');
-            var transactionId = $(this).data('id');
+    // Show confirmation modal
+    $('#homeworkHelpTable').on('click', '.btn-action', function() {
+        var action = $(this).data('action');
+        var transactionId = $(this).data('id');
 
-            // Show the confirmation modal
-            $('#confirmationModal').modal('show');
-            
-            // Handle confirmation
-            $('#confirmButton').off('click').on('click', function() {
-                // Proceed with the action based on the button clicked
-                $.ajax({
-                    url: 'update_status_homeworkhelp.php',
-                    method: 'POST',
-                    data: {
-                        action: action,
-                        transaction_id: transactionId
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Optionally, refresh the table or provide feedback
-                            $('#homeworkHelpTable').DataTable().ajax.reload();
-                            alert(response.message);
-                        } else {
-                            $('#homeworkHelpTable').DataTable().ajax.reload();
-                        }
+        // Show the confirmation modal
+        $('#confirmationModal').modal('show');
+        
+        // Handle confirmation
+        $('#confirmButton').off('click').on('click', function() {
+            // Proceed with the action based on the button clicked
+            $.ajax({
+                url: 'update_status_homeworkhelp.php',
+                method: 'POST',
+                data: {
+                    action: action,
+                    transaction_id: transactionId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Optionally, refresh the table or provide feedback
+                        $('#homeworkHelpTable').DataTable().ajax.reload();
+                        alert(response.message);
+                    } else {
+                        $('#homeworkHelpTable').DataTable().ajax.reload();
                     }
-                });
-
-                // Close the confirmation modal
-                $('#confirmationModal').modal('hide');
+                }
             });
+
+            // Close the confirmation modal
+            $('#confirmationModal').modal('hide');
         });
     });
+});
+
 </script>
 
 </body>

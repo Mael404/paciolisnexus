@@ -487,79 +487,72 @@ $show_modal = $row['count'] == 0;
 
 
             <!-- Recent Sales -->
-            <div class="col-12">
-              <div class="card recent-sales overflow-auto">
+            <div class="card-body">
+  <h5 class="card-title">Quiz Leaderboard <span>| This Week</span></h5>
 
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
+  <table class="table table-borderless datatable">
+    <thead>
+      <tr>
+        <th scope="col">Rank</th>
+        <th scope="col">Name</th>
+        <th scope="col">Subject</th>
+        <th scope="col">Score</th>
+        <th scope="col">Max Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Example 1 -->
+      <tr>
+        <th scope="row">1</th>
+        <td>John Doe</td>
+        <td>Financial Accounting and Reporting</td>
+        <td>28</td>
+        <td>30</td>
+      </tr>
+      <!-- Example 2 -->
+      <tr>
+        <th scope="row">2</th>
+        <td>Jane Smith</td>
+        <td>Advanced Financial Accounting and Reporting</td>
+        <td>26</td>
+        <td>30</td>
+      </tr>
+      <!-- Example 3 -->
+      <tr>
+        <th scope="row">3</th>
+        <td>Mike Johnson</td>
+        <td>Auditing</td>
+        <td>22</td>
+        <td>30</td>
+      </tr>
+      <!-- Example 4 -->
+      <tr>
+        <th scope="row">4</th>
+        <td>Amy Williams</td>
+        <td>Taxation</td>
+        <td>20</td>
+        <td>30</td>
+      </tr>
+      <!-- Example 5 -->
+      <tr>
+        <th scope="row">5</th>
+        <td>David Lee</td>
+        <td>Regulatory Framework for Business Transactions</td>
+        <td>18</td>
+        <td>30</td>
+      </tr>
+      <!-- Example 6 -->
+      <tr>
+        <th scope="row">6</th>
+        <td>Sarah Kim</td>
+        <td>Management Advisory Services</td>
+        <td>15</td>
+        <td>30</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-
-                <div class="card-body">
-                  <h5 class="card-title">Recent Assignments <span>| Today</span></h5>
-
-                  <table class="table table-borderless datatable">
-                    <thead>
-                      <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Student</th>
-                        <th scope="col">Assignment</th>
-                        <th scope="col">Grade</th>
-                        <th scope="col">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row"><a href="#">#2457</a></th>
-                        <td>Brandon Jacob</td>
-                        <td><a href="#" class="text-primary">Math Homework</a></td>
-                        <td>A</td>
-                        <td><span class="badge bg-success">Completed</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2147</a></th>
-                        <td>Bridie Kessler</td>
-                        <td><a href="#" class="text-primary">Science Project</a></td>
-                        <td>B+</td>
-                        <td><span class="badge bg-warning">Pending</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2049</a></th>
-                        <td>Ashleigh Langosh</td>
-                        <td><a href="#" class="text-primary">History Essay</a></td>
-                        <td>A-</td>
-                        <td><span class="badge bg-success">Completed</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2644</a></th>
-                        <td>Angus Grady</td>
-                        <td><a href="#" class="text-primary">English Presentation</a></td>
-                        <td>B</td>
-                        <td><span class="badge bg-danger">Missing</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2644</a></th>
-                        <td>Raheem Lehner</td>
-                        <td><a href="#" class="text-primary">Art Project</a></td>
-                        <td>A+</td>
-                        <td><span class="badge bg-success">Completed</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-
-              </div>
-            </div><!-- End Recent Sales -->
 
           </div>
         </div><!-- End Left side columns -->
